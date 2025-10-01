@@ -92,4 +92,12 @@ public class FileUtilTests
         string actual = File.ReadAllText(file.Path);
         Assert.Equal("", actual);
     }
+
+    [Fact]
+    public void CanHandleInvalidPaths()
+    {
+        // Arrange
+        // Act & Assert
+        Assert.Throws<FileNotFoundException>(() => FileUtil.AddLineNumbers("sdf"));
+    }
 }

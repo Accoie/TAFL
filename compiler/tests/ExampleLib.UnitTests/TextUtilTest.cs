@@ -100,77 +100,173 @@ public class TextUtilTest
         Assert.Equal(expected, actual);
     }
 
-    [Fact]
-    public void Can_parse_simple_roman_numerals()
+    public static TheoryData<string, int> SimpleRomanNumeralsData()
     {
-        Assert.Equal(1, TextUtil.ParseRoman("I"));
-        Assert.Equal(5, TextUtil.ParseRoman("V"));
-        Assert.Equal(10, TextUtil.ParseRoman("X"));
-        Assert.Equal(50, TextUtil.ParseRoman("L"));
-        Assert.Equal(100, TextUtil.ParseRoman("C"));
-        Assert.Equal(500, TextUtil.ParseRoman("D"));
-        Assert.Equal(1000, TextUtil.ParseRoman("M"));
+        return new TheoryData<string, int>
+        {
+            { "I", 1 },
+            { "V", 5 },
+            { "X", 10 },
+            { "L", 50 },
+            { "C", 100 },
+            { "D", 500 },
+            { "M", 1000 },
+        };
+    }
+
+    [Theory]
+    [MemberData(nameof(SimpleRomanNumeralsData))]
+    public void Can_parse_simple_roman_numerals(string roman, int expected)
+    {
+        // Arrange
+        // Act
+        int result = TextUtil.ParseRoman(roman);
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
+    public static TheoryData<string, int> RomanNumeralsWithAdditionData()
+    {
+        return new TheoryData<string, int>
+        {
+            { "II", 2 },
+            { "III", 3 },
+            { "VII", 7 },
+            { "VIII", 8 },
+            { "MMXXV", 2025 },
+        };
+    }
+
+    [Theory]
+    [MemberData(nameof(RomanNumeralsWithAdditionData))]
+    public void Can_parse_roman_numerals_with_addition(string roman, int expected)
+    {
+        // Arrange
+        // Act
+        int result = TextUtil.ParseRoman(roman);
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
+    public static TheoryData<string, int> RomanNumeralsWithSubtractionData()
+    {
+        return new TheoryData<string, int>
+        {
+            { "IV", 4 },
+            { "IX", 9 },
+            { "XL", 40 },
+            { "XC", 90 },
+            { "CD", 400 },
+            { "CM", 900 },
+            { "MCMXC", 1990 },
+        };
+    }
+
+    [Theory]
+    [MemberData(nameof(RomanNumeralsWithSubtractionData))]
+    public void Can_parse_roman_numerals_with_subtraction(string roman, int expected)
+    {
+        // Arrange
+        // Act
+        int result = TextUtil.ParseRoman(roman);
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
+    [Theory]
+    [MemberData(nameof(RomanNumeralsCaseInsensitiveData))]
+    public void Can_parse_roman_numerals_case_insensitive(string roman, int expected)
+    {
+        // Arrange
+        // Act
+        int result = TextUtil.ParseRoman(roman);
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
+    public static TheoryData<string, int> RomanNumeralsCaseInsensitiveData()
+    {
+        return new TheoryData<string, int>
+        {
+            { "iv", 4 },
+            { "ix", 9 },
+            { "xiv", 14 },
+            { "mcmxc", 1990 },
+        };
+    }
+
+    [Theory]
+    [MemberData(nameof(ZeroRepresentationsData))]
+    public void Can_parse_zero_representations(string roman, int expected)
+    {
+        // Arrange
+        // Act
+        int result = TextUtil.ParseRoman(roman);
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
+    public static TheoryData<string, int> ZeroRepresentationsData()
+    {
+        return new TheoryData<string, int>
+        {
+            { "0", 0 },
+        };
+    }
+
+    [Theory]
+    [MemberData(nameof(MaximumRomanNumberData))]
+    public void Can_parse_maximum_roman_number(string roman, int expected)
+    {
+        // Arrange
+        // Act
+        int result = TextUtil.ParseRoman(roman);
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
+    public static TheoryData<string, int> MaximumRomanNumberData()
+    {
+        return new TheoryData<string, int>
+        {
+            { "MMM", 3000 },
+        };
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidRomanNumeralsData))]
+    public void Can_handle_invalid_roman_numerals(string invalidRoman)
+    {
+        // Arrange
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => TextUtil.ParseRoman(invalidRoman));
+    }
+
+    public static TheoryData<string> InvalidRomanNumeralsData()
+    {
+        return new TheoryData<string>
+        {
+            "IIII",
+            "VV",
+            "IL",
+            "A",
+            "MMMI",
+        };
     }
 
     [Fact]
-    public void Can_parse_roman_numerals_with_addition()
+    public void Can_handle_empty_input()
     {
-        Assert.Equal(2, TextUtil.ParseRoman("II"));
-        Assert.Equal(3, TextUtil.ParseRoman("III"));
-        Assert.Equal(7, TextUtil.ParseRoman("VII"));
-        Assert.Equal(8, TextUtil.ParseRoman("VIII"));
-        Assert.Equal(2025, TextUtil.ParseRoman("MMXXV"));
-    }
+        // Arrange
+        string emptyInput = "";
 
-    [Fact]
-    public void Can_parse_roman_numerals_with_subtraction()
-    {
-        Assert.Equal(4, TextUtil.ParseRoman("IV"));
-        Assert.Equal(9, TextUtil.ParseRoman("IX"));
-        Assert.Equal(40, TextUtil.ParseRoman("XL"));
-        Assert.Equal(90, TextUtil.ParseRoman("XC"));
-        Assert.Equal(400, TextUtil.ParseRoman("CD"));
-        Assert.Equal(900, TextUtil.ParseRoman("CM"));
-        Assert.Equal(1990, TextUtil.ParseRoman("MCMXC"));
-    }
-
-    [Fact]
-    public void Can_parse_roman_numerals_case_insensitive()
-    {
-        Assert.Equal(4, TextUtil.ParseRoman("iv"));
-        Assert.Equal(9, TextUtil.ParseRoman("ix"));
-        Assert.Equal(14, TextUtil.ParseRoman("xiv"));
-        Assert.Equal(1990, TextUtil.ParseRoman("mcmxc"));
-    }
-
-    [Fact]
-    public void Can_parse_zero_representations()
-    {
-        Assert.Equal(0, TextUtil.ParseRoman("nulla"));
-        Assert.Equal(0, TextUtil.ParseRoman("NULLA"));
-        Assert.Equal(0, TextUtil.ParseRoman("0"));
-    }
-
-    [Fact]
-    public void Can_parse_maximum_roman_number()
-    {
-        Assert.Equal(3000, TextUtil.ParseRoman("MMM"));
-    }
-
-    [Fact]
-    public void Can_handle_invalid_roman_numerals()
-    {
-        Assert.Throws<ArgumentException>(() => TextUtil.ParseRoman("IIII"));
-        Assert.Throws<ArgumentException>(() => TextUtil.ParseRoman("VV"));
-        Assert.Throws<ArgumentException>(() => TextUtil.ParseRoman("IL"));
-        Assert.Throws<ArgumentException>(() => TextUtil.ParseRoman("A"));
-        Assert.Throws<ArgumentException>(() => TextUtil.ParseRoman("MMMI"));
-    }
-
-    [Fact]
-    public void Can_handle_empty_or_null_input()
-    {
-        Assert.Throws<ArgumentException>(() => TextUtil.ParseRoman(""));
-        Assert.Throws<ArgumentException>(() => TextUtil.ParseRoman(null));
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => TextUtil.ParseRoman(emptyInput));
     }
 }

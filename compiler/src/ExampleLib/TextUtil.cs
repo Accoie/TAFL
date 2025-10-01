@@ -4,6 +4,14 @@ namespace ExampleLib;
 
 public static class TextUtil
 {
+    private const int MaxRomanValue = 3000;
+
+    private static readonly IReadOnlyDictionary<char, int> RomanNumerals = new Dictionary<char, int>
+        {
+            { 'I', 1 }, { 'V', 5 }, { 'X', 10 }, { 'L', 50 },
+            { 'C', 100 }, { 'D', 500 }, { 'M', 1000 },
+        };
+
     // Символы Unicode, которые мы принимаем как дефис.
     private static readonly Rune[] Hyphens = [new Rune('‐'), new Rune('-')];
 
@@ -137,7 +145,7 @@ public static class TextUtil
 
         text = text.Trim().ToUpper();
 
-        if (IsZeroRepresentation(text))
+        if (text == "0")
         {
             return 0;
         }
@@ -145,24 +153,17 @@ public static class TextUtil
         ValidateRomanCharacters(text);
         ValidateRepetitionRules(text);
 
-        int result = CalculateRomanValue(text);
+        int result = ParseRomanValue(text);
         ValidateRange(result, text);
 
         return result;
     }
 
-    private static bool IsZeroRepresentation(string text)
-    {
-        return text == "NULLA" || text == "0";
-    }
-
     private static void ValidateRomanCharacters(string text)
     {
-        HashSet<char> validChars = new() { 'I', 'V', 'X', 'L', 'C', 'D', 'M' };
-
         foreach (char ch in text)
         {
-            if (!validChars.Contains(ch))
+            if (!RomanNumerals.ContainsKey(ch))
             {
                 throw new ArgumentException($"Недопустимый символ '{ch}' в римском числе");
             }
@@ -203,19 +204,13 @@ public static class TextUtil
         }
     }
 
-    private static int CalculateRomanValue(string text)
+    private static int ParseRomanValue(string text)
     {
-        Dictionary<char, int> romanNumerals = new Dictionary<char, int>
-    {
-        { 'I', 1 }, { 'V', 5 }, { 'X', 10 }, { 'L', 50 },
-        { 'C', 100 }, { 'D', 500 }, { 'M', 1000 },
-    };
-
         int result = 0;
 
         for (int i = 0; i < text.Length; i++)
         {
-            int currentValue = romanNumerals[text[i]];
+            int currentValue = RomanNumerals[text[i]];
 
             if (i == text.Length - 1)
             {
@@ -224,7 +219,7 @@ public static class TextUtil
                 continue;
             }
 
-            int nextValue = romanNumerals[text[i + 1]];
+            int nextValue = RomanNumerals[text[i + 1]];
 
             if (currentValue < nextValue)
             {
@@ -268,9 +263,9 @@ public static class TextUtil
 
     private static void ValidateRange(int result, string originalText)
     {
-        if (result > 3000)
+        if (result > MaxRomanValue)
         {
-            throw new ArgumentException($"Римское число {originalText} превышает максимально допустимое значение 3000");
+            throw new ArgumentException($"Римское число {originalText} превышает максимально допустимое значение {MaxRomanValue}");
         }
     }
 }
