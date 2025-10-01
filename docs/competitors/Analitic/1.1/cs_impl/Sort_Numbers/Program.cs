@@ -11,7 +11,6 @@ class Program
             {
                 if (arr[j] > arr[j + 1])
                 {
-                    // Меняем местами
                     int temp = arr[j];
                     arr[j] = arr[j + 1];
                     arr[j + 1] = temp;
