@@ -153,10 +153,7 @@ public static class TextUtil
         ValidateRomanCharacters(text);
         ValidateRepetitionRules(text);
 
-        int result = ParseRomanValue(text);
-        ValidateRange(result, text);
-
-        return result;
+        return ParseRomanValue(text);
     }
 
     private static void ValidateRomanCharacters(string text)
@@ -232,6 +229,11 @@ public static class TextUtil
             }
         }
 
+        if (result > MaxRomanValue)
+        {
+            throw new ArgumentException($"Римское число {text} превышает максимально допустимое значение {MaxRomanValue}");
+        }
+
         return result;
     }
 
@@ -255,17 +257,9 @@ public static class TextUtil
             throw new ArgumentException($"Недопустимое вычитание: 'C' перед '{nextChar}'");
         }
 
-        if (currentIndex > 0 && text[currentIndex] == text[currentIndex - 1])
+        if (currentIndex > 0 && currentChar == text[currentIndex - 1])
         {
             throw new ArgumentException($"Вычитаемый символ '{text[currentIndex]}' не может повторяться");
-        }
-    }
-
-    private static void ValidateRange(int result, string originalText)
-    {
-        if (result > MaxRomanValue)
-        {
-            throw new ArgumentException($"Римское число {originalText} превышает максимально допустимое значение {MaxRomanValue}");
         }
     }
 }
