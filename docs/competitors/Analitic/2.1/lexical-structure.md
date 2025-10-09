@@ -1,6 +1,6 @@
 # Сравнение лексических структур C# и C++
 ## Элементы структурного программирования:
-### блоки кода
+### Блоки кода
 идентичные
 ```
 {
@@ -9,10 +9,11 @@
 }
 ```
 ------------
-### ветвления
+### Ветвления
 В C# break обязателен в каждом case, так же можно задавать доп условия через condition
 ```
-switch (variable) {
+switch (variable) 
+{
     case 1:
         // код
         break;
@@ -28,7 +29,8 @@ B С++:
 ```
 
 // switch
-switch (variable) {
+switch (variable) 
+{
     case 1:
         // код
     case 2:
@@ -38,17 +40,19 @@ switch (variable) {
 }
 ```
 --------------
-### циклы
-Отличается синтаксис foreach
-В C#:
+### Циклы
+Отличается синтаксис цикла for
+В C#: называется foreach и в выражении используется "in" для перечисления элементов 
 ```
-foreach (var item in collection) {
+foreach (var item in collection) 
+{
     // код
 }
 ```
 В C++:
 ```
-for (auto& item : collection) {
+for (auto& item : collection) 
+{
     // код
 }
 ```
@@ -64,7 +68,7 @@ printf("Value: %d", x);
 
 // ввод
 cin >> variable;
-scanf("%d", &x);
+scanf("%d", &x);   //%d - целое число
 ```
 C#
 ```
@@ -77,29 +81,32 @@ Console.WriteLine($"Value: {variable}"); // интерполяция
 // ввод
 string input = Console.ReadLine();
 ```
-Различия: C# использует класс Console, есть интерполяция строк
+Различия: C# использует класс Console, есть интерполяция строк `($"Value: {variable}")`. В c++ используются потоки ввода-вывода через токены `<<` и `>>`
 
 ## Пользовательские функции, параметры и возвращаемые значения
 C++
 ```
 // void функция
-void printMessage(const string& message) {
+void printMessage(const string& message) 
+{
     cout << message;
 }
 ```
 C#
 ```
 // void метод
-void PrintMessage(string message) {
+void PrintMessage(string message) 
+{
     Console.WriteLine(message);
 }
 
 // опциональные параметры
-void Method(int required, string optional = "default") {
+void Method(int required, string optional = "default") 
+{
     // код
 }
 ```
-Различия: C# поддерживает опциональные параметры со значениями по умолчанию
+Различия: C# поддерживает опциональные параметры со значениями по умолчанию, так же в C# тип стринг является ссылочным по умолчанию
 
 ## Встроенные типы данных для целых чисел, числе с плавающей точкой и строк
 
@@ -114,7 +121,7 @@ float, double, long double
 
 // строки
 std::string, const char*
-bool
+
 ```
 C#
 ```
@@ -133,9 +140,9 @@ bool
 Различия: C# имеет беззнаковые типы с префиксом 'u', тип decimal для финансовых расчетов
 
 ## Выражения с операторами
-### арифметические операторы
-Одинаковые: + - * / % ++ --
-### логические операторы
+### Арифметические операторы
+Одинаковые: `+ - * / % ++ --`
+### Логические операторы
 C++: 
 ```
 && || !
@@ -145,13 +152,13 @@ C#:
 && || ! (дополнительно & | для побитовых операций)
 ```
 Различия: В C# операторы & и | не являются короткозамкнутыми
-### операторы сравнения
+### Операторы сравнения
 Одинаковые: 
 ```
 == != < > <= >=
 ```
 ## Пользовательские составные типы данных
-### массивы
+### Массивы
 C++
 ```
 // статический
@@ -176,15 +183,17 @@ int[,] matrix = new int[3,3];
 int[][] jagged = new int[3][];
 ```
 Различия: C# имеет встроенную поддержку массивов с свойством Length
-### структуры (записи)
+### Структуры (записи)
 C++
 ```
-struct Point {
+struct Point 
+{
     int x;
     int y;
     
     // могут содержать методы
-    void print() {
+    void print() 
+    {
         cout << x << ", " << y;
     }
 };
@@ -194,12 +203,14 @@ Point p = {10, 20};
 ```
 C#
 ```
-struct Point {
+struct Point 
+{
     public int X;
     public int Y;
     
     // могут содержать методы
-    public void Print() {
+    public void Print() 
+    {
         Console.WriteLine($"{X}, {Y}");
     }
 }
@@ -208,3 +219,75 @@ struct Point {
 record Person(string Name, int Age);
 ```
 Различия: C# структуры - типы значений, C++ - зависит от использования. C# имеет records для неизменяемых данных.
+### Ключевые слова
+
+Уникальные для C++:
+```
+// Управление памятью
+new, delete, new[], delete[]
+
+// Модификаторы типов
+const, volatile, mutable, constexpr (C++11)
+
+// Шаблоны и наследование
+template, typename, friend, virtual, override, final (C++11)
+
+// Пространства имен
+namespace, using
+
+// Препроцессор
+#define, #include, #ifdef, #pragma
+```
+
+Уникальные для C#:
+```
+// Модификаторы доступа и классов
+public, private, protected, internal, sealed, abstract
+
+// Свойства и события
+get, set, value, event, delegate
+
+// Управление памятью и исключения
+using, try, catch, finally, throw, checked, unchecked
+
+// Типы и преобразования
+class, struct, enum, interface, is, as, explicit, implicit
+
+// Современные возможности
+var, dynamic, async, await, nameof, yield
+```
+
+### Знаки экранирования
+Общие escape-последовательности:
+```
+\n - новая строка
+
+\t - табуляция
+
+\\ - обратная косая черта
+
+\" - двойная кавычка
+
+\' - одинарная кавычка
+```
+
+### Обработка исключений
+
+C++ (исключения + коды ошибок):
+```
+try {
+    throw std::runtime_error("Error");
+} catch (const std::exception& e) {
+    std::cout << e.what();
+}
+```
+C# (только исключения):
+```
+try {
+    throw new Exception("Error");
+} catch (Exception ex) when (ex.Message.Contains("specific")) {
+    // фильтр исключений
+} finally {
+    // cleanup
+}
+```
