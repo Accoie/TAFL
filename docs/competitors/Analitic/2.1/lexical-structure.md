@@ -22,7 +22,7 @@ switch (variable)
         break;
     default:
         // код
-        break; // обязателен
+        break; 
 }
 ```
 B С++:
@@ -76,7 +76,7 @@ using System;
 
 // вывод
 Console.WriteLine("Hello " + variable);
-Console.WriteLine($"Value: {variable}"); // интерполяция
+Console.WriteLine($"Value: {variable}");
 
 // ввод
 string input = Console.ReadLine();
@@ -86,7 +86,6 @@ string input = Console.ReadLine();
 ## Пользовательские функции, параметры и возвращаемые значения
 C++
 ```
-// void функция
 void printMessage(const string& message) 
 {
     cout << message;
@@ -94,13 +93,11 @@ void printMessage(const string& message)
 ```
 C#
 ```
-// void метод
 void PrintMessage(string message) 
 {
     Console.WriteLine(message);
 }
 
-// опциональные параметры
 void Method(int required, string optional = "default") 
 {
     // код
@@ -112,7 +109,7 @@ void Method(int required, string optional = "default")
 
 C++
 ```
-// целые
+//целые
 int, short, long, long long
 unsigned int, size_t
 
@@ -149,7 +146,7 @@ C++:
 ```
 C#: 
 ```
-&& || ! (дополнительно & | для побитовых операций)
+&& || !
 ```
 Различия: В C# операторы & и | не являются короткозамкнутыми
 ### Операторы сравнения
@@ -168,7 +165,7 @@ int arr[10];
 int* dynamicArr = new int[10];
 delete[] dynamicArr;
 
-// vector (рекомендуется)
+// vector
 #include <vector>
 std::vector<int> vec = {1, 2, 3};
 ```
@@ -182,7 +179,9 @@ int[] arr2 = {1, 2, 3};
 int[,] matrix = new int[3,3];
 int[][] jagged = new int[3][];
 ```
-Различия: C# имеет встроенную поддержку массивов с свойством Length
+Различия: Отличаются объявления массива. 
+C# использует квадратные скобки с типом, а C++ - с именем переменной. 
+C# имеет встроенную поддержку массивов с свойством Length
 ### Структуры (записи)
 C++
 ```
@@ -191,7 +190,6 @@ struct Point
     int x;
     int y;
     
-    // могут содержать методы
     void print() 
     {
         cout << x << ", " << y;
@@ -208,14 +206,12 @@ struct Point
     public int X;
     public int Y;
     
-    // могут содержать методы
     public void Print() 
     {
         Console.WriteLine($"{X}, {Y}");
     }
 }
 
-// record (C# 9+)
 record Person(string Name, int Age);
 ```
 Различия: C# структуры - типы значений, C++ - зависит от использования. C# имеет records для неизменяемых данных.
@@ -269,25 +265,4 @@ var, dynamic, async, await, nameof, yield
 \" - двойная кавычка
 
 \' - одинарная кавычка
-```
-
-### Обработка исключений
-
-C++ (исключения + коды ошибок):
-```
-try {
-    throw std::runtime_error("Error");
-} catch (const std::exception& e) {
-    std::cout << e.what();
-}
-```
-C# (только исключения):
-```
-try {
-    throw new Exception("Error");
-} catch (Exception ex) when (ex.Message.Contains("specific")) {
-    // фильтр исключений
-} finally {
-    // cleanup
-}
 ```
