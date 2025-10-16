@@ -1,13 +1,13 @@
 ﻿namespace Lexer.UnitTests;
 
-public class ProgramStructureTests : LexerTest
+public class ProgramStructureTests
 {
     [Theory]
     [MemberData(nameof(BasicProgramCasesData))]
     public void Can_tokenize_basic_program_constructions(string code, List<Token> expected)
     {
-        List<Token> actual = Tokenize(code);
-        AssertTokensEqual(expected, actual);
+        List<Token> actual = LexerTest.Tokenize(code);
+        LexerTest.AssertTokensEqual(expected, actual);
     }
 
     public static TheoryData<string, List<Token>> BasicProgramCasesData()
@@ -54,8 +54,8 @@ public class ProgramStructureTests : LexerTest
     [MemberData(nameof(VariableDeclarationCasesData))]
     public void Can_tokenize_variable_declarations(string code, List<Token> expected)
     {
-        List<Token> actual = Tokenize(code);
-        AssertTokensEqual(expected, actual);
+        List<Token> actual = LexerTest.Tokenize(code);
+        LexerTest.AssertTokensEqual(expected, actual);
     }
 
     public static TheoryData<string, List<Token>> VariableDeclarationCasesData()
@@ -124,8 +124,8 @@ public class ProgramStructureTests : LexerTest
     [MemberData(nameof(ConditionalCasesData))]
     public void Can_tokenize_conditional_constructions(string code, List<Token> expected)
     {
-        List<Token> actual = Tokenize(code);
-        AssertTokensEqual(expected, actual);
+        List<Token> actual = LexerTest.Tokenize(code);
+        LexerTest.AssertTokensEqual(expected, actual);
     }
 
     public static TheoryData<string, List<Token>> ConditionalCasesData()
@@ -167,8 +167,8 @@ public class ProgramStructureTests : LexerTest
     [MemberData(nameof(LoopCasesData))]
     public void Can_tokenize_loops(string code, List<Token> expected)
     {
-        List<Token> actual = Tokenize(code);
-        AssertTokensEqual(expected, actual);
+        List<Token> actual = LexerTest.Tokenize(code);
+        LexerTest.AssertTokensEqual(expected, actual);
     }
 
     public static TheoryData<string, List<Token>> LoopCasesData()
@@ -222,8 +222,8 @@ public class ProgramStructureTests : LexerTest
     [MemberData(nameof(NestedBlockCasesData))]
     public void Can_tokenize_nested_blocks(string code, List<Token> expected)
     {
-        List<Token> actual = Tokenize(code);
-        AssertTokensEqual(expected, actual);
+        List<Token> actual = LexerTest.Tokenize(code);
+        LexerTest.AssertTokensEqual(expected, actual);
     }
 
     public static TheoryData<string, List<Token>> NestedBlockCasesData()
@@ -272,8 +272,8 @@ public class ProgramStructureTests : LexerTest
     [MemberData(nameof(ComplexProgramCasesData))]
     public void Can_tokenize_complex_programs(string code, List<Token> expected)
     {
-        List<Token> actual = Tokenize(code);
-        AssertTokensEqual(expected, actual);
+        List<Token> actual = LexerTest.Tokenize(code);
+        LexerTest.AssertTokensEqual(expected, actual);
     }
 
     public static TheoryData<string, List<Token>> ComplexProgramCasesData()

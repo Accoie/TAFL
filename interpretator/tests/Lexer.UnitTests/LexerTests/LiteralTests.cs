@@ -1,13 +1,13 @@
 ﻿namespace Lexer.UnitTests;
 
-public class LiteralTests : LexerTest
+public class LiteralTests
 {
     [Theory]
     [MemberData(nameof(IntegerLiteralsData))]
     public void Can_tokenize_integer_literals(string code, List<Token> expected)
     {
-        List<Token> actual = Tokenize(code);
-        AssertTokensEqual(expected, actual);
+        List<Token> actual = LexerTest.Tokenize(code);
+        LexerTest.AssertTokensEqual(expected, actual);
     }
 
     public static TheoryData<string, List<Token>> IntegerLiteralsData()
@@ -31,8 +31,8 @@ public class LiteralTests : LexerTest
     [MemberData(nameof(FloatLiteralsData))]
     public void Can_tokenize_float_literals(string code, List<Token> expected)
     {
-        List<Token> actual = Tokenize(code);
-        AssertTokensEqual(expected, actual);
+        List<Token> actual = LexerTest.Tokenize(code);
+        LexerTest.AssertTokensEqual(expected, actual);
     }
 
     public static TheoryData<string, List<Token>> FloatLiteralsData()
@@ -70,8 +70,8 @@ public class LiteralTests : LexerTest
     [MemberData(nameof(StringLiteralsData))]
     public void Can_tokenize_string_literals(string code, List<Token> expected)
     {
-        List<Token> actual = Tokenize(code);
-        AssertTokensEqual(expected, actual);
+        List<Token> actual = LexerTest.Tokenize(code);
+        LexerTest.AssertTokensEqual(expected, actual);
     }
 
     public static TheoryData<string, List<Token>> StringLiteralsData()
@@ -121,8 +121,8 @@ public class LiteralTests : LexerTest
     [MemberData(nameof(BooleanLiteralsData))]
     public void Can_tokenize_boolean_literals(string code, List<Token> expected)
     {
-        List<Token> actual = Tokenize(code);
-        AssertTokensEqual(expected, actual);
+        List<Token> actual = LexerTest.Tokenize(code);
+        LexerTest.AssertTokensEqual(expected, actual);
     }
 
     public static TheoryData<string, List<Token>> BooleanLiteralsData()

@@ -1,13 +1,13 @@
 ﻿namespace Lexer.UnitTests;
 
-public class KeywordTests : LexerTest
+public class KeywordTests
 {
     [Theory]
     [MemberData(nameof(KeywordCasesData))]
     public void Can_tokenize_keywords(string code, List<Token> expected)
     {
-        List<Token> actual = Tokenize(code);
-        AssertTokensEqual(expected, actual);
+        List<Token> actual = LexerTest.Tokenize(code);
+        LexerTest.AssertTokensEqual(expected, actual);
     }
 
     public static TheoryData<string, List<Token>> KeywordCasesData()
@@ -63,8 +63,8 @@ public class KeywordTests : LexerTest
     [MemberData(nameof(CaseInsensitiveKeywordsData))]
     public void Can_tokenize_case_insensitive_keywords(string code, List<Token> expected)
     {
-        List<Token> actual = Tokenize(code);
-        AssertTokensEqual(expected, actual);
+        List<Token> actual = LexerTest.Tokenize(code);
+        LexerTest.AssertTokensEqual(expected, actual);
     }
 
     public static TheoryData<string, List<Token>> CaseInsensitiveKeywordsData()

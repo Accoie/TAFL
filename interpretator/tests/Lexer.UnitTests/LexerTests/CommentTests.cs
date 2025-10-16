@@ -1,13 +1,13 @@
 ﻿namespace Lexer.UnitTests;
 
-public class CommentTests : LexerTest
+public class CommentTests
 {
     [Theory]
     [MemberData(nameof(SingleLineCommentsData))]
     public void Can_handle_single_line_comments(string code, List<Token> expected)
     {
-        List<Token> actual = Tokenize(code);
-        AssertTokensEqual(expected, actual);
+        List<Token> actual = LexerTest.Tokenize(code);
+        LexerTest.AssertTokensEqual(expected, actual);
     }
 
     public static TheoryData<string, List<Token>> SingleLineCommentsData()
@@ -38,8 +38,8 @@ public class CommentTests : LexerTest
     [MemberData(nameof(MultiLineCommentsData))]
     public void Can_handle_multi_line_comments(string code, List<Token> expected)
     {
-        List<Token> actual = Tokenize(code);
-        AssertTokensEqual(expected, actual);
+        List<Token> actual = LexerTest.Tokenize(code);
+        LexerTest.AssertTokensEqual(expected, actual);
     }
 
     public static TheoryData<string, List<Token>> MultiLineCommentsData()

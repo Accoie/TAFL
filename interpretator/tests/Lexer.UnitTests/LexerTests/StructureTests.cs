@@ -1,13 +1,13 @@
 ﻿namespace Lexer.UnitTests;
 
-public class StructureTests : LexerTest
+public class StructureTests
 {
     [Theory]
     [MemberData(nameof(BracketCasesData))]
     public void Can_tokenize_brackets(string code, List<Token> expected)
     {
-        List<Token> actual = Tokenize(code);
-        AssertTokensEqual(expected, actual);
+        List<Token> actual = LexerTest.Tokenize(code);
+        LexerTest.AssertTokensEqual(expected, actual);
     }
 
     public static TheoryData<string, List<Token>> BracketCasesData()
@@ -87,8 +87,8 @@ public class StructureTests : LexerTest
     [MemberData(nameof(PunctuationData))]
     public void Can_tokenize_punctuation(string code, List<Token> expected)
     {
-        List<Token> actual = Tokenize(code);
-        AssertTokensEqual(expected, actual);
+        List<Token> actual = LexerTest.Tokenize(code);
+        LexerTest.AssertTokensEqual(expected, actual);
     }
 
     public static TheoryData<string, List<Token>> PunctuationData()

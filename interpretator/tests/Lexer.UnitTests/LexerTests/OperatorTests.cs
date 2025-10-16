@@ -1,13 +1,13 @@
 ﻿namespace Lexer.UnitTests;
 
-public class OperatorTests : LexerTest
+public class OperatorTests
 {
     [Theory]
     [MemberData(nameof(ArithmeticOperatorsData))]
     public void Can_tokenize_arithmetic_operators(string code, List<Token> expected)
     {
-        List<Token> actual = Tokenize(code);
-        AssertTokensEqual(expected, actual);
+        List<Token> actual = LexerTest.Tokenize(code);
+        LexerTest.AssertTokensEqual(expected, actual);
     }
 
     public static TheoryData<string, List<Token>> ArithmeticOperatorsData()
@@ -33,8 +33,8 @@ public class OperatorTests : LexerTest
     [MemberData(nameof(LogicalOperatorsData))]
     public void Can_tokenize_logical_operators(string code, List<Token> expected)
     {
-        List<Token> actual = Tokenize(code);
-        AssertTokensEqual(expected, actual);
+        List<Token> actual = LexerTest.Tokenize(code);
+        LexerTest.AssertTokensEqual(expected, actual);
     }
 
     public static TheoryData<string, List<Token>> LogicalOperatorsData()
@@ -57,8 +57,8 @@ public class OperatorTests : LexerTest
     [MemberData(nameof(ComparisonOperatorsData))]
     public void Can_tokenize_comparison_operators(string code, List<Token> expected)
     {
-        List<Token> actual = Tokenize(code);
-        AssertTokensEqual(expected, actual);
+        List<Token> actual = LexerTest.Tokenize(code);
+        LexerTest.AssertTokensEqual(expected, actual);
     }
 
     public static TheoryData<string, List<Token>> ComparisonOperatorsData()

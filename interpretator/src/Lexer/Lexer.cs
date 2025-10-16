@@ -2,9 +2,9 @@
 
 namespace Lexer;
 
-public class TextLexer
+public class Lexer
 {
-    private readonly TextScanner scanner;
+    private readonly IScanner scanner;
 
     private static readonly IReadOnlyDictionary<string, TokenType> Keywords =
         new Dictionary<string, TokenType>(StringComparer.OrdinalIgnoreCase)
@@ -34,9 +34,9 @@ public class TextLexer
         { "ДАРОВАТЬ", TokenType.Return },
     };
 
-    public TextLexer(string str)
+    public Lexer(IScanner scanner)
     {
-        scanner = new TextScanner(str);
+        this.scanner = scanner;
     }
 
     public Token ParseToken()
@@ -193,14 +193,13 @@ public class TextLexer
 
     private Token ParseOrOperator()
     {
-        if (scanner.Peek(1) == '|')
+        scanner.Advance();
+        if (scanner.Peek() == '|')
         {
-            scanner.Advance();
             scanner.Advance();
             return new Token(TokenType.LogicalOr);
         }
 
-        scanner.Advance();
         return new Token(TokenType.Error, new TokenValue("|"));
     }
 

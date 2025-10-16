@@ -1,10 +1,11 @@
 ﻿namespace Lexer.UnitTests;
 
-public class LexerTest
+public static class LexerTest
 {
-    protected List<Token> Tokenize(string code)
+    public static List<Token> Tokenize(string code)
     {
-        TextLexer lexer = new(code);
+        TextScanner scanner = new(code);
+        Lexer lexer = new(scanner);
         List<Token> tokens = new List<Token>();
 
         Token token = lexer.ParseToken();
@@ -17,7 +18,7 @@ public class LexerTest
         return tokens;
     }
 
-    protected void AssertTokensEqual(List<Token> expected, List<Token> actual)
+    public static void AssertTokensEqual(List<Token> expected, List<Token> actual)
     {
         Assert.Equal(expected.Count, actual.Count);
 
