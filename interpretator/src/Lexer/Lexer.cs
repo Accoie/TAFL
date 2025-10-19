@@ -7,7 +7,7 @@ public class Lexer
     private readonly IScanner scanner;
 
     private static readonly IReadOnlyDictionary<string, TokenType> Keywords =
-        new Dictionary<string, TokenType>(StringComparer.OrdinalIgnoreCase)
+        new Dictionary<string, TokenType>()
     {
         { "НАЧАЛО", TokenType.Begin },
         { "ИСХОД", TokenType.End },
@@ -214,7 +214,7 @@ public class Lexer
             scanner.Advance();
         }
 
-        if (Keywords.TryGetValue(value.ToUpper(CultureInfo.InvariantCulture), out TokenType type))
+        if (Keywords.TryGetValue(value, out TokenType type))
         {
             return new Token(type);
         }

@@ -51,8 +51,8 @@ public class KeywordTests
                 new List<Token>
                 {
                     new(TokenType.Number),
-                    new(TokenType.IntegerType),
-                    new(TokenType.FloatType),
+                    new(TokenType.Identifier, new TokenValue("цес")),
+                    new(TokenType.Identifier, new TokenValue("дробь")),
                     new(TokenType.BooleanType),
                 }
             },
@@ -75,18 +75,18 @@ public class KeywordTests
                 "начало МОЛВИ исход",
                 new List<Token>
                 {
-                    new(TokenType.Begin),
+                    new(TokenType.Identifier, new TokenValue("начало")),
                     new(TokenType.Output),
-                    new(TokenType.End),
+                    new(TokenType.Identifier, new TokenValue("исход")),
                 }
             },
             {
                 "число слово булево",
                 new List<Token>
                 {
-                    new(TokenType.Number),
-                    new(TokenType.Word),
-                    new(TokenType.BooleanType),
+                    new(TokenType.Identifier, new TokenValue("число")),
+                    new(TokenType.Identifier, new TokenValue("слово")),
+                    new(TokenType.Identifier, new TokenValue("булево")),
                 }
             },
         };

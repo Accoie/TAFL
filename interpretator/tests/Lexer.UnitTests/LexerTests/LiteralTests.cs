@@ -130,7 +130,7 @@ public class LiteralTests
         return new TheoryData<string, List<Token>>
         {
             {
-                "истина ложь",
+                "ИСТИНА ЛОЖЬ",
                 new List<Token>
                 {
                     new(TokenType.True),

@@ -35,7 +35,7 @@ public class ProgramStructureTests
                 }
             },
             {
-                "начало МОЛВИ(\"test\"); исход",
+                "НАЧАЛО МОЛВИ(\"test\"); ИСХОД",
                 new List<Token>
                 {
                     new(TokenType.Begin),
@@ -63,7 +63,7 @@ public class ProgramStructureTests
         return new TheoryData<string, List<Token>>
         {
             {
-                "СЛОВО а; ЧИСЛО б : цес = 1,2,3;",
+                "СЛОВО а; ЧИСЛО б : ЦЕС = 1,2,3;",
                 new List<Token>
                 {
                     new(TokenType.Word),
@@ -83,7 +83,7 @@ public class ProgramStructureTests
                 }
             },
             {
-                "ЧИСЛО лета : цес = 25; ЧИСЛО пи : дробь = 3.14; СЛОВО имя = \"Владимир\"",
+                "ЧИСЛО лета : ЦЕС = 25; ЧИСЛО пи : ДРОБЬ = 3.14; СЛОВО имя = \"Владимир\"",
                 new List<Token>
                 {
                     new(TokenType.Number),
@@ -107,7 +107,7 @@ public class ProgramStructureTests
                 }
             },
             {
-                "число а = 5;",
+                "ЧИСЛО а = 5;",
                 new List<Token>
                 {
                     new(TokenType.Number),
@@ -196,7 +196,7 @@ public class ProgramStructureTests
                 }
             },
             {
-                "ПОКУДА (истина) ТВОРИ НАЧАЛО МОЛВИ(\"Бесконечный цикл\"); ВЫЙТИ; ИСХОД",
+                "ПОКУДА (ИСТИНА) ТВОРИ НАЧАЛО МОЛВИ(\"Бесконечный цикл\"); ВЫЙТИ; ИСХОД",
                 new List<Token>
                 {
                     new(TokenType.While),
@@ -233,7 +233,7 @@ public class ProgramStructureTests
             {
                 """
                 НАЧАЛО
-                    ЕЖЕЛИ (истина) СТАЛОБЫТЬ
+                    ЕЖЕЛИ (ИСТИНА) СТАЛОБЫТЬ
                         НАЧАЛО
                             МОЛВИ("внутренний блок");
                         ИСХОД
@@ -283,10 +283,10 @@ public class ProgramStructureTests
             {
                 """
                 НАЧАЛО
-                    ЧИСЛО а : цес = 10;
-                    ЧИСЛО б : дробь = 2.5;
+                    ЧИСЛО а : ЦЕС = 10;
+                    ЧИСЛО б : ДРОБЬ = 2.5;
                     СЛОВО текст = "результат: ";
-                    БУЛЕВО флаг = истина;
+                    БУЛЕВО флаг = ИСТИНА;
                     
                     ЕЖЕЛИ (флаг @ а > 5) СТАЛОБЫТЬ
                         МОЛВИ(текст, а + б * 2);
