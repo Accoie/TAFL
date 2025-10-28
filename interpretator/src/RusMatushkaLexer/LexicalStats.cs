@@ -1,4 +1,4 @@
-﻿namespace Lexer;
+﻿namespace RusMatushkaLexer;
 
 public static class LexicalStats
 {

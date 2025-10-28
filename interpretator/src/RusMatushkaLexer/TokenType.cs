@@ -41,6 +41,11 @@
     DivideSign,
 
     /// <summary>
+    ///  Оператор возведения в степень.
+    /// </summary>
+    ExponentiationSign,
+
+    /// <summary>
     /// Оператор деления по модулю.
     /// </summary>
     ModuloSign,

@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Lexer.UnitTests.LexicalStatsTest;
+namespace RusMatushkaLexer.UnitTests.LexicalStatsTest;
 
 public class LexicalStatsTests
 {

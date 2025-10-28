@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Lexer\Lexer.csproj" />
+    <ProjectReference Include="..\..\src\RusMatushkaLexer\RusMatushkaLexer.csproj" />
   </ItemGroup>
 
   <ItemGroup>

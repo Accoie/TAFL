@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace Lexer;
+﻿namespace RusMatushkaLexer;
 
 public class Lexer
 {
@@ -118,7 +116,9 @@ public class Lexer
             case '%':
                 scanner.Advance();
                 return new Token(TokenType.ModuloSign);
-
+            case '^':
+                scanner.Advance();
+                return new Token(TokenType.ExponentiationSign);
             case '=':
                 return ParseAssignOrEqualsOperator();
             case '!':

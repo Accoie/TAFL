@@ -1,4 +1,4 @@
-﻿namespace Lexer.UnitTests;
+﻿namespace RusMatushkaLexer.UnitTests;
 
 public static class LexerTest
 {
