@@ -74,11 +74,11 @@
 		(* Операторы            *)
 		(* ==================== *)
 
-			additive_operator = "+" | "-" ;  //бинарный
+			additive_operator = "+" | "-" ; 
 
 			multiplicative_operator = "*" | "/" | "%" ;
 
-			unary_operator = "+" | "-" ;     //унарный
+			unary_operator = "+" | "-" ; 
 
 
 		(* ==================== *)
