@@ -14,3 +14,9 @@ class Program
         Console.WriteLine("Square of circle: " + answer); 
     }
 }
+
+string GetString()
+{
+    string str = "df";
+    return str;
+}
