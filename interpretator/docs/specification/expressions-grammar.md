@@ -10,6 +10,10 @@
 
 - Бинарные арифметические операторы (+, -, *, /, %, ^)
 
+- Логические операторы ("@", "||", "!")
+
+- Операторы сравнения (==, !=, <, >, <=, >=)
+
 - Вызовы встроенных функций
 
 - Круглые скобки для группировки выражений
@@ -27,16 +31,38 @@
 | `%`		  | Остаток от деления		  |
 | `^`		  | Возведение в степень      |
 
+Логические операторы:
+
+| Символы     | Операция                  |
+|-------------|---------------------------|
+| `@`         | логическое "и"			  |
+| `||`        | логическое "или"		  |
+| `!`         | логическое отрицание	  |
+
+Операторы сравнения:
+
+| Символы     | Операция                  |
+|-------------|---------------------------|
+| `==`        | равно					  |
+| `!=`        | не равно				  |	
+| `<`         | меньше					  |
+| `>`         | больше					  |
+| `<=`        | меньше или равно		  |
+| `>=`        | больше или равно		  |
+
 ## Приоритет операторов
 
-|Приоритет (по убыванию)|	 Операторы			 |  Ассоциативность|
-|-----------------------|------------------------|-----------------|
-|6						|    Унарные +, -		 |  Правая		   |
-|5						|	^ (степень)			 |	Правая		   |	
-|4						|	*, /, %				 |	Левая		   |
-|3						|	+, - (бинарные)		 |	Левая		   |
-|2						|	Вызов функции		 |  Левая		   |
-|1						|	( ) (группировка)	 |  -			   |
+|Приоритет (1-й самый высокий)|	 Операторы			     |  Ассоциативность|
+|---------------------------- |------------------------  |-----------------|
+|9							  |  "||" (логическое ИЛИ)   |  Левая		   |
+|8							  |   @ (логическое И)		 |  Левая		   |
+|7							  |   ==, !=, <, >, <=, >=	 |  Левая		   |
+|6							  |	  бинарные + -			 |  Левая		   |
+|5							  |	  *, /, %				 |	Левая		   |
+|4							  |	  ^ (степень)			 |	Правая		   |	
+|3							  |   Унарные +, -			 |  Правая		   |
+|2							  |	  Вызов функции			 |  Левая		   |
+|1							  |	  ( ) (группировка)		 |  -			   |
 
 ## Встроенные функции
 
@@ -69,29 +95,44 @@
 
 ## Основные выражения 
 	```
-
 		(* ==================== *)
 		(* Операторы            *)
 		(* ==================== *)
 
-			additive_operator = "+" | "-" ;  //бинарный
+			logical_or_operator = "||" ;
+
+			logical_and_operator = "@" ;
+
+			comparison_operator = "==" | "!=" | "<" | ">" | "<=" | ">=" ;
+
+			additive_operator = "+" | "-" ;
 
 			multiplicative_operator = "*" | "/" | "%" ;
 
-			unary_operator = "+" | "-" ;     //унарный
+			unary_operator = "+" | "-" | "!" ;
+
+			exponentiation_operator = "^" ;
 
 
 		(* ==================== *)
 		(* Основные выражения   *)
 		(* ==================== *)
 
-			expression = term_expression, { additive_operator, term_expression } ;
+			expression = logical_or_expression ;
 
-			term_expression = factor_expression, { multiplicative_operator, factor_expression } ;
+			logical_or_expression = logical_and_expression, { logical_or_operator, logical_and_expression } ;
 
-			factor_expression = [ unary_operator ], exponentiation_expression ;
+			logical_and_expression = comparison_expression, { logical_and_operator, comparison_expression } ;
 
-			exponentiation_expression = primary_expression, [ "^", exponentiation_expression ] ;
+			comparison_expression = additive_expression, [ comparison_operator, additive_expression ] ;
+
+			additive_expression = term_expression, { additive_operator, term_expression } ;
+
+			term_expression = exponentiation_expression, { multiplicative_operator, exponentiation_expression } ;
+
+			exponentiation_expression = factor_expression, [ exponentiation_operator, exponentiation_expression ] ;
+
+			factor_expression = [ unary_operator ], primary_expression ;
 
 			primary_expression = number | function_call | "(", expression, ")" ;
 
