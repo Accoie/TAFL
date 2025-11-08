@@ -105,10 +105,6 @@
 		(* Операторы            *)
 		(* ==================== *)
 
-			logical_or_operator = "||" ;
-
-			logical_and_operator = "@" ;
-
 			comparison_operator = "==" | "!=" | "<" | ">" | "<=" | ">=" ;
 
 			additive_operator = "+" | "-" ;
@@ -124,11 +120,7 @@
 		(* Основные выражения   *)
 		(* ==================== *)
 
-			expression = logical_or_expression ;
-
-			logical_or_expression = logical_and_expression, { logical_or_operator, logical_and_expression } ;
-
-			logical_and_expression = comparison_expression, { logical_and_operator, comparison_expression } ;
+			expression = comparision_expression;
 
 			comparison_expression = additive_expression, [ comparison_operator, additive_expression ] ;
 
