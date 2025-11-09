@@ -33,14 +33,14 @@
 
 ## Приоритет операторов
 
-|Приоритет (1-й самый высокий)|	 Операторы			     |  Ассоциативность|
-|---------------------------- |------------------------  |-----------------|
-|6							  |	  бинарные + -			 |  Левая		   |
-|5							  |	  *, /, %				 |	Левая		   |
-|4							  |	  ^ (степень)			 |	Правая		   |	
-|3							  |   Унарные +, -			 |  Правая		   |
-|2							  |	  Вызов функции			 |  Левая		   |
-|1							  |	  ( ) (группировка)		 |  -			   |
+|Приоритет (по убыванию)|	 Операторы			 |  Ассоциативность|
+|-----------------------|------------------------|-----------------|
+|6						|    Унарные +, -		 |  Правая		   |
+|5						|	^ (степень)			 |	Правая		   |	
+|4						|	*, /, %				 |	Левая		   |
+|3						|	+, - (бинарные)		 |	Левая		   |
+|2						|	Вызов функции		 |  Левая		   |
+|1						|	( ) (группировка)	 |  -			   |
 
 ## Встроенные функции
 
@@ -73,32 +73,29 @@
 
 ## Основные выражения 
 	```
+
 		(* ==================== *)
 		(* Операторы            *)
 		(* ==================== *)
 
-			additive_operator = "+" | "-" ;
+			additive_operator = "+" | "-" ;  //бинарный
 
 			multiplicative_operator = "*" | "/" | "%" ;
 
-			unary_operator = "+" | "-" | "!" ;
-
-			exponentiation_operator = "^" ;
+			unary_operator = "+" | "-" ;     //унарный
 
 
 		(* ==================== *)
 		(* Основные выражения   *)
 		(* ==================== *)
 
-			expression = additive_expression;
+			expression = term_expression, { additive_operator, term_expression } ;
 
-			additive_expression = term_expression, { additive_operator, term_expression } ;
+			term_expression = factor_expression, { multiplicative_operator, factor_expression } ;
 
-			term_expression = exponentiation_expression, { multiplicative_operator, exponentiation_expression } ;
+			factor_expression = [ unary_operator ], exponentiation_expression ;
 
-			exponentiation_expression = factor_expression, [ exponentiation_operator, exponentiation_expression ] ;
-
-			factor_expression = [ unary_operator ], primary_expression ;
+			exponentiation_expression = primary_expression, [ "^", exponentiation_expression ] ;
 
 			primary_expression = number | function_call | "(", expression, ")" ;
 
