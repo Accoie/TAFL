@@ -1,4 +1,4 @@
-# GeometricMean
+﻿# GeometricMean
 ```
 Начало
 	число операнд1 : дробь = 25;

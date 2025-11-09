@@ -7,24 +7,11 @@
     число пи : дробь = 3.14;
     слово имя = "Владимир"
     
-    Ежели (лета >= 18) 
-    сталобыть
-        молви("Здорово, ", имя);
-    Ино
-        молви("Мир тебе, ", имя);
-
+    молви("Мир тебе, ", имя);
 
     Для счет от 1 до 10 
     Твори
         Молви("Счет: ", счет);
-    
-
-    Покуда (истина) 
-    Твори
-    начало
-        Молви("Бесконечный цикл");
-        Выйти;
-    исход
 Исход
 ```
 ## Ключевые особенности языка
@@ -58,9 +45,7 @@
 
     statement = variable_declaration
               | assignment_statement
-              | if_statement
               | for_statement
-              | while_statement
               | output_statement
               | input_statement
               | break_statement
@@ -76,20 +61,15 @@
 
     variable_declaration = "число", identifier, ":", type, [ "=", expression ], ";" 
                          | "слово", identifier, [ "=", expression ], ";" 
-                         | "булево", identifier, [ "=", expression ], ";" 
                          ;
 
-    type = "цес" | "дробь" | "слово" | "булево" ;
+    type = "цес" | "дробь" | "слово" ;
 
     (* ==================== *)
     (* Операторы управления *)
     (* ==================== *)
 
-    if_statement = "Ежели", "(", expression, ")", "сталобыть", statement, [ "Ино", statement ] ;
-
     for_statement = "Для", identifier, "от", expression, "до", expression, "Твори", statement ;
-
-    while_statement = "Покуда", "(", expression, ")", "Твори", statement ;
 
     (* ==================== *)
     (* Ввод-вывод          *)
