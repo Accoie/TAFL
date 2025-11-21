@@ -1,4 +1,6 @@
-﻿namespace RusMatushkaParser;
+﻿using Execution;
+
+namespace RusMatushkaParser;
 
 /// <summary>
 /// Выполняет синтаксический разбор.
@@ -6,18 +8,179 @@
 /// </summary>
 public class Parser
 {
+    private readonly Context context;
+    private readonly IEnvironment environment;
     private readonly TokenStream tokens;
 
-    private Parser(string text)
+    public Parser(Context context, IEnvironment environment, string code)
     {
-        tokens = new TokenStream(text);
+        this.context = context;
+        this.environment = environment;
+        tokens = new TokenStream(code);
     }
 
-    public static decimal EvaluateExpression(string code)
+    /// <summary>
+    /// Выполняет разбор выражения RusMatushka
+    /// Правило:
+    ///     program = "НАЧАЛО", { statement }, "ИСХОД".
+    /// </summary>
+    public void ParseProgram() // переделать чтобы блок ялвялся узлом ast.
     {
-        Parser p = new(code);
+        Match(TokenType.Begin);
+        context.PushScope(new Scope());
+        do
+        {
+            ParseStatement();
 
-        return p.ParseExpression();
+            if (tokens.Peek().Type == TokenType.Semicolon)
+            {
+                Match(TokenType.Semicolon);
+            }
+        }
+        while (tokens.Peek().Type != TokenType.EndOfFile);
+
+        if (context.GetScopesCount() != 0)
+        {
+            throw new ArgumentException("Program's scope is not closed");
+        }
+    }
+
+    /// <summary>
+    /// Разбирает инструкцию верхнего уровня.
+    /// Правило:
+    ///     statement = variable_declaration
+    ///        | assignment_statement
+    ///        | output_statement
+    ///        | input_statement
+    ///        | block .
+    ///
+    ///     block = "НАЧАЛО", { statement }, "ИСХОД".
+    /// </summary>
+    private void ParseStatement()
+    {
+        TokenType token = tokens.Peek().Type;
+
+        switch (token)
+        {
+            case TokenType.Identifier:
+                ParseAssign();
+                break;
+            case TokenType.Number:
+                Match(TokenType.Number);
+                ParseNumberVariable();
+                break;
+            case TokenType.Begin:
+                Match(TokenType.Begin);
+                context.PushScope(new Scope());
+                break;
+            case TokenType.End:
+                Match(TokenType.End);
+                context.PopScope();
+                break;
+            case TokenType.Input:
+                ParseInput();
+                break;
+            case TokenType.Output:
+                ParseOutput();
+                break;
+        }
+
+        if (token != TokenType.End && token != TokenType.Begin)
+        {
+            Match(TokenType.Semicolon);
+        }
+    }
+
+    /// <summary>
+    /// Разбирает инструкцию присвоения.
+    /// assignment_statement = identifier, "=", expression, ";".
+    /// </summary>
+    private void ParseAssign()
+    {
+        decimal value = 0;
+        string name = Match(TokenType.Identifier).Value!.ToString();
+
+        if (tokens.Peek().Type == TokenType.Assign)
+        {
+            tokens.Advance();
+            value = ParseExpression();
+        }
+
+        context.AssignVariable(name, value);
+    }
+
+    /// <summary>
+    /// Разбирает инструкцию вывода.
+    /// output_statement = "МОЛВИ", "(", argument_list, ")", ";".
+    /// </summary>
+    private void ParseOutput()
+    {
+        Match(TokenType.Output);
+        Match(TokenType.LParen);
+        WriteStringOrNumber();
+        while (tokens.Peek().Type == TokenType.Comma)
+        {
+            tokens.Advance();
+            WriteStringOrNumber();
+        }
+
+        Match(TokenType.RParen);
+        environment.WriteLine();
+    }
+
+    private void WriteStringOrNumber()
+    {
+        Token token = tokens.Peek();
+        if (token.Type == TokenType.StringLiteral)
+        {
+            environment.WriteString(token.Value.ToString());
+            tokens.Advance();
+        }
+        else
+        {
+            environment.WriteNumber(ParseExpression());
+        }
+    }
+
+    /// <summary>
+    /// Разбирает инструкцию ввода.
+    /// input_statement = "ВНЕМЛИ", "(", identifier, ")", ";".
+    /// </summary>
+    private void ParseInput()
+    {
+        Match(TokenType.Input);
+        Match(TokenType.LParen);
+
+        decimal number = environment.ReadNumber();
+        string name = tokens.Peek().Value!.ToString();
+        context.AssignVariable(name, number);
+        Match(TokenType.Identifier);
+        Match(TokenType.RParen);
+    }
+
+    /// <summary>
+    /// Разбирает объявление числовой переменной.
+    /// variable_declaration = "ЧИСЛО", identifier, ":", type, [ "=", expression ], ";".
+    /// type = "ДРОБЬ".
+    /// </summary>
+    private void ParseNumberVariable()
+    {
+        string name = Match(TokenType.Identifier).Value!.ToString();
+        Match(TokenType.Colon);
+        decimal? value = null;
+        switch (tokens.Peek().Type)
+        {
+            case TokenType.FloatType:
+                tokens.Advance();
+                if (tokens.Peek().Type == TokenType.Assign)
+                {
+                    tokens.Advance();
+                    value = ParseExpression();
+                }
+
+                context.DefineVariable(name, value);
+                break;
+        }
     }
 
     /// <summary>
@@ -162,8 +325,8 @@ public class Parser
     /// <summary>
     /// Разбирает первичное выражение: число, идентификатор или выражение в скобках.
     /// Правила:
-    ///     primary_expression = number | function_call | "(", expression, ")" ;
-    ///     number = integer | float ;.
+    ///     primary_expression = identifier | number | function_call | "(", expression, ")" ;
+    ///     number = float ;.
     /// </summary>
     private decimal ParsePrimaryExpression()
     {
@@ -175,7 +338,17 @@ public class Parser
                 tokens.Advance();
                 return t.Value!.ToDecimal();
             case TokenType.Identifier:
-                return ParseFunctionCall();
+                string name = tokens.Peek().Value!.ToString();
+                if (BuiltInFunctions.CheckBuiltInFunctions(name))
+                {
+                    return ParseFunctionCall();
+                }
+                else
+                {
+                    tokens.Advance();
+                    return context.TryGetValue(name);
+                }
+
             case TokenType.LParen:
                 {
                     tokens.Advance();
@@ -192,7 +365,7 @@ public class Parser
     /// <summary>
     /// Проверяет соответствие текущего токена ожидаемому типу и продвигает поток токенов.
     /// </summary>
-    private void Match(TokenType expected)
+    private Token Match(TokenType expected)
     {
         Token t = tokens.Peek();
         if (t.Type != expected)
@@ -201,5 +374,7 @@ public class Parser
         }
 
         tokens.Advance();
+
+        return t;
     }
 }

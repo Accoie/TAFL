@@ -1,13 +1,28 @@
-﻿namespace RusMatushkaParser.UnitTests;
+﻿using Execution;
+
+namespace RusMatushkaParser.UnitTests;
 
 public class ErrorHandlingTests
 {
+    private readonly FakeEnvironment environment;
+    private readonly Context context;
+
+    public ErrorHandlingTests()
+    {
+        environment = new FakeEnvironment();
+        context = new Context();
+    }
+
     [Theory]
     [MemberData(nameof(GetFalseExpressions))]
     public void Handle_False_Expressions(string expression)
     {
+        // Arrange
+        string code = $"НАЧАЛО МОЛВИ({expression}); ИСХОД";
+        Parser parser = new Parser(context, environment, code);
+
         // Act & Assert
-        Assert.Throws<UnexpectedLexemeException>(() => Parser.EvaluateExpression(expression));
+        Assert.Throws<UnexpectedLexemeException>(() => parser.ParseProgram());
     }
 
     public static TheoryData<string> GetFalseExpressions()
@@ -20,21 +35,6 @@ public class ErrorHandlingTests
             { "(2 + 3" },
             { "2 +" },
             { ".25" },
-        };
-    }
-
-    [Theory]
-    [MemberData(nameof(GetPositiveExpressions))]
-    public void Handle_Positive_Expressions(string expression)
-    {
-        // Act & Assert
-        Parser.EvaluateExpression(expression);
-    }
-
-    public static TheoryData<string> GetPositiveExpressions()
-    {
-        return new TheoryData<string>
-        {
             { "3.14.15" },
             { "2 + 3)" },
         };

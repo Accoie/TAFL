@@ -1,16 +1,31 @@
-﻿namespace RusMatushkaParser.UnitTests;
+﻿using Execution;
+
+namespace RusMatushkaParser.UnitTests;
 
 public class ComplexExpressionsTests
 {
+    private readonly FakeEnvironment environment;
+    private readonly Context context;
+
+    public ComplexExpressionsTests()
+    {
+        environment = new FakeEnvironment();
+        context = new Context();
+    }
+
     [Theory]
     [MemberData(nameof(GetComplexExpressionsData))]
     public void Handle_Complex_Expressions(string expression, decimal expected)
     {
-        // Arrange & Act
-        decimal actualResult = Parser.EvaluateExpression(expression);
+        // Arrange
+        string code = $"НАЧАЛО МОЛВИ({expression}); ИСХОД";
+        Parser parser = new Parser(context, environment, code);
+
+        // Act
+        parser.ParseProgram();
 
         // Assert
-        Assert.Equal(expected, actualResult);
+        Assert.Equal([expected], environment.Results);
     }
 
     public static TheoryData<string, decimal> GetComplexExpressionsData()

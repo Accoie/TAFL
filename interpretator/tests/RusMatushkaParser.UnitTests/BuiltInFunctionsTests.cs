@@ -1,16 +1,31 @@
+using Execution;
+
 namespace RusMatushkaParser.UnitTests;
 
 public class BuiltInFunctionsTests
 {
+    private readonly FakeEnvironment environment;
+    private readonly Context context;
+
+    public BuiltInFunctionsTests()
+    {
+        environment = new FakeEnvironment();
+        context = new Context();
+    }
+
     [Theory]
     [MemberData(nameof(GetBuiltInFunctionsData))]
     public void Can_Handle_Built_In_Functions(string expression, decimal expected)
     {
-        // Arrange & Act
-        decimal actualResult = Parser.EvaluateExpression(expression);
+        // Arrange
+        string code = $"ÍÀ×ÀËÎ ÌÎËÂÈ({expression}); ÈÑÕÎÄ";
+        Parser parser = new Parser(context, environment, code);
+
+        // Act
+        parser.ParseProgram();
 
         // Assert
-        Assert.Equal(expected, actualResult);
+        Assert.Equal([expected], environment.Results);
     }
 
     public static TheoryData<string, decimal> GetBuiltInFunctionsData()

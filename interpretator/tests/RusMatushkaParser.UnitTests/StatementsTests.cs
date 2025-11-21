@@ -1,0 +1,142 @@
+﻿using Execution;
+
+namespace RusMatushkaParser.UnitTests;
+
+public class StatementsTests
+{
+    private readonly FakeEnvironment environment;
+    private readonly Context context;
+
+    public StatementsTests()
+    {
+        environment = new FakeEnvironment();
+        context = new Context();
+    }
+
+    [Theory]
+    [MemberData(nameof(GetStatementsPositiveData))]
+    public void Can_Parse_Statements_With_Positive_Usage(string expression, string output, decimal[] expected)
+    {
+        // Arrange
+        string code = $"НАЧАЛО {expression} МОЛВИ({output}); ИСХОД";
+        Parser parser = CreateParser(code);
+
+        // Act
+        parser.ParseProgram();
+
+        // Assert
+        Assert.Equal(expected, environment.Results);
+    }
+
+    public static TheoryData<string, string, decimal[]> GetStatementsPositiveData()
+    {
+        return new TheoryData<string, string, decimal[]>
+        {
+            { "ЧИСЛО x : ДРОБЬ = 5; ЧИСЛО y : ДРОБЬ = 2; ЧИСЛО z : ДРОБЬ = степень(x, y);", "z", new decimal[] { 25m } }, // Разбор выражений с несколькими переменными
+            { "ЧИСЛО x : ДРОБЬ = 25; ЧИСЛО y : ДРОБЬ = 5; ЧИСЛО z : ДРОБЬ = x * y;", "z", new decimal[] { 125m } }, // Разбор выражений с несколькими переменными
+            { "ЧИСЛО x : ДРОБЬ = 25.5 * 2.0 / 2.0;", "x", new decimal[] { 25.5m } }, // Разбор инициализации переменной дробного типа
+            { "ЧИСЛО x : ДРОБЬ = -4.7;", "x", new decimal[] { -4.7m } }, // Разбор инициализации переменной дробного типа
+            { "ЧИСЛО y : ДРОБЬ; y = 555.8;", "y", new decimal[] { 555.8m } }, // Разбор присвоения переменной значения
+            { "ЧИСЛО x : ДРОБЬ; ВНЕМЛИ(x);", "x", new decimal[] { 10.0m } }, // Разбор потока ввода c неинициализированной переменной
+            { "ЧИСЛО x : ДРОБЬ = 10.2; ЧИСЛО y : ДРОБЬ = 12.2;", "x, y", new decimal[] { 10.2m, 12.2m } }, // Разбор потока вывода с двумя переменными
+        };
+    }
+
+    [Theory]
+    [MemberData(nameof(GetScopesData))]
+    public void Can_Parse_Scopes(string expression, decimal[] expected)
+    {
+        // Arrange
+        string code = $"НАЧАЛО {expression} ИСХОД";
+        Parser parser = CreateParser(code);
+
+        // Act
+        parser.ParseProgram();
+
+        // Assert
+        Assert.Equal(expected, environment.Results);
+    }
+
+    public static TheoryData<string, decimal[]> GetScopesData()
+    {
+        return new TheoryData<string, decimal[]>
+        {
+            { "ЧИСЛО x : ДРОБЬ = 25.5; НАЧАЛО ЧИСЛО y : ДРОБЬ = x; МОЛВИ(y); ИСХОД",  new decimal[] { 25.5m } }, // Разбор использования переменной, которая инициализирована в блоке выше
+        };
+    }
+
+    [Theory]
+    [MemberData(nameof(GetNegativeCasesData))]
+    public void Parse_Float_Variables_With_Negative_Cases(string expression, string output)
+    {
+        // Arrange
+        string code = $"НАЧАЛО {expression} МОЛВИ({output}); ИСХОД";
+        Parser parser = CreateParser(code);
+
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => parser.ParseProgram());
+    }
+
+    public static TheoryData<string, string> GetNegativeCasesData()
+    {
+        return new TheoryData<string, string>
+        {
+            { "ЧИСЛО x : ДРОБЬ = 25.5; НАЧАЛО ЧИСЛО x : ДРОБЬ; ИСХОД", "x" }, // Разбор объявления переменной, которая уже объявлена в блоке выше
+            { "ЧИСЛО x : ДРОБЬ;", "x" }, // Разбор потока вывода с неинициализированной переменной
+            { "ЧИСЛО x : ДРОБЬ; ЧИСЛО x : ДРОБЬ;", "x" }, // Разбор потока вывода
+            { "ЧИСЛО x : ДРОБЬ; ЧИСЛО y : ДРОБЬ = x;", "y" }, // Разбор потока вывода
+            { "НАЧАЛО ЧИСЛО x : ДРОБЬ = 25.5;", "x" }, // Разбор случая, когда нет ключевого слова 'ИСХОД'
+        };
+    }
+
+    [Theory]
+    [MemberData(nameof(GetUseVariableTestData))]
+    public void Can_Use_Variable_Which_Is_Not_Initialized(string expression)
+    {
+        // Arrange
+        string code = $"НАЧАЛО {expression} ИСХОД";
+        Parser parser = CreateParser(code);
+
+        // Act & Assert
+        Assert.Throws<VariableNotFoundException>(() => parser.ParseProgram());
+    }
+
+    public static TheoryData<string> GetUseVariableTestData()
+    {
+        return new TheoryData<string>
+        {
+            { "НАЧАЛО ЧИСЛО x : ДРОБЬ = 25.5; ИСХОД МОЛВИ(x);" }, // Разбор прекращения действия переменной за областью видимости
+            { "ВНЕМЛИ(x);" }, // Разбор потока ввода с несуществующей переменной
+            { "МОЛВИ(x)" }, // Разбор потока вывода с неинициализированной переменной
+        };
+    }
+
+    [Fact]
+    public void Can_Initialize_Float_With_String_Literal()
+    {
+        // Arrange
+        string code = "НАЧАЛО ЧИСЛО x : ДРОБЬ = \"dff\"; ИСХОД"; // Разбор инициализации переменной дробного типа строкой
+        Parser parser = CreateParser(code);
+
+        // Act & Assert
+        Assert.Throws<UnexpectedLexemeException>(() => parser.ParseProgram());
+    }
+
+    [Fact]
+    public void Can_Write_With_String_And_Numbers()
+    {
+        string code = "НАЧАЛО ЧИСЛО x : ДРОБЬ = 25.5; МОЛВИ(\"Числа: \", x, \", \", x); ИСХОД"; // Разбор потока вывода со строкой в начале и множеством чисел
+        StringWriter sw = new StringWriter();
+        Console.SetOut(sw);
+
+        Parser parser = new Parser(context, new ConsoleEnvironment(), code);
+        parser.ParseProgram();
+
+        Assert.Equal("Числа: 25.5, 25.5\r\n", sw.ToString());
+    }
+
+    private Parser CreateParser(string code)
+    {
+        return new Parser(context, environment, code);
+    }
+}

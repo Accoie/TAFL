@@ -1,13 +1,28 @@
-﻿namespace RusMatushkaParser.UnitTests;
+﻿using Execution;
+
+namespace RusMatushkaParser.UnitTests;
 
 public class ArithmeticOperationsTests
 {
+    private readonly FakeEnvironment environment;
+    private readonly Context context;
+
+    public ArithmeticOperationsTests()
+    {
+        environment = new FakeEnvironment();
+        context = new Context();
+    }
+
     [Theory]
     [MemberData(nameof(GetDivisionByZeroTestData))]
     public void Handle_Divide_By_Zero(string expression)
     {
+        // Arrange
+        string code = $"НАЧАЛО МОЛВИ({expression}); ИСХОД";
+        Parser parser = new Parser(context, environment, code);
+
         // Act & Assert
-        Assert.Throws<DivideByZeroException>(() => Parser.EvaluateExpression(expression));
+        Assert.Throws<DivideByZeroException>(() => parser.ParseProgram());
     }
 
     public static TheoryData<string> GetDivisionByZeroTestData()
@@ -23,11 +38,15 @@ public class ArithmeticOperationsTests
     [MemberData(nameof(GetArithmeticOperations))]
     public void Handle_Arithmetic_Operations(string expression, decimal expected)
     {
-        // Arrange & Act
-        decimal actualResult = Parser.EvaluateExpression(expression);
+        // Arrange
+        string code = $"НАЧАЛО МОЛВИ({expression}); ИСХОД";
+        Parser parser = new Parser(context, environment, code);
+
+        // Act
+        parser.ParseProgram();
 
         // Assert
-        Assert.Equal(expected, actualResult);
+        Assert.Equal([expected], environment.Results);
     }
 
     public static TheoryData<string, decimal> GetArithmeticOperations()
