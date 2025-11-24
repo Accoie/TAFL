@@ -26,7 +26,7 @@ public class LexicalStatsTests
     public void CollectFromFile_WithComplexProgram_ReturnsCorrectStats()
     {
         string testFile = "complex_program.txt";
-        string programCode = "НАЧАЛО\n    ЧИСЛО число1 = 42\n    ЧИСЛО число2 = 3.14\n    СЛОВО имя = \"Иван\"\n    БУЛЕВО флаг = ИСТИНА\n    \n    ЕЖЕЛИ число1 > 0 ТВОРИ\n        МОЛВИ( \"Положительное число: \"), число1;\n    ИНО\n        МОЛВИ(\"Отрицательное число\");\n    ИСХОД\n    \n    ДЛЯ i ОТ 1 ДО 10 ТВОРИ\n        ЕЖЕЛИ i % 2 == 0 ТВОРИ\n            ПРОДОЛЖИТЬ;\n        ИСХОД\n        МОЛВИ(i);\n    ИСХОД\nИСХОД";
+        string programCode = "НАЧАЛО\n    ЧИСЛО число1 = 42\n    ЧИСЛО число2 = 3.14\n    СЛОВО имя = \"Иван\"\n    БУЛЕВО флаг = ИСТИНА\n    \n    ЕСЛИ число1 > 0 ТВОРИ\n        МОЛВИ( \"Положительное число: \"), число1;\n    ИНО\n        МОЛВИ(\"Отрицательное число\");\n    ИСХОД\n    \n    ДЛЯ i ОТ 1 ДО 10 ТВОРИ\n        ЕСЛИ i % 2 == 0 ТВОРИ\n            ПРОДОЛЖИТЬ;\n        ИСХОД\n        МОЛВИ(i);\n    ИСХОД\nИСХОД";
 
         FileStream fileStream = CreateTempFile(testFile, programCode);
         string result = LexicalStats.CollectFromFile(testFile);
@@ -95,7 +95,7 @@ public class LexicalStatsTests
     public void CollectFromFile_WithBooleanLogic_ReturnsCorrectStats()
     {
         string testFile = "boolean.txt";
-        string programCode = "НАЧАЛО\n    БУЛЕВО a = ИСТИНА\n    БУЛЕВО b = ЛОЖЬ\n    ЕЖЕЛИ a @ b ТВОРИ\n        МОЛВИ \"Оба истинны\"\n    ИНО ЕЖЕЛИ a || b ТВОРИ\n        МОЛВИ \"Хотя бы один истинен\"\n    ИСХОД\nИСХОД";
+        string programCode = "НАЧАЛО\n    БУЛЕВО a = ИСТИНА\n    БУЛЕВО b = ЛОЖЬ\n    ЕСЛИ a @ b ТВОРИ\n        МОЛВИ \"Оба истинны\"\n    ИНО ЕСЛИ a || b ТВОРИ\n        МОЛВИ \"Хотя бы один истинен\"\n    ИСХОД\nИСХОД";
 
         FileStream fileStream = CreateTempFile(testFile, programCode);
         string result = LexicalStats.CollectFromFile(testFile);

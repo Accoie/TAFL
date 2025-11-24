@@ -26,7 +26,7 @@ public class KeywordTests
                 }
             },
             {
-                "ЕЖЕЛИ СТАЛОБЫТЬ ИНО",
+                "ЕСЛИ СТАЛОБЫТЬ ИНО",
                 new List<Token>
                 {
                     new(TokenType.If),

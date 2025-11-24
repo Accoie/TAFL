@@ -1,4 +1,4 @@
-﻿using Ast.Declarations;
+﻿using Ast.Statements;
 
 using RusMatushkaParser;
 
@@ -10,9 +10,16 @@ namespace Execution;
 public class Context
 {
     private readonly Stack<Scope> scopes = [];
-    private readonly Dictionary<string, FunctionDeclaration> functions = [];
+    private readonly Dictionary<string, FunctionDeclarationStatement> functions = [];
 
-    public bool IsInFunction { get; set; }
+    public bool InFunction { get; set; }
+
+    public bool InLoop { get; set; }
+
+    public bool ContinueEncountered { get; set; }
+
+    public bool BreakEncountered { get; set; }
+
     public bool ReturnEncountered { get; set; }
 
     public void PushScope(Scope scope)
@@ -73,9 +80,9 @@ public class Context
         scopes.Peek().TryDefineVariable(name, value);
     }
 
-    public FunctionDeclaration TryGetFunction(string name)
+    public FunctionDeclarationStatement TryGetFunction(string name)
     {
-        if (functions.TryGetValue(name, out FunctionDeclaration? function))
+        if (functions.TryGetValue(name, out FunctionDeclarationStatement? function))
         {
             return function;
         }
@@ -83,11 +90,11 @@ public class Context
         throw new ArgumentException($"Function '{name}' is not defined");
     }
 
-    public void DefineFunction(FunctionDeclaration function)
+    public void DefineFunction(FunctionDeclarationStatement function)
     {
         foreach (Scope s in scopes.Reverse())
         {
-            foreach ( string name in function.Parameters)
+            foreach (string name in function.Parameters)
             {
                 if (s.TryGetVariable(name, out decimal variable))
                 {
@@ -95,6 +102,7 @@ public class Context
                 }
             }
         }
+
         if (!functions.TryAdd(function.Name, function))
         {
             throw new ArgumentException($"Function '{function.Name}' is already defined");

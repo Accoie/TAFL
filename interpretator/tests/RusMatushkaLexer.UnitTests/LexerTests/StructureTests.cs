@@ -64,7 +64,7 @@ public class StructureTests
                 }
             },
             {
-                "ЕЖЕЛИ (условие) { МОЛВИ(\"test\"); }",
+                "ЕСЛИ (условие) { МОЛВИ(\"test\"); }",
                 new List<Token>
                 {
                     new(TokenType.If),

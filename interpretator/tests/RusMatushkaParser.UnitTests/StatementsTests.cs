@@ -88,7 +88,6 @@ public class StatementsTests
         };
     }
 
-
     [Fact]
     public void Parse_When_Block_Is_Not_Close()
     {
@@ -190,6 +189,164 @@ public class StatementsTests
             { "ФУНКЦИЯ sum(x):ДРОБЬ НАЧАЛО МОЛВИ(2); ИСХОД" }, // Разбор с параметром, у которого не указан тип
             { "ФУНКЦИЯ sum():ДРОБЬ НАЧАЛО ИСХОД" }, // Разбор без параметров (это должно быть ошибкой по условию)
             { "ЧИСЛО x:ДРОБЬ = 0; ФУНКЦИЯ sum(x: ДРОБЬ, y: ДРОБЬ):ДРОБЬ НАЧАЛО ДАРОВАТЬ x+y; ИСХОД" }, // Разбор с переменной, которая объявлена до функции
+        };
+    }
+
+    [Theory]
+    [MemberData(nameof(GetIfElsePositiveData))]
+    public void Can_Parse_IfElse_Statements_With_Positive_Usage(string expression, decimal[] expected)
+    {
+        // Arrange
+        string code = $"НАЧАЛО {expression} ИСХОД";
+        Parser parser = CreateParser(code);
+
+        // Act
+        parser.ParseProgram();
+
+        // Assert
+        Assert.Equal(expected, environment.Results);
+    }
+
+    public static TheoryData<string, decimal[]> GetIfElsePositiveData()
+    {
+        return new TheoryData<string, decimal[]>
+        {
+            { "ЧИСЛО x : ДРОБЬ = 3; ЕСЛИ (x == 3) СТАЛОБЫТЬ МОЛВИ(x);", new decimal[] { 3m } }, // Разбор условия
+            { "ЧИСЛО x : ДРОБЬ = 2; ЕСЛИ (x == 3) СТАЛОБЫТЬ x = 5; ИНО x = 3; МОЛВИ(x);", new decimal[] { 3m } }, // Разбор условия с else
+        };
+    }
+
+    [Theory]
+    [MemberData(nameof(GetIfElseNegativeData))]
+    public void Parse_IfElse_Statements_With_Negative_Cases(string expression)
+    {
+        // Arrange
+        string code = $"НАЧАЛО {expression} ИСХОД";
+        Parser parser = CreateParser(code);
+
+        // Act & Assert
+        Assert.ThrowsAny<Exception>(() => parser.ParseProgram());
+    }
+
+    public static TheoryData<string> GetIfElseNegativeData()
+    {
+        return new TheoryData<string>
+        {
+            { "ЧИСЛО x : ДРОБЬ = 2; ЕСЛИ(x) СТАЛОБЫТЬ МОЛВИ(x);" }, // Разбор инструкции условия, где условие не 0 или 1
+        };
+    }
+
+    [Theory]
+    [MemberData(nameof(GetWhileLoopPositiveData))]
+    public void Can_Parse_While_Loops_With_Positive_Usage(string expression, decimal[] expected)
+    {
+        // Arrange
+        string code = $"НАЧАЛО {expression} ИСХОД";
+        Parser parser = CreateParser(code);
+
+        // Act
+        parser.ParseProgram();
+
+        // Assert
+        Assert.Equal(expected, environment.Results);
+    }
+
+    public static TheoryData<string, decimal[]> GetWhileLoopPositiveData()
+    {
+        return new TheoryData<string, decimal[]>
+    {
+        {
+            "ЧИСЛО x:ДРОБЬ = 0; ПОКУДА(x <= 3) ТВОРИ x = x + 1; МОЛВИ(x);", new decimal[] { 4m }
+        }, // Разбор цикла
+        {
+            "ЧИСЛО x:ДРОБЬ = 0; ПОКУДА(1) ТВОРИ НАЧАЛО ЕСЛИ (x == 5) СТАЛОБЫТЬ ВЫЙТИ; x = x + 1; ИСХОД МОЛВИ(x);",
+            new decimal[] { 5m }
+        }, // Разбор break
+        {
+            "ЧИСЛО x:ДРОБЬ = 0; ПОКУДА(x < 6) ТВОРИ НАЧАЛО x = x + 1; ЕСЛИ (x % 2 == 0) СТАЛОБЫТЬ ПРОДОЛЖИТЬ;  МОЛВИ(x); ИСХОД",
+            new decimal[] { 1m, 3m, 5m }
+        }, // Разбор continue
+    };
+    }
+
+    [Theory]
+    [MemberData(nameof(GetWhileLoopNegativeData))]
+    public void Parse_While_Loops_With_Negative_Cases(string expression)
+    {
+        // Arrange
+        string code = $"НАЧАЛО {expression} ИСХОД";
+        Parser parser = CreateParser(code);
+
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => parser.ParseProgram());
+    }
+
+    public static TheoryData<string> GetWhileLoopNegativeData()
+    {
+        return new TheoryData<string>
+        {
+            { "ЧИСЛО x:ДРОБЬ = 0; ПОКУДА(x < 3) ТВОРИ x = x + 1; ВЫЙТИ; МОЛВИ(x);" }, // Разбор цикла с break вне цикла
+            { "ЧИСЛО x:ДРОБЬ = 0; ПОКУДА(x < 3) ТВОРИ x = x + 1; ПРОДОЛЖИТЬ; МОЛВИ(x);" }, // Разбор цикла с continue вне цикла
+        };
+    }
+
+    [Theory]
+    [MemberData(nameof(GetForLoopPositiveData))]
+    public void Can_Parse_For_Loops_With_Positive_Usage(string expression, decimal[] expected)
+    {
+        // Arrange
+        string code = $"НАЧАЛО {expression} ИСХОД";
+        Parser parser = CreateParser(code);
+
+        // Act
+        parser.ParseProgram();
+
+        // Assert
+        Assert.Equal(expected, environment.Results);
+    }
+
+    public static TheoryData<string, decimal[]> GetForLoopPositiveData()
+    {
+        return new TheoryData<string, decimal[]>
+    {
+        {
+            "ЧИСЛО x : ДРОБЬ; ДЛЯ i ОТ 1 ДО 5 ТВОРИ x = i; МОЛВИ(x);",
+            new decimal[] { 5m }
+        }, // Разбор цикла
+        {
+            "ДЛЯ i ОТ 5 ДО 1 ТВОРИ МОЛВИ(i);",
+            new decimal[] { 5m, 4m, 3m, 2m, 1m }
+        }, // Разбор цикла в обратном порядке
+        {
+            "ДЛЯ i ОТ 1 ДО 5 ТВОРИ НАЧАЛО ЕСЛИ (i == 3) СТАЛОБЫТЬ ВЫЙТИ; МОЛВИ(i); ИСХОД",
+            new decimal[] { 1m, 2m }
+        }, // Разбор цикла с break
+        {
+            "ДЛЯ i ОТ 1 ДО 5 ТВОРИ НАЧАЛО ЕСЛИ (i == 3) СТАЛОБЫТЬ ПРОДОЛЖИТЬ; МОЛВИ(i); ИСХОД",
+            new decimal[] { 1m, 2m, 4m, 5m }
+        }, // Разбор цикла с continue
+    };
+    }
+
+    [Theory]
+    [MemberData(nameof(GetForLoopNegativeData))]
+    public void Parse_For_Loops_With_Negative_Cases(string expression)
+    {
+        // Arrange
+        string code = $"НАЧАЛО {expression} ИСХОД";
+        Parser parser = CreateParser(code);
+
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => parser.ParseProgram());
+    }
+
+    public static TheoryData<string> GetForLoopNegativeData()
+    {
+        return new TheoryData<string>
+        {
+            { "ЧИСЛО x : ДРОБЬ; ДЛЯ i ОТ 1.1 ДО 5 ТВОРИ x = i; МОЛВИ(x);" }, // Разбор цикла, где счетчик дробное значение
+            { "ДЛЯ i ОТ 1 ДО 5 ТВОРИ МОЛВИ(i); ВЫЙТИ;" }, // Разбор цикла с break вне цикла
+            { "ЧИСЛО x : ДРОБЬ; ДЛЯ i ОТ 1 ДО 5 ТВОРИ x = i; ПРОДОЛЖИТЬ;" }, // Разбор цикла с continue вне цикла
         };
     }
 

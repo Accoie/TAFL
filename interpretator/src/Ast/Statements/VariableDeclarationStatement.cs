@@ -1,10 +1,10 @@
 ﻿using Ast.Expressions;
 
-namespace Ast.Declarations;
+namespace Ast.Statements;
 
-public sealed class VariableDeclaration : Declaration
+public sealed class VariableDeclarationStatement : Statement
 {
-    public VariableDeclaration(string name, Expression? value)
+    public VariableDeclarationStatement(string name, Expression? value)
     {
         Name = name;
         Value = value;

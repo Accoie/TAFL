@@ -1,36 +1,43 @@
-﻿using Ast.Declarations;
-using Ast.Expressions;
+﻿using Ast.Expressions;
 using Ast.Statements;
+
+using RusMatushkaParser;
 
 namespace Ast;
 
 public interface IAstVisitor
 {
-    public void Visit(BinaryOperationExpression e);
+    void Visit(BinaryOperationExpression e);
 
-    public void Visit(UnaryOperationExpression e);
+    void Visit(UnaryOperationExpression e);
 
-    public void Visit(LiteralExpression e);
+    void Visit(LiteralExpression e);
 
-    public void Visit(VariableExpression e);
+    void Visit(VariableExpression e);
 
-    public void Visit(FunctionCallExpression s );
+    void Visit(FunctionCallExpression s);
 
     void Visit(AssignmentStatement s);
 
-    public void Visit(IfElseStatement s);
+    void Visit(IfElseStatement s);
 
-    public void Visit(ForLoopStatement s);
+    void Visit(ForLoopStatement s);
 
-    public void Visit(InputStatement s);
+    void Visit(InputStatement s);
 
-    public void Visit(OutputStatement s);
+    void Visit(OutputStatement s);
 
-    public void Visit(BlockStatement s);
+    void Visit(BlockStatement s);
 
     void Visit(ReturnStatement s);
 
-    public void Visit(VariableDeclaration d);
+    void Visit(VariableDeclarationStatement s);
 
-    public void Visit(FunctionDeclaration d);
+    void Visit(FunctionDeclarationStatement s);
+
+    void Visit(WhileLoopStatement whileLoopStatement);
+
+    void Visit(BreakStatement breakStatement);
+
+    void Visit(ContinueStatement continueStatement);
 }

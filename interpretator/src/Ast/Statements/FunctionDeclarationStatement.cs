@@ -1,11 +1,10 @@
 ﻿using Ast.Expressions;
-using Ast.Statements;
 
-namespace Ast.Declarations;
+namespace Ast.Statements;
 
-public sealed class FunctionDeclaration : Declaration
+public sealed class FunctionDeclarationStatement : Statement
 {
-    public FunctionDeclaration(string name, List<string> parameters, BlockStatement body)
+    public FunctionDeclarationStatement(string name, List<string> parameters, BlockStatement body)
     {
         Name = name;
         Parameters = parameters;

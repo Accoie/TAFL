@@ -8,14 +8,12 @@ public sealed class ForLoopStatement : Statement
         string iteratorName,
         Expression startValue,
         Expression endCondition,
-        Expression? stepValue,
-        Expression body
+        Statement body
     )
     {
         IteratorName = iteratorName;
         StartValue = startValue;
         EndCondition = endCondition;
-        StepValue = stepValue;
         Body = body;
     }
 
@@ -25,9 +23,7 @@ public sealed class ForLoopStatement : Statement
 
     public Expression EndCondition { get; }
 
-    public Expression? StepValue { get; }
-
-    public Expression Body { get; }
+    public Statement Body { get; }
 
     public override void Accept(IAstVisitor visitor)
     {

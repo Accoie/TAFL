@@ -14,7 +14,7 @@ public class Lexer
         { "ДРОБЬ", TokenType.FloatType },
         { "СЛОВО", TokenType.Word },
         { "БУЛЕВО", TokenType.BooleanType },
-        { "ЕЖЕЛИ", TokenType.If },
+        { "ЕСЛИ", TokenType.If },
         { "СТАЛОБЫТЬ", TokenType.Then },
         { "ИНО", TokenType.Else },
         { "ДЛЯ", TokenType.For },

@@ -2,12 +2,12 @@
 
 public class BlockStatement : Statement
 {
-    public BlockStatement(List<AstNode> statements)
+    public BlockStatement(List<Statement> statements)
     {
         Statements = statements;
     }
 
-    public List<AstNode> Statements { get; }
+    public List<Statement> Statements { get; }
 
     public override void Accept(IAstVisitor visitor)
     {
