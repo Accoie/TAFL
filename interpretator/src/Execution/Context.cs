@@ -1,4 +1,6 @@
-﻿using RusMatushkaParser;
+﻿using Ast.Declarations;
+
+using RusMatushkaParser;
 
 namespace Execution;
 
@@ -8,6 +10,10 @@ namespace Execution;
 public class Context
 {
     private readonly Stack<Scope> scopes = [];
+    private readonly Dictionary<string, FunctionDeclaration> functions = [];
+
+    public bool IsInFunction { get; set; }
+    public bool ReturnEncountered { get; set; }
 
     public void PushScope(Scope scope)
     {
@@ -65,6 +71,34 @@ public class Context
         }
 
         scopes.Peek().TryDefineVariable(name, value);
+    }
+
+    public FunctionDeclaration TryGetFunction(string name)
+    {
+        if (functions.TryGetValue(name, out FunctionDeclaration? function))
+        {
+            return function;
+        }
+
+        throw new ArgumentException($"Function '{name}' is not defined");
+    }
+
+    public void DefineFunction(FunctionDeclaration function)
+    {
+        foreach (Scope s in scopes.Reverse())
+        {
+            foreach ( string name in function.Parameters)
+            {
+                if (s.TryGetVariable(name, out decimal variable))
+                {
+                    throw new ArgumentException("Parameter in function is already defined");
+                }
+            }
+        }
+        if (!functions.TryAdd(function.Name, function))
+        {
+            throw new ArgumentException($"Function '{function.Name}' is already defined");
+        }
     }
 
     private decimal? GetValue(string name)

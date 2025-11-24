@@ -85,8 +85,19 @@ public class StatementsTests
             { "ЧИСЛО x : ДРОБЬ;", "x" }, // Разбор потока вывода с неинициализированной переменной
             { "ЧИСЛО x : ДРОБЬ; ЧИСЛО x : ДРОБЬ;", "x" }, // Разбор потока вывода
             { "ЧИСЛО x : ДРОБЬ; ЧИСЛО y : ДРОБЬ = x;", "y" }, // Разбор потока вывода
-            { "НАЧАЛО ЧИСЛО x : ДРОБЬ = 25.5;", "x" }, // Разбор случая, когда нет ключевого слова 'ИСХОД'
         };
+    }
+
+
+    [Fact]
+    public void Parse_When_Block_Is_Not_Close()
+    {
+        // Arrange
+        string code = "НАЧАЛО\"НАЧАЛО ЧИСЛО x : ДРОБЬ = 25.5;\" ИСХОД";  // Разбор случая, когда нет ключевого слова 'ИСХОД'
+        Parser parser = CreateParser(code);
+
+        // Act & Assert
+        Assert.Throws<UnexpectedLexemeException>(() => parser.ParseProgram());
     }
 
     [Theory]
@@ -107,7 +118,7 @@ public class StatementsTests
         {
             { "НАЧАЛО ЧИСЛО x : ДРОБЬ = 25.5; ИСХОД МОЛВИ(x);" }, // Разбор прекращения действия переменной за областью видимости
             { "ВНЕМЛИ(x);" }, // Разбор потока ввода с несуществующей переменной
-            { "МОЛВИ(x)" }, // Разбор потока вывода с неинициализированной переменной
+            { "МОЛВИ(x);" }, // Разбор потока вывода с неинициализированной переменной
         };
     }
 
@@ -133,6 +144,53 @@ public class StatementsTests
         parser.ParseProgram();
 
         Assert.Equal("Числа: 25.5, 25.5\r\n", sw.ToString());
+    }
+
+    [Theory]
+    [MemberData(nameof(GetFunctionDeclarationPositiveData))]
+    public void Can_Parse_Function_Declarations_With_Positive_Usage(string functionCode, string callCode, decimal[] expected)
+    {
+        // Arrange
+        string code = $"НАЧАЛО {functionCode} {callCode} ИСХОД";
+        Parser parser = CreateParser(code);
+
+        // Act
+        parser.ParseProgram();
+
+        // Assert
+        Assert.Equal(expected, environment.Results);
+    }
+
+    public static TheoryData<string, string, decimal[]> GetFunctionDeclarationPositiveData()
+    {
+        return new TheoryData<string, string, decimal[]>
+        {
+            { "ФУНКЦИЯ sum(x: ДРОБЬ, y: ДРОБЬ):ДРОБЬ НАЧАЛО ДАРОВАТЬ x+y; ИСХОД", "МОЛВИ(sum(3, 4));", new decimal[] { 7m } }, // Разбор с параметрами и возвратом вычисленного значения
+            { "ФУНКЦИЯ sum(x: ДРОБЬ, y: ДРОБЬ):ДРОБЬ НАЧАЛО ДАРОВАТЬ x+y; МОЛВИ(55); ИСХОД", "МОЛВИ(sum(3, 4));", new decimal[] { 7m } }, // Разбор с параметрами и возвратом вычисленного значения
+        };
+    }
+
+    [Theory]
+    [MemberData(nameof(GetFunctionDeclarationNegativeData))]
+    public void Parse_Function_Declarations_With_Negative_Cases(string functionCode)
+    {
+        // Arrange
+        string code = $"НАЧАЛО {functionCode} ИСХОД";
+        Parser parser = CreateParser(code);
+
+        // Act & Assert
+        Assert.ThrowsAny<Exception>(() => parser.ParseProgram());
+    }
+
+    public static TheoryData<string> GetFunctionDeclarationNegativeData()
+    {
+        return new TheoryData<string>
+        {
+            { "ФУНКЦИЯ sum(x: ДРОБЬ) НАЧАЛО ИСХОД" }, // Разбор без типа возвращаемого значения
+            { "ФУНКЦИЯ sum(x):ДРОБЬ НАЧАЛО МОЛВИ(2); ИСХОД" }, // Разбор с параметром, у которого не указан тип
+            { "ФУНКЦИЯ sum():ДРОБЬ НАЧАЛО ИСХОД" }, // Разбор без параметров (это должно быть ошибкой по условию)
+            { "ЧИСЛО x:ДРОБЬ = 0; ФУНКЦИЯ sum(x: ДРОБЬ, y: ДРОБЬ):ДРОБЬ НАЧАЛО ДАРОВАТЬ x+y; ИСХОД" }, // Разбор с переменной, которая объявлена до функции
+        };
     }
 
     private Parser CreateParser(string code)

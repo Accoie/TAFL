@@ -6,9 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Ast\Ast.csproj" />
-    <ProjectReference Include="..\RusMatushkaLexer\RusMatushkaLexer.csproj" />
-  </ItemGroup>
-
 </Project>

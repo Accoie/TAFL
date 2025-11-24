@@ -30,6 +30,7 @@ public class Lexer
         { "ВЫЙТИ", TokenType.Break },
         { "ПРОДОЛЖИТЬ", TokenType.Continue },
         { "ДАРОВАТЬ", TokenType.Return },
+        { "ФУНКЦИЯ", TokenType.Function },
     };
 
     public Lexer(IScanner scanner)
