@@ -315,13 +315,13 @@ public class Parser
         Expression condition = ParseExpression();
         Match(TokenType.RParen);
         Match(TokenType.Then);
-        Statement thenBranch = ParseStatement();
-        Statement? elseBranch = null;
+        BlockStatement thenBranch = ParseBlock();
+        BlockStatement? elseBranch = null;
 
         if (tokens.Peek().Type == TokenType.Else)
         {
             tokens.Advance();
-            elseBranch = ParseStatement();
+            elseBranch = ParseBlock();
         }
 
         return new IfElseStatement(condition, thenBranch, elseBranch);
