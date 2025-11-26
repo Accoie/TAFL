@@ -166,7 +166,7 @@
 		(* Литералы             *)
 		(* ==================== *)
 			
-		literal = number | string_literal | boolean_literal ;
+		literal = number | string_literal ;
 
 		number = integer | float ;
 
@@ -176,8 +176,6 @@
 			  | ".", digit, { digit } ;
 
 		string_literal = '"', { character }, '"' ;
-
-		boolean_literal = "истина" | "ложь" ;
 
 		(* ==================== *)
 		(* Базовые элементы     *)
