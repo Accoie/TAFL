@@ -17,21 +17,21 @@ namespace Interpreter.Specs.Features
     
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class МножественныеОперацииFeature : object, global::Xunit.IClassFixture<МножественныеОперацииFeature.FixtureData>, global::Xunit.IAsyncLifetime
+    public partial class РаботаПользовательскихФункцийFeature : object, global::Xunit.IClassFixture<РаботаПользовательскихФункцийFeature.FixtureData>, global::Xunit.IAsyncLifetime
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("ru-RU"), "Features", "Множественные операции", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("ru-RU"), "Features", "Работа пользовательских функций", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
         private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
-#line 1 "GeometricMean.feature"
+#line 1 "IsPrime.feature"
 #line hidden
         
-        public МножественныеОперацииFeature(МножественныеОперацииFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public РаботаПользовательскихФункцийFeature(РаботаПользовательскихФункцийFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
         }
@@ -105,7 +105,7 @@ namespace Interpreter.Specs.Features
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/GeometricMean.feature.ndjson", 3);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/IsPrime.feature.ndjson", 3);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -133,15 +133,15 @@ namespace Interpreter.Specs.Features
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="вычисление среднего геометрического")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Множественные операции")]
-        [global::Xunit.TraitAttribute("Description", "вычисление среднего геометрического")]
-        public async global::System.Threading.Tasks.Task ВычислениеСреднегоГеометрического()
+        [global::Xunit.SkippableFactAttribute(DisplayName="проверка числа на простоту с помощью функции")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Работа пользовательских функций")]
+        [global::Xunit.TraitAttribute("Description", "проверка числа на простоту с помощью функции")]
+        public async global::System.Threading.Tasks.Task ПроверкаЧислаНаПростотуСПомощьюФункции()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("вычисление среднего геометрического", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("проверка числа на простоту с помощью функции", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 3
@@ -154,22 +154,58 @@ namespace Interpreter.Specs.Features
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
                             "Value"});
-                table4.AddRow(new string[] {
-                            "25"});
-                table4.AddRow(new string[] {
-                            "30"});
-#line 4
-       await testRunner.WhenAsync("я ввожу в консоли:", ((string)(null)), table4, "Когда ");
+                table5.AddRow(new string[] {
+                            "17"});
+#line 5
+       await testRunner.WhenAsync("я ввожу в консоли:", ((string)(null)), table5, "Когда ");
 #line hidden
-#line 8
-        await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n ЧИСЛО операнд1 : ДРОБЬ;\r\n    ВНЕМЛИ(операнд1);\r\n ЧИСЛО операнд2 : ДРОБЬ;" +
-                        "\r\n    ВНЕМЛИ(операнд2);\r\n ЧИСЛО сред_геометрич : ДРОБЬ = (операнд1 * операнд2)^0" +
-                        ".5;\r\n МОЛВИ(\"Среднее геометрическое: \", сред_геометрич);\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
+#line 9
+        await testRunner.WhenAsync("я выполняю программу:", @"НАЧАЛО
+    ФУНКЦИЯ простоЛи(н: ДРОБЬ) : ДРОБЬ
+    НАЧАЛО
+        ЕСЛИ (н <= 1) 
+        СТАЛОБЫТЬ 
+            ДАРОВАТЬ 0;
+
+        ЕСЛИ (н == 2) 
+        СТАЛОБЫТЬ 
+            ДАРОВАТЬ 1;
+
+        ЕСЛИ (н % 2 == 0) 
+        СТАЛОБЫТЬ 
+            ДАРОВАТЬ 0;
+
+        ЧИСЛО делитель : ДРОБЬ = 3;
+        ПОКУДА (делитель * делитель <= н) 
+        ТВОРИ 
+            НАЧАЛО
+                ЕСЛИ (н % делитель == 0) 
+                СТАЛОБЫТЬ 
+                    ДАРОВАТЬ 0;
+
+                делитель = делитель + 2;
+            ИСХОД
+
+        ДАРОВАТЬ 1;
+    ИСХОД
+
+    ЧИСЛО n : ДРОБЬ;
+    МОЛВИ(""Введите число для проверки на простоту: "");
+    ВНЕМЛИ(n);
+
+    ЧИСЛО результат1 : ДРОБЬ = простоЛи(n);
+
+    ЕСЛИ (результат1 == 1) 
+    СТАЛОБЫТЬ 
+        МОЛВИ(""Число "", n, "" простое (метод 1)"");
+    ИНО
+        МОЛВИ(""Число "", n, "" составное (метод 1)"");
+ИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 20
-       await testRunner.ThenAsync("я получаю результаты:", "Среднее геометрическое: 27,39", ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 54
+       await testRunner.ThenAsync("я получаю результаты:", "Введите число для проверки на простоту: \r\nЧисло 17 простое (метод 1)", ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -182,12 +218,12 @@ namespace Interpreter.Specs.Features
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
             {
-                await МножественныеОперацииFeature.FeatureSetupAsync();
+                await РаботаПользовательскихФункцийFeature.FeatureSetupAsync();
             }
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.DisposeAsync()
             {
-                await МножественныеОперацииFeature.FeatureTearDownAsync();
+                await РаботаПользовательскихФункцийFeature.FeatureTearDownAsync();
             }
         }
     }

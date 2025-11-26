@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-using Ast;
+﻿using Ast;
 using Ast.Expressions;
 using Ast.Statements;
 
@@ -166,8 +164,11 @@ public class AstEvaluator : IAstVisitor
         s.Condition.Accept(this);
 
         decimal conditionValue = values.Pop();
+
         CheckForLogical(conditionValue);
+
         bool isTrueCondition = !Numbers.AreEqual(0.0m, conditionValue);
+
         if (isTrueCondition)
         {
             s.ThenBranch.Accept(this);
@@ -181,52 +182,14 @@ public class AstEvaluator : IAstVisitor
     public void Visit(ForLoopStatement e)
     {
         context.PushScope(new Scope());
-        context.InLoop = true;
+        context.ChangeInLoopInLastScope();
         try
         {
-            e.StartValue.Accept(this);
-            decimal startValue = values.Pop();
-            CheckIsInteger(startValue);
-
-            e.EndCondition.Accept(this);
-            decimal endCondition = values.Pop();
-            CheckIsInteger(endCondition);
-
-            decimal stepValue = (startValue <= endCondition) ? 1.0m : -1.0m;
-            decimal iteratorValue = startValue;
-
-            context.DefineVariable(e.IteratorName, iteratorValue);
-
-            while (true)
-            {
-                e.Body.Accept(this);
-
-                if (context.BreakEncountered)
-                {
-                    context.BreakEncountered = false;
-                    break;
-                }
-
-                if (context.ContinueEncountered)
-                {
-                    context.ContinueEncountered = false;
-                }
-
-                if (Numbers.AreEqual(iteratorValue, endCondition))
-                {
-                    break;
-                }
-
-                iteratorValue += stepValue;
-                context.AssignVariable(e.IteratorName, iteratorValue);
-            }
+            ExecuteForLoop(e);
         }
         finally
         {
             context.PopScope();
-            context.InLoop = false;
-            context.BreakEncountered = false;
-            context.ContinueEncountered = false;
         }
     }
 
@@ -275,65 +238,65 @@ public class AstEvaluator : IAstVisitor
 
     public void Visit(BlockStatement s)
     {
-        context.PushScope(new Scope());
-
         foreach (AstNode b in s.Statements)
         {
+            if (context.GetReturnInLastScope() && context.GetInFunctionInLastScope())
+            {
+                break;
+            }
+
+            if (context.GetContinueInLastScope() && context.GetInLoopInLastScope())
+            {
+                continue;
+            }
+
+            if (context.GetBreakInLastScope() && context.GetInLoopInLastScope())
+            {
+                break;
+            }
+
             b.Accept(this);
-
-            if (context.ReturnEncountered && context.InFunction)
-            {
-                break;
-            }
-
-            if (context.ContinueEncountered || context.BreakEncountered)
-            {
-                break;
-            }
         }
-
-        context.PopScope();
     }
 
     public void Visit(ReturnStatement s)
     {
-        if (!context.InFunction)
+        if (!context.GetInFunctionInLastScope())
         {
             throw new ArgumentException("'Return' can't be out of function");
         }
 
         s.Value.Accept(this);
 
-        context.ReturnEncountered = true;
+        context.ChangeReturnInLastScope();
     }
 
     public void Visit(BreakStatement breakStatement)
     {
-        if (!context.InLoop)
+        if (!context.GetInLoopInLastScope())
         {
             throw new ArgumentException("'Break' can't be out of loop");
         }
 
-        context.BreakEncountered = true;
+        context.ChangeBreakInLastScope();
     }
 
     public void Visit(ContinueStatement continueStatement)
     {
-        if (!context.InLoop)
+        if (!context.GetInLoopInLastScope())
         {
             throw new ArgumentException("'Continue' can't be out of loop");
         }
 
-        context.ContinueEncountered = true;
+        context.ChangeContinueInLastScope();
     }
 
     public void Visit(WhileLoopStatement whileLoopStatement)
     {
-        context.InLoop = true;
-
         while (true)
         {
             context.PushScope(new Scope());
+            context.ChangeInLoopInLastScope();
             whileLoopStatement.Condition.Accept(this);
             decimal conditionValue = values.Pop();
 
@@ -345,26 +308,71 @@ public class AstEvaluator : IAstVisitor
 
             whileLoopStatement.Body.Accept(this);
 
-            if (context.BreakEncountered)
+            if (context.GetBreakInLastScope())
             {
                 context.PopScope();
-                context.BreakEncountered = false;
+                context.ChangeBreakInLastScope();
                 break;
             }
 
-            if (context.ContinueEncountered)
+            if (context.GetContinueInLastScope() )
             {
                 context.PopScope();
-                context.ContinueEncountered = false;
+                context.ChangeContinueInLastScope();
                 continue;
             }
 
             context.PopScope();
         }
+    }
 
-        context.ContinueEncountered = false;
-        context.BreakEncountered = false;
-        context.InLoop = false;
+    private void ExecuteForLoop(ForLoopStatement e)
+    {
+        e.StartValue.Accept(this);
+        decimal startValue = values.Pop();
+        CheckIsInteger(startValue);
+
+        e.EndCondition.Accept(this);
+        decimal endCondition = values.Pop();
+        CheckIsInteger(endCondition);
+
+        ExecuteForLoopIterations(e, startValue, endCondition);
+    }
+
+    private void ExecuteForLoopIterations(ForLoopStatement e, decimal startValue, decimal endCondition)
+    {
+        decimal stepValue = (startValue <= endCondition) ? 1.0m : -1.0m;
+        decimal iteratorValue = startValue;
+
+        context.DefineVariable(e.IteratorName, iteratorValue);
+
+        context.PushScope(new Scope());
+        context.ChangeInLoopInLastScope();
+        while (true)
+        {
+            e.Body.Accept(this);
+
+            if (context.GetBreakInLastScope())
+            {
+                context.ChangeBreakInLastScope();
+                break;
+            }
+
+            if (context.GetContinueInLastScope())
+            {
+                context.ChangeContinueInLastScope();
+            }
+
+            if (Numbers.AreEqual(iteratorValue, endCondition))
+            {
+                break;
+            }
+
+            iteratorValue += stepValue;
+            context.AssignVariable(e.IteratorName, iteratorValue);
+        }
+
+        context.PopScope();
     }
 
     private void ExecuteBuiltInFunction(FunctionCallExpression e)
@@ -391,10 +399,6 @@ public class AstEvaluator : IAstVisitor
     {
         FunctionDeclarationStatement function = context.TryGetFunction(e.Name);
 
-        bool previousReturnState = context.ReturnEncountered;
-        context.ReturnEncountered = false;
-        context.InFunction = true;
-
         foreach (Expression argument in e.Arguments)
         {
             argument.Accept(this);
@@ -402,22 +406,21 @@ public class AstEvaluator : IAstVisitor
 
         context.PushScope(new Scope());
 
+        context.ChangeInFunctionInLastScope();
+
         foreach (string name in Enumerable.Reverse(function.Parameters))
         {
-            context.DefineVariable(name, values.Pop());
+            context.DefineFunctionParameter(name, values.Pop());
         }
 
         function.Body.Accept(this);
 
-        if (!context.ReturnEncountered)
+        if (!context.GetReturnInLastScope())
         {
             throw new InvalidOperationException($"Function '{e.Name}' must return a value");
         }
 
         context.PopScope();
-
-        context.ReturnEncountered = previousReturnState;
-        context.InFunction = false;
     }
 
     private void CheckIsInteger(decimal d)

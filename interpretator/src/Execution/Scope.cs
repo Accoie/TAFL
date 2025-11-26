@@ -4,6 +4,16 @@ public class Scope
 {
     private readonly Dictionary<string, decimal?> variables = [];
 
+    public bool InFunction { get; set; }
+
+    public bool InLoop { get; set; }
+
+    public bool ReturnState { get; set; }
+
+    public bool ContinueState { get; set; }
+
+    public bool BreakState { get; set; }
+
     /// <summary>
     /// Читает переменную из этой области видимости.
     /// Возвращает false, если переменная не объявлена в этой области видимости.

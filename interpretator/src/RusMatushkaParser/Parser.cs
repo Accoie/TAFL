@@ -29,8 +29,9 @@ public class Parser
     /// </summary>
     public void ParseProgram()
     {
+        context.PushScope(new Scope());
         evaluator.Visit(ParseBlock());
-
+        context.PopScope();
         if (context.GetScopesCount() != 0)
         {
             throw new ArgumentException("Program's scope is not closed");
@@ -265,7 +266,7 @@ public class Parser
         List<string> parameters = ParseParameterList();
         if (parameters.Count == 0)
         {
-            throw new ArgumentException("Ur function needs at least 1 parameter");
+            throw new ArgumentException("Function needs at least 1 parameter");
         }
 
         Match(TokenType.RParen);

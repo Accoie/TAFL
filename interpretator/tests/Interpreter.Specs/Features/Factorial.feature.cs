@@ -17,21 +17,21 @@ namespace Interpreter.Specs.Features
     
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class МножественныеОперацииFeature : object, global::Xunit.IClassFixture<МножественныеОперацииFeature.FixtureData>, global::Xunit.IAsyncLifetime
+    public partial class ИспользованиеЦиклаFeature : object, global::Xunit.IClassFixture<ИспользованиеЦиклаFeature.FixtureData>, global::Xunit.IAsyncLifetime
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("ru-RU"), "Features", "Множественные операции", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("ru-RU"), "Features", "Использование цикла", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
         private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
-#line 1 "GeometricMean.feature"
+#line 1 "Factorial.feature"
 #line hidden
         
-        public МножественныеОперацииFeature(МножественныеОперацииFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public ИспользованиеЦиклаFeature(ИспользованиеЦиклаFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
         }
@@ -105,7 +105,7 @@ namespace Interpreter.Specs.Features
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/GeometricMean.feature.ndjson", 3);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Factorial.feature.ndjson", 3);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -133,15 +133,15 @@ namespace Interpreter.Specs.Features
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="вычисление среднего геометрического")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Множественные операции")]
-        [global::Xunit.TraitAttribute("Description", "вычисление среднего геометрического")]
-        public async global::System.Threading.Tasks.Task ВычислениеСреднегоГеометрического()
+        [global::Xunit.SkippableFactAttribute(DisplayName="вычисление факториала числа")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Использование цикла")]
+        [global::Xunit.TraitAttribute("Description", "вычисление факториала числа")]
+        public async global::System.Threading.Tasks.Task ВычислениеФакториалаЧисла()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("вычисление среднего геометрического", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("вычисление факториала числа", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 3
@@ -154,22 +154,30 @@ namespace Interpreter.Specs.Features
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
                             "Value"});
-                table4.AddRow(new string[] {
-                            "25"});
-                table4.AddRow(new string[] {
-                            "30"});
-#line 4
-       await testRunner.WhenAsync("я ввожу в консоли:", ((string)(null)), table4, "Когда ");
+                table2.AddRow(new string[] {
+                            "5"});
+#line 5
+       await testRunner.WhenAsync("я ввожу в консоли:", ((string)(null)), table2, "Когда ");
 #line hidden
-#line 8
-        await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n ЧИСЛО операнд1 : ДРОБЬ;\r\n    ВНЕМЛИ(операнд1);\r\n ЧИСЛО операнд2 : ДРОБЬ;" +
-                        "\r\n    ВНЕМЛИ(операнд2);\r\n ЧИСЛО сред_геометрич : ДРОБЬ = (операнд1 * операнд2)^0" +
-                        ".5;\r\n МОЛВИ(\"Среднее геометрическое: \", сред_геометрич);\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
+#line 9
+        await testRunner.WhenAsync("я выполняю программу:", @"НАЧАЛО
+    ЧИСЛО n : ДРОБЬ;
+    МОЛВИ(""Введите число для факториала: "");
+    ВНЕМЛИ(n);
+    
+    ЧИСЛО результат : ДРОБЬ = 1;
+    
+    ДЛЯ i ОТ 1 ДО n 
+    ТВОРИ
+        результат = результат * i;
+    
+    МОЛВИ(""Факториал "", n, "" равен "", результат);
+ИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 20
-       await testRunner.ThenAsync("я получаю результаты:", "Среднее геометрическое: 27,39", ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 26
+       await testRunner.ThenAsync("я получаю результаты:", "Введите число для факториала: \r\nФакториал 5 равен 120", ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -182,12 +190,12 @@ namespace Interpreter.Specs.Features
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
             {
-                await МножественныеОперацииFeature.FeatureSetupAsync();
+                await ИспользованиеЦиклаFeature.FeatureSetupAsync();
             }
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.DisposeAsync()
             {
-                await МножественныеОперацииFeature.FeatureTearDownAsync();
+                await ИспользованиеЦиклаFeature.FeatureTearDownAsync();
             }
         }
     }

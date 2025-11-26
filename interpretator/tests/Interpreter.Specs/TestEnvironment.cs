@@ -51,7 +51,10 @@ public class TestEnvironment : IEnvironment
 
     public void WriteNumber(decimal result)
     {
-        Output += result.ToString("F2");
+        string formatted = result % 1 == 0 ?
+            result.ToString("0") :
+            result.ToString("0.00");
+        Output += formatted;
     }
 
     public void WriteString(string str)

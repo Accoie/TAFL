@@ -154,14 +154,14 @@ namespace Interpreter.Specs.Features
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table6 = new global::Reqnroll.Table(new string[] {
                             "Value"});
-                table3.AddRow(new string[] {
+                table6.AddRow(new string[] {
                             "25"});
-                table3.AddRow(new string[] {
+                table6.AddRow(new string[] {
                             "30"});
 #line 4
-       await testRunner.WhenAsync("я ввожу в консоли:", ((string)(null)), table3, "Когда ");
+       await testRunner.WhenAsync("я ввожу в консоли:", ((string)(null)), table6, "Когда ");
 #line hidden
 #line 9
         await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n ЧИСЛО операнд1 : ДРОБЬ;\r\n    ВНЕМЛИ(операнд1);\r\n ЧИСЛО операнд2 : ДРОБЬ;" +
@@ -169,7 +169,7 @@ namespace Interpreter.Specs.Features
                         "\"Сумма: \", сумма);\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 21
-       await testRunner.ThenAsync("я получаю результаты:", "Сумма: 55,00", ((global::Reqnroll.Table)(null)), "Тогда ");
+       await testRunner.ThenAsync("я получаю результаты:", "Сумма: 55", ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

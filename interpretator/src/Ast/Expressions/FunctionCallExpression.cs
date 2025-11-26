@@ -2,17 +2,17 @@
 
 public class FunctionCallExpression : Expression
 {
-    private readonly List<Expression> _arguments;
+    private readonly List<Expression> arguments;
 
     public FunctionCallExpression(string name, List<Expression> arguments)
     {
         Name = name;
-        _arguments = arguments;
+        this.arguments = arguments;
     }
 
     public string Name { get; }
 
-    public IReadOnlyList<Expression> Arguments => _arguments;
+    public IReadOnlyList<Expression> Arguments => arguments;
 
     public override void Accept(IAstVisitor visitor)
     {

@@ -11,6 +11,7 @@ public class AssignmentStatement : Statement
     }
 
     public string Name { get; }
+
     public Expression Value { get; }
 
     public override void Accept(IAstVisitor visitor)

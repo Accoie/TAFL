@@ -94,7 +94,6 @@ public class LiteralTests
                     new(TokenType.StringLiteral, new TokenValue("путь\\файл")),
                     new(TokenType.StringLiteral, new TokenValue("строка1\nстрока2")),
                 }
-
             },
             {
                 "\"путь\\\\файл\" \"строка1\\острока2\"",
@@ -103,7 +102,6 @@ public class LiteralTests
                     new(TokenType.StringLiteral, new TokenValue("путь\\файл")),
                     new(TokenType.StringLiteral, new TokenValue("строка1\tстрока2")),
                 }
-
             },
             {
                 "\"путь\\\\файл\" \"строка1\\кстрока2\"",
@@ -112,7 +110,6 @@ public class LiteralTests
                     new(TokenType.StringLiteral, new TokenValue("путь\\файл")),
                     new(TokenType.StringLiteral, new TokenValue("строка1\rстрока2")),
                 }
-
             },
         };
     }
