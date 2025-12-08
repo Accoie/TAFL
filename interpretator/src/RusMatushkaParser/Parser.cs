@@ -1,4 +1,6 @@
-﻿using Ast.Expressions;
+﻿using System.Runtime.CompilerServices;
+
+using Ast.Expressions;
 using Ast.Statements;
 
 using Execution;
