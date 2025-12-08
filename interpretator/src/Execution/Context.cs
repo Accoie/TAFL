@@ -22,6 +22,11 @@ public class Context
         scopes.Pop();
     }
 
+    public Scope GetLastScope()
+    {
+        return scopes.Peek();
+    }
+
     public int GetScopesCount()
     {
         return scopes.Count;
@@ -88,66 +93,6 @@ public class Context
         }
 
         throw new ArgumentException($"Function '{name}' is not defined");
-    }
-
-    public void ChangeReturnInLastScope()
-    {
-        Scope scope = scopes.Peek();
-
-        scope.ReturnState = !scope.ReturnState;
-    }
-
-    public void ChangeInFunctionInLastScope()
-    {
-        Scope scope = scopes.Peek();
-
-        scope.InFunction = !scope.InFunction;
-    }
-
-    public void ChangeBreakInLastScope()
-    {
-        Scope scope = scopes.Peek();
-
-        scope.BreakState = !scope.BreakState;
-    }
-
-    public void ChangeContinueInLastScope()
-    {
-        Scope scope = scopes.Peek();
-
-        scope.ContinueState = !scope.ContinueState;
-    }
-
-    public void ChangeInLoopInLastScope()
-    {
-        Scope scope = scopes.Peek();
-
-        scope.InLoop = !scope.InLoop;
-    }
-
-    public bool GetInLoopInLastScope()
-    {
-        return scopes.Peek().InLoop;
-    }
-
-    public bool GetBreakInLastScope()
-    {
-        return scopes.Peek().BreakState;
-    }
-
-    public bool GetContinueInLastScope()
-    {
-        return scopes.Peek().ContinueState;
-    }
-
-    public bool GetReturnInLastScope()
-    {
-        return scopes.Peek().ReturnState;
-    }
-
-    public bool GetInFunctionInLastScope()
-    {
-        return scopes.Peek().InFunction;
     }
 
     public void DefineFunction(FunctionDeclarationStatement function)

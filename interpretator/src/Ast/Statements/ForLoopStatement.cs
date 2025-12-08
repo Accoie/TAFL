@@ -13,7 +13,7 @@ public sealed class ForLoopStatement : Statement
     {
         IteratorName = iteratorName;
         StartValue = startValue;
-        EndCondition = endCondition;
+        EndValue = endCondition;
         Body = body;
     }
 
@@ -21,7 +21,7 @@ public sealed class ForLoopStatement : Statement
 
     public Expression StartValue { get; }
 
-    public Expression EndCondition { get; }
+    public Expression EndValue { get; }
 
     public Statement Body { get; }
 

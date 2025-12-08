@@ -2,16 +2,14 @@
 using Ast.Expressions;
 using Ast.Statements;
 
-using RusMatushkaParser;
+using Execution;
 
-namespace Execution;
+using RusMatushkaParser;
 
 public class AstEvaluator : IAstVisitor
 {
     private readonly Context context;
-
     private readonly IEnvironment environment;
-
     private readonly Stack<decimal> values = [];
 
     public AstEvaluator(Context context, IEnvironment environment)
@@ -182,7 +180,9 @@ public class AstEvaluator : IAstVisitor
     public void Visit(ForLoopStatement e)
     {
         context.PushScope(new Scope());
-        context.ChangeInLoopInLastScope();
+        Scope lastScope = context.GetLastScope();
+        lastScope.InLoop = true;
+
         try
         {
             ExecuteForLoop(e);
@@ -240,17 +240,18 @@ public class AstEvaluator : IAstVisitor
     {
         foreach (AstNode b in s.Statements)
         {
-            if (context.GetReturnInLastScope() && context.GetInFunctionInLastScope())
+            Scope lastScope = context.GetLastScope();
+            if (lastScope.ReturnState && lastScope.InFunction)
             {
                 break;
             }
 
-            if (context.GetContinueInLastScope() && context.GetInLoopInLastScope())
+            if (lastScope.ContinueState && lastScope.InLoop)
             {
                 continue;
             }
 
-            if (context.GetBreakInLastScope() && context.GetInLoopInLastScope())
+            if (lastScope.BreakState && lastScope.InLoop)
             {
                 break;
             }
@@ -261,34 +262,38 @@ public class AstEvaluator : IAstVisitor
 
     public void Visit(ReturnStatement s)
     {
-        if (!context.GetInFunctionInLastScope())
+        Scope lastScope = context.GetLastScope();
+
+        if (!lastScope.InFunction)
         {
             throw new ArgumentException("'Return' can't be out of function");
         }
 
         s.Value.Accept(this);
 
-        context.ChangeReturnInLastScope();
+        lastScope.ReturnState = true;
     }
 
     public void Visit(BreakStatement breakStatement)
     {
-        if (!context.GetInLoopInLastScope())
+        Scope lastScope = context.GetLastScope();
+        if (!lastScope.InLoop)
         {
             throw new ArgumentException("'Break' can't be out of loop");
         }
 
-        context.ChangeBreakInLastScope();
+        lastScope.BreakState = true;
     }
 
     public void Visit(ContinueStatement continueStatement)
     {
-        if (!context.GetInLoopInLastScope())
+        Scope lastScope = context.GetLastScope();
+        if (!lastScope.InLoop)
         {
             throw new ArgumentException("'Continue' can't be out of loop");
         }
 
-        context.ChangeContinueInLastScope();
+        lastScope.ContinueState = true;
     }
 
     public void Visit(WhileLoopStatement whileLoopStatement)
@@ -296,7 +301,9 @@ public class AstEvaluator : IAstVisitor
         while (true)
         {
             context.PushScope(new Scope());
-            context.ChangeInLoopInLastScope();
+            Scope lastScope = context.GetLastScope();
+            lastScope.InLoop = true;
+
             whileLoopStatement.Condition.Accept(this);
             decimal conditionValue = values.Pop();
 
@@ -308,17 +315,15 @@ public class AstEvaluator : IAstVisitor
 
             whileLoopStatement.Body.Accept(this);
 
-            if (context.GetBreakInLastScope())
+            if (lastScope.BreakState)
             {
                 context.PopScope();
-                context.ChangeBreakInLastScope();
                 break;
             }
 
-            if (context.GetContinueInLastScope() )
+            if (lastScope.ContinueState)
             {
                 context.PopScope();
-                context.ChangeContinueInLastScope();
                 continue;
             }
 
@@ -332,38 +337,39 @@ public class AstEvaluator : IAstVisitor
         decimal startValue = values.Pop();
         CheckIsInteger(startValue);
 
-        e.EndCondition.Accept(this);
+        e.EndValue.Accept(this);
         decimal endCondition = values.Pop();
         CheckIsInteger(endCondition);
 
         ExecuteForLoopIterations(e, startValue, endCondition);
     }
 
-    private void ExecuteForLoopIterations(ForLoopStatement e, decimal startValue, decimal endCondition)
+    private void ExecuteForLoopIterations(ForLoopStatement e, decimal startValue, decimal endValue)
     {
-        decimal stepValue = (startValue <= endCondition) ? 1.0m : -1.0m;
+        decimal stepValue = (startValue <= endValue) ? 1.0m : -1.0m;
         decimal iteratorValue = startValue;
 
         context.DefineVariable(e.IteratorName, iteratorValue);
 
         context.PushScope(new Scope());
-        context.ChangeInLoopInLastScope();
+        Scope lastScope = context.GetLastScope();
+        lastScope.InLoop = true;
+
         while (true)
         {
             e.Body.Accept(this);
 
-            if (context.GetBreakInLastScope())
+            if (lastScope.BreakState)
             {
-                context.ChangeBreakInLastScope();
                 break;
             }
 
-            if (context.GetContinueInLastScope())
+            if (lastScope.ContinueState)
             {
-                context.ChangeContinueInLastScope();
+                lastScope.ContinueState = false;
             }
 
-            if (Numbers.AreEqual(iteratorValue, endCondition))
+            if (Numbers.AreEqual(iteratorValue, endValue))
             {
                 break;
             }
@@ -405,8 +411,8 @@ public class AstEvaluator : IAstVisitor
         }
 
         context.PushScope(new Scope());
-
-        context.ChangeInFunctionInLastScope();
+        Scope lastScope = context.GetLastScope();
+        lastScope.InFunction = true;
 
         foreach (string name in Enumerable.Reverse(function.Parameters))
         {
@@ -415,7 +421,7 @@ public class AstEvaluator : IAstVisitor
 
         function.Body.Accept(this);
 
-        if (!context.GetReturnInLastScope())
+        if (!lastScope.ReturnState)
         {
             throw new InvalidOperationException($"Function '{e.Name}' must return a value");
         }
