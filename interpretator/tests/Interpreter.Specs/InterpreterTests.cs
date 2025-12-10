@@ -1,4 +1,5 @@
 ﻿using Interpreter.Specs;
+
 using Reqnroll;
 
 [Binding]
@@ -6,21 +7,33 @@ public class InterpreterTests
 {
     private readonly TestEnvironment testEnvironment;
     private readonly RusMatushkaInterpreter.Interpreter interpreter;
+    private readonly ScenarioContext scenarioContext;
     private string programCode = string.Empty;
 
-    public InterpreterTests()
+    public InterpreterTests(TestEnvironment testEnvironment, ScenarioContext scenarioContext)
     {
-        testEnvironment = new TestEnvironment();
+        this.testEnvironment = testEnvironment;
+        this.scenarioContext = scenarioContext;
         interpreter = new RusMatushkaInterpreter.Interpreter(testEnvironment);
     }
 
     [When(@"я выполняю программу:")]
     public void WhenIExecuteProgram(string multilineText)
     {
-        programCode = multilineText;
-        testEnvironment.ClearOutput();
-
-        interpreter.Execute(programCode);
+        try
+        {
+            programCode = multilineText;
+            testEnvironment.ClearOutput();
+            interpreter.Execute(programCode);
+            scenarioContext["ExecutionResult"] = "Success";
+            scenarioContext["Output"] = testEnvironment.Output;
+        }
+        catch (Exception ex)
+        {
+            scenarioContext["ExecutionException"] = ex;
+            scenarioContext["ExceptionType"] = ex.GetType().Name;
+            scenarioContext["ExceptionMessage"] = ex.Message;
+        }
     }
 
     [When(@"я ввожу в консоли:")]
@@ -39,6 +52,26 @@ public class InterpreterTests
         expected = NormalizeLineEndings(expected);
 
         Assert.Equal(expected, actualOutput);
+    }
+
+    [Then(@"программа выполняется успешно")]
+    public void ThenProgramExecutesSuccessfully()
+    {
+        Assert.False(
+            scenarioContext.ContainsKey("ExecutionException"),
+            $"Ошибка: {scenarioContext.Get<Exception>("ExecutionException")?.Message}");
+    }
+
+    [Then(@"я получаю ошибку типа ""(.*)""")]
+    public void ThenIGetErrorOfType(string expectedExceptionType)
+    {
+        Assert.True(
+            scenarioContext.ContainsKey("ExecutionException"),
+            "Ожидалось исключение, но программа выполнилась успешно");
+
+        Exception exception = scenarioContext.Get<Exception>("ExecutionException");
+        string actualExceptionType = exception.GetType().Name;
+        Assert.Equal(expectedExceptionType, actualExceptionType);
     }
 
     private string NormalizeLineEndings(string text)
