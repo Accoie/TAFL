@@ -7,13 +7,21 @@ namespace RusMatushkaParser;
 /// </summary>
 public class FakeEnvironment : IEnvironment
 {
-    private readonly List<decimal> results = [];
+    private readonly List<decimal> results = new();
+    private readonly List<string> strings = new();
 
-    public IReadOnlyList<decimal> Results => results;
+    public IReadOnlyList<decimal> Numbers => results;
+
+    public IReadOnlyList<string> Strings => strings;
 
     public decimal ReadNumber()
     {
         return 10;
+    }
+
+    public string ReadString()
+    {
+        return "fake";
     }
 
     public void WriteLine()
@@ -27,5 +35,6 @@ public class FakeEnvironment : IEnvironment
 
     public void WriteString(string str)
     {
+        strings.Add(str);
     }
 }

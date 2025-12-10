@@ -35,9 +35,11 @@ public interface IAstVisitor
 
     void Visit(FunctionDeclarationStatement s);
 
-    void Visit(WhileLoopStatement whileLoopStatement);
+    void Visit(WhileLoopStatement s);
 
-    void Visit(BreakStatement breakStatement);
+    void Visit(BreakStatement s);
 
-    void Visit(ContinueStatement continueStatement);
+    void Visit(ContinueStatement s);
+
+    void Visit(FunctionCallStatement s);
 }

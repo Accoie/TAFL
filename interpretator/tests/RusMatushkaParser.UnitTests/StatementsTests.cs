@@ -25,7 +25,7 @@ public class StatementsTests
         parser.ParseProgram();
 
         // Assert
-        Assert.Equal(expected, environment.Results);
+        Assert.Equal(expected, environment.Numbers);
     }
 
     public static TheoryData<string, string, decimal[]> GetVariableStatementsPositiveData()
@@ -37,8 +37,10 @@ public class StatementsTests
             { "ЧИСЛО x : ДРОБЬ = 25.5 * 2.0 / 2.0;", "x", new decimal[] { 25.5m } }, // Разбор инициализации переменной дробного типа
             { "ЧИСЛО x : ДРОБЬ = -4.7;", "x", new decimal[] { -4.7m } }, // Разбор инициализации переменной дробного типа
             { "ЧИСЛО y : ДРОБЬ; y = 555.8;", "y", new decimal[] { 555.8m } }, // Разбор присвоения переменной значения
-            { "ЧИСЛО x : ДРОБЬ; ВНЕМЛИ(x);", "x", new decimal[] { 10.0m } }, // Разбор потока ввода c неинициализированной переменной
             { "ЧИСЛО x : ДРОБЬ = 10.2; ЧИСЛО y : ДРОБЬ = 12.2;", "x, y", new decimal[] { 10.2m, 12.2m } }, // Разбор потока вывода с двумя переменными
+            { "ЧИСЛО x : ДРОБЬ;", "x", new decimal[] { 0 } }, // Разбор потока вывода с неинициализированной переменной
+            { "ЧИСЛО x : ДРОБЬ = 25.5; НАЧАЛО ЧИСЛО x : ДРОБЬ = 10; МОЛВИ(x); ИСХОД", "x", new decimal[] { 10, 25.5m } }, // Разбор объявления переменной, которая уже объявлена в блоке выше
+            { "ЧИСЛО x : ДРОБЬ; ЧИСЛО y : ДРОБЬ = x;", "y", new decimal[] { 0 } }, // Разбор потока вывода
         };
     }
 
@@ -54,7 +56,7 @@ public class StatementsTests
         parser.ParseProgram();
 
         // Assert
-        Assert.Equal(expected, environment.Results);
+        Assert.Equal(expected, environment.Numbers);
     }
 
     public static TheoryData<string, decimal[]> GetScopesData()
@@ -81,10 +83,7 @@ public class StatementsTests
     {
         return new TheoryData<string, string>
         {
-            { "ЧИСЛО x : ДРОБЬ = 25.5; НАЧАЛО ЧИСЛО x : ДРОБЬ; ИСХОД", "x" }, // Разбор объявления переменной, которая уже объявлена в блоке выше
-            { "ЧИСЛО x : ДРОБЬ;", "x" }, // Разбор потока вывода с неинициализированной переменной
             { "ЧИСЛО x : ДРОБЬ; ЧИСЛО x : ДРОБЬ;", "x" }, // Разбор потока вывода
-            { "ЧИСЛО x : ДРОБЬ; ЧИСЛО y : ДРОБЬ = x;", "y" }, // Разбор потока вывода
         };
     }
 
@@ -128,7 +127,7 @@ public class StatementsTests
         Parser parser = CreateParser(code);
 
         // Act & Assert
-        Assert.Throws<UnexpectedLexemeException>(() => parser.ParseProgram());
+        Assert.Throws<TypeErrorException>(() => parser.ParseProgram());
     }
 
     [Fact]
@@ -156,13 +155,17 @@ public class StatementsTests
         parser.ParseProgram();
 
         // Assert
-        Assert.Equal(expected, environment.Results);
+        Assert.Equal(expected, environment.Numbers);
     }
 
     public static TheoryData<string, decimal[]> GetStatementsPositiveData()
     {
         return new TheoryData<string, decimal[]>
     {
+        {
+            "ФУНКЦИЯ sum(x: ДРОБЬ) НАЧАЛО ИСХОД",
+            new decimal[0]// Разбор без типа возвращаемого значения
+        },
         {
             "ЧИСЛО num:ДРОБЬ = 5; ФУНКЦИЯ plusFive(x: ДРОБЬ):ДРОБЬ НАЧАЛО ДАРОВАТЬ x + num; ИСХОД МОЛВИ(plusFive(4));",
             new decimal[] { 9m }
@@ -192,7 +195,7 @@ public class StatementsTests
             new decimal[] { 4m }
         }, // Разбор цикла
         {
-            "ЧИСЛО x:ДРОБЬ = 0; ПОКУДА(1) ТВОРИ НАЧАЛО ЕСЛИ (x == 5) СТАЛОБЫТЬ НАЧАЛО ВЫЙТИ; ИСХОД x = x + 1; ИСХОД МОЛВИ(x);",
+            "ЧИСЛО x:ДРОБЬ = 0; ПОКУДА(ИСТИНА) ТВОРИ НАЧАЛО ЕСЛИ (x == 5) СТАЛОБЫТЬ НАЧАЛО ВЫЙТИ; ИСХОД x = x + 1; ИСХОД МОЛВИ(x);",
             new decimal[] { 5m }
         }, // Разбор break
         {
@@ -219,6 +222,10 @@ public class StatementsTests
             "ЧИСЛО sum:ДРОБЬ = 0; ДЛЯ i ОТ 1 ДО 3 ТВОРИ НАЧАЛО ДЛЯ j ОТ 1 ДО 2 ТВОРИ НАЧАЛО sum = sum + i * j; ИСХОД ИСХОД МОЛВИ(sum);",
             new decimal[] { 18m }
         }, // Разбор вложенного цикла
+        {
+            "ЧИСЛО x:ДРОБЬ = 0; ФУНКЦИЯ sum(x: ДРОБЬ, y: ДРОБЬ):ДРОБЬ НАЧАЛО ДАРОВАТЬ x+y; ИСХОД МОЛВИ(sum(2,3));",
+            new decimal[] { 5 }
+        }, // Разбор с переменной, которая объявлена до функции
     };
     }
 
@@ -239,8 +246,6 @@ public class StatementsTests
         return new TheoryData<string>
     {
          { "ФУНКЦИЯ sum():ДРОБЬ НАЧАЛО ИСХОД" }, // Разбор без параметров
-         { "ЧИСЛО x:ДРОБЬ = 0; ФУНКЦИЯ sum(x: ДРОБЬ, y: ДРОБЬ):ДРОБЬ НАЧАЛО ДАРОВАТЬ x+y; ИСХОД" }, // Разбор с переменной, которая объявлена до функции
-         { "ЧИСЛО x : ДРОБЬ = 2; ЕСЛИ(x) СТАЛОБЫТЬ НАЧАЛО МОЛВИ(x); ИСХОД" }, // Разбор инструкции условия, где условие не 0 или 1
          { "ЧИСЛО x:ДРОБЬ = 0; ПОКУДА(x < 3) ТВОРИ НАЧАЛО x = x + 1; ИСХОД ВЫЙТИ; МОЛВИ(x);" }, // Разбор цикла с break вне цикла
          { "ЧИСЛО x:ДРОБЬ = 0; ПОКУДА(x < 3) ТВОРИ НАЧАЛО x = x + 1; ИСХОД ПРОДОЛЖИТЬ;МОЛВИ(x);" }, // Разбор цикла с continue вне цикла
          { "ЧИСЛО x : ДРОБЬ; ДЛЯ i ОТ 1.1 ДО 5 ТВОРИ НАЧАЛО x = i; ИСХОД МОЛВИ(x);" }, // Разбор цикла, где счетчик дробное значение
@@ -265,7 +270,6 @@ public class StatementsTests
     {
         return new TheoryData<string>
     {
-         { "ФУНКЦИЯ sum(x: ДРОБЬ) НАЧАЛО ИСХОД" }, // Разбор без типа возвращаемого значения
          { "ФУНКЦИЯ sum(x):ДРОБЬ НАЧАЛО МОЛВИ(2); ИСХОД" }, // Разбор с параметром, у которого не указан тип
          { "ФУНКЦИЯ sum(x: ДРОБЬ, y: ДРОБЬ):ДРОБЬ НАЧАЛО ДАРОВАТЬ x+y; ИСХОД МОЛВИ(sum(4));" }, // Разбор вызова функции с кол-м параметров меньше, чем в объявлении функции
          { "ЧИСЛО x : ДРОБЬ = 2; ЕСЛИ (x == 3) СТАЛОБЫТЬ ЕСЛИ(x == 4) СТАЛОБЫТЬ МОЛВИ(3); ИНО МОЛВИ(2);" }, // Разбор висячего else

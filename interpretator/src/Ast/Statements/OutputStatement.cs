@@ -1,13 +1,15 @@
-﻿namespace Ast.Statements;
+﻿using Ast.Expressions;
+
+namespace Ast.Statements;
 
 public class OutputStatement : Statement
 {
-    public OutputStatement(List<object> arguments)
+    public OutputStatement(List<Expression> arguments)
     {
         Arguments = arguments;
     }
 
-    public List<object> Arguments { get; }
+    public List<Expression> Arguments { get; }
 
     public override void Accept(IAstVisitor visitor)
     {

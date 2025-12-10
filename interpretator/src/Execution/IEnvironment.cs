@@ -6,14 +6,13 @@
 /// </summary>
 public interface IEnvironment
 {
-    /// <summary>
-    /// Вызывается после вычисления результата очередной инструкции программы.
-    /// </summary>
     public void WriteNumber(decimal result);
 
     public void WriteLine();
 
     public void WriteString(string str);
+
+    public string ReadString();
 
     public decimal ReadNumber();
 }

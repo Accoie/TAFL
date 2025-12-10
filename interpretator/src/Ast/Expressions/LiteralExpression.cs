@@ -1,13 +1,15 @@
-﻿namespace Ast.Expressions;
+﻿using Runtime;
+
+namespace Ast.Expressions;
 
 public class LiteralExpression : Expression
 {
-    public LiteralExpression(decimal value)
+    public LiteralExpression(Value value)
     {
         Value = value;
     }
 
-    public decimal Value { get; }
+    public Value Value { get; }
 
     public override void Accept(IAstVisitor visitor) => visitor.Visit(this);
 }

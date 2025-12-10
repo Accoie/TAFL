@@ -171,12 +171,14 @@ namespace Interpreter.Specs.Features
     
     ДЛЯ i ОТ 1 ДО n 
     ТВОРИ
-        результат = результат * i;
+        НАЧАЛО
+            результат = результат * i;
+        ИСХОД
     
     МОЛВИ(""Факториал "", n, "" равен "", результат);
 ИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 26
+#line 28
        await testRunner.ThenAsync("я получаю результаты:", "Введите число для факториала: \r\nФакториал 5 равен 120", ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }

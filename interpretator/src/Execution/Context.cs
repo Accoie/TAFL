@@ -1,4 +1,7 @@
-﻿using Ast.Statements;
+﻿using Ast;
+using Ast.Statements;
+
+using Runtime;
 
 using RusMatushkaParser;
 
@@ -35,21 +38,21 @@ public class Context
     /// <summary>
     /// Возвращает значение переменной или константы.
     /// </summary>
-    public decimal TryGetValue(string name)
+    public Value TryGetValue(string name)
     {
-        decimal? result = GetValue(name);
+        Value? result = GetValue(name);
         if (result is null)
         {
             throw new VariableNotFoundException($"Variable '{name}' is not defined");
         }
 
-        return result.Value;
+        return result;
     }
 
     /// <summary>
     /// Присваивает (изменяет) значение переменной.
     /// </summary>
-    public void AssignVariable(string name, decimal value)
+    public void AssignVariable(string name, Value value)
     {
         foreach (Scope s in scopes.Reverse())
         {
@@ -65,20 +68,18 @@ public class Context
     /// <summary>
     /// Определяет переменную в текущей области видимости.
     /// </summary>
-    public void DefineVariable(string name, decimal? value = null)
+    public void DefineVariable(string name, Value value)
     {
-        if (GetValue(name) is not null)
+        if (!scopes.Peek().TryDefineVariable(name, value))
         {
             throw new ArgumentException($"Variable '{name}' is already defined");
         }
-
-        scopes.Peek().TryDefineVariable(name, value);
     }
 
     /// <summary>
     /// Определяет параметр функции.
     /// </summary>
-    public void DefineFunctionParameter(string name, decimal? value = null)
+    public void DefineFunctionParameter(string name, Value value)
     {
         Scope scope = scopes.Peek();
 
@@ -97,28 +98,17 @@ public class Context
 
     public void DefineFunction(FunctionDeclarationStatement function)
     {
-        foreach (Scope s in scopes.Reverse())
-        {
-            foreach (string name in function.Parameters)
-            {
-                if (s.TryGetVariable(name, out decimal variable))
-                {
-                    throw new ArgumentException("Parameter in function is already defined");
-                }
-            }
-        }
-
         if (!functions.TryAdd(function.Name, function))
         {
             throw new ArgumentException($"Function '{function.Name}' is already defined");
         }
     }
 
-    private decimal? GetValue(string name)
+    private Value? GetValue(string name)
     {
         foreach (Scope s in scopes)
         {
-            if (s.TryGetVariable(name, out decimal variable))
+            if (s.TryGetVariable(name, out Value variable))
             {
                 return variable;
             }

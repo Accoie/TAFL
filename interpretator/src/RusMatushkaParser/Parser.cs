@@ -1,9 +1,12 @@
-﻿using System.Runtime.CompilerServices;
-
+﻿using Ast;
 using Ast.Expressions;
 using Ast.Statements;
 
 using Execution;
+
+using Runtime;
+
+using ValueType = Runtime.ValueType;
 
 namespace RusMatushkaParser;
 
@@ -18,6 +21,8 @@ public class Parser
     private readonly TokenStream tokens;
     private readonly AstEvaluator evaluator;
 
+    private readonly Stack<ValueType> returnTypes = new();
+
     public Parser(Context context, IEnvironment environment, string code)
     {
         this.context = context;
@@ -31,9 +36,7 @@ public class Parser
     /// </summary>
     public void ParseProgram()
     {
-        context.PushScope(new Scope());
-        evaluator.Visit(ParseBlock());
-        context.PopScope();
+        evaluator.Visit(ParseBlock(true));
         if (context.GetScopesCount() != 0)
         {
             throw new ArgumentException("Program's scope is not closed");
@@ -52,9 +55,11 @@ public class Parser
 
         return token switch
         {
-            TokenType.Identifier => ParseAssignment(),
+            TokenType.Identifier => ParseAssignmentOrFunctionCall(),
             TokenType.Number => ParseNumberVariableDeclaration(),
-            TokenType.Begin => ParseBlock(),
+            TokenType.BooleanType => ParseStringOrBoolVariableDeclaration(false),
+            TokenType.StringType => ParseStringOrBoolVariableDeclaration(true),
+            TokenType.Begin => ParseBlock(true),
             TokenType.Input => ParseInput(),
             TokenType.Output => ParseOutput(),
             TokenType.Function => ParseFunctionDeclaration(),
@@ -66,6 +71,31 @@ public class Parser
             TokenType.Continue => ParseContinueStatement(),
             _ => throw new UnexpectedLexemeException(tokens.Peek())
         };
+    }
+
+    private VariableDeclarationStatement ParseStringOrBoolVariableDeclaration(bool isString)
+    {
+        if (isString)
+        {
+            Match(TokenType.StringType);
+        }
+        else
+        {
+            Match(TokenType.BooleanType);
+        }
+
+        string name = Match(TokenType.Identifier).Value!.ToString();
+
+        Expression? initialValue = null;
+        if (tokens.Peek().Type == TokenType.Assign)
+        {
+            tokens.Advance();
+            initialValue = ParseExpression();
+        }
+
+        Match(TokenType.Semicolon);
+
+        return new VariableDeclarationStatement(name, isString ? ValueType.String : ValueType.Bool, initialValue);
     }
 
     /// <summary>
@@ -86,7 +116,7 @@ public class Parser
 
         Match(TokenType.Do);
 
-        Statement body = ParseStatement();
+        Statement body = ParseBlock(false);
 
         return new ForLoopStatement(iteratorName, startExpression, endExpression, body);
     }
@@ -127,7 +157,7 @@ public class Parser
         Match(TokenType.RParen);
         Match(TokenType.Do);
 
-        Statement body = ParseStatement();
+        Statement body = ParseBlock(false);
 
         return new WhileLoopStatement(condition, body);
     }
@@ -136,15 +166,24 @@ public class Parser
     /// Разбирает оператор присваивания.
     /// Правило: assignment_statement = identifier, "=", expression, ";".
     /// </summary>
-    private AssignmentStatement ParseAssignment()
+    private Statement ParseAssignmentOrFunctionCall()
     {
         string name = Match(TokenType.Identifier).Value!.ToString();
+        Statement result;
+        if (tokens.Peek().Type == TokenType.Assign)
+        {
+            Match(TokenType.Assign);
+            Expression value = ParseExpression();
+            result = new AssignmentStatement(name, value);
+        }
+        else
+        {
+            result = ParseFunctionCallStatement(name);
+        }
 
-        Match(TokenType.Assign);
-        Expression value = ParseExpression();
         Match(TokenType.Semicolon);
 
-        return new AssignmentStatement(name, value);
+        return result;
     }
 
     /// <summary>
@@ -160,7 +199,6 @@ public class Parser
         string type = tokens.Peek().Type switch
         {
             TokenType.FloatType => "ДРОБЬ",
-            TokenType.IntegerType => "ЦЕС",
             _ => throw new UnexpectedLexemeException(tokens.Peek())
         };
         tokens.Advance();
@@ -174,14 +212,14 @@ public class Parser
 
         Match(TokenType.Semicolon);
 
-        return new VariableDeclarationStatement(name, initialValue);
+        return new VariableDeclarationStatement(name, ValueType.Float, initialValue);
     }
 
     /// <summary>
     /// Разбирает блок кода.
     /// Правило: block = "НАЧАЛО", { statement }, "ИСХОД".
     /// </summary>
-    private BlockStatement ParseBlock()
+    private BlockStatement ParseBlock(bool isNew)
     {
         Match(TokenType.Begin);
 
@@ -194,7 +232,7 @@ public class Parser
 
         Match(TokenType.End);
 
-        return new BlockStatement(statements);
+        return new BlockStatement(statements, isNew);
     }
 
     /// <summary>
@@ -206,37 +244,17 @@ public class Parser
         Match(TokenType.Output);
         Match(TokenType.LParen);
 
-        List<object> arguments = [ParseOutputArgument()];
+        List<Expression> arguments = [ParseExpression()];
 
         while (tokens.Peek().Type == TokenType.Comma)
         {
             tokens.Advance();
-            arguments.Add(ParseOutputArgument());
+            arguments.Add(ParseExpression());
         }
 
         Match(TokenType.RParen);
         Match(TokenType.Semicolon);
         return new OutputStatement(arguments);
-    }
-
-    /// <summary>
-    /// Разбирает аргумент оператора вывода (выражение или строковый литерал).
-    /// Правило: argument_list = expression, { ",", expression }.
-    /// </summary>
-    private object ParseOutputArgument()
-    {
-        Token token = tokens.Peek();
-        if (token.Type == TokenType.StringLiteral)
-        {
-            string value = token.Value!.ToString();
-            tokens.Advance();
-
-            return value;
-        }
-        else
-        {
-            return ParseExpression();
-        }
     }
 
     /// <summary>
@@ -265,7 +283,7 @@ public class Parser
         string name = Match(TokenType.Identifier).Value!.ToString();
 
         Match(TokenType.LParen);
-        List<string> parameters = ParseParameterList();
+        List<Parameter> parameters = ParseParameterList();
         if (parameters.Count == 0)
         {
             throw new ArgumentException("Function needs at least 1 parameter");
@@ -273,13 +291,25 @@ public class Parser
 
         Match(TokenType.RParen);
 
-        Match(TokenType.Colon);
+        TokenType returnTypetokens = tokens.Peek().Type;
+        ValueType resultType;
+        if (returnTypetokens == TokenType.Colon)
+        {
+            Match(TokenType.Colon);
+            resultType = ParseType();
+        }
+        else
+        {
+            resultType = ValueType.Void;
+        }
 
-        ParseType();
+        returnTypes.Push(resultType);
 
-        BlockStatement body = ParseBlock();
+        BlockStatement body = ParseBlock(false);
 
-        return new FunctionDeclarationStatement(name, parameters, body);
+        returnTypes.Pop();
+
+        return new FunctionDeclarationStatement(name, parameters, body, resultType);
     }
 
     /// <summary>
@@ -307,6 +337,30 @@ public class Parser
     }
 
     /// <summary>
+    /// Разбирает вызов функции.
+    /// Правило: function_call = function_name, "(", [ argument_list ], ")".
+    /// </summary>
+    private Statement ParseFunctionCallStatement(string name)
+    {
+        Match(TokenType.LParen);
+
+        List<Expression> arguments = new List<Expression>();
+        if (tokens.Peek().Type != TokenType.RParen)
+        {
+            arguments.Add(ParseExpression());
+            while (tokens.Peek().Type == TokenType.Comma)
+            {
+                tokens.Advance();
+                arguments.Add(ParseExpression());
+            }
+        }
+
+        Match(TokenType.RParen);
+
+        return new FunctionCallStatement(name, arguments);
+    }
+
+    /// <summary>
     /// Разбирает условный оператор if.
     /// Правило: if_statement = "ЕСЛИ", "(", expression, ")", "СТАЛОБЫТЬ", statement, [ "ИНО", statement ].
     /// </summary>
@@ -317,13 +371,13 @@ public class Parser
         Expression condition = ParseExpression();
         Match(TokenType.RParen);
         Match(TokenType.Then);
-        BlockStatement thenBranch = ParseBlock();
+        BlockStatement thenBranch = ParseBlock(false);
         BlockStatement? elseBranch = null;
 
         if (tokens.Peek().Type == TokenType.Else)
         {
             tokens.Advance();
-            elseBranch = ParseBlock();
+            elseBranch = ParseBlock(false);
         }
 
         return new IfElseStatement(condition, thenBranch, elseBranch);
@@ -333,9 +387,9 @@ public class Parser
     /// Разбирает список параметров функции.
     /// Правило: parameter_list = parameter, { ",", parameter }.
     /// </summary>
-    private List<string> ParseParameterList()
+    private List<Parameter> ParseParameterList()
     {
-        List<string> parameters = new List<string>();
+        List<Parameter> parameters = new List<Parameter>();
 
         if (tokens.Peek().Type == TokenType.RParen)
         {
@@ -344,16 +398,14 @@ public class Parser
 
         string paramName = Match(TokenType.Identifier).Value!.ToString();
         Match(TokenType.Colon);
-        ParseType();
-        parameters.Add(paramName);
+        parameters.Add(new Parameter(paramName, ParseType()));
 
         while (tokens.Peek().Type == TokenType.Comma)
         {
             tokens.Advance();
             paramName = Match(TokenType.Identifier).Value!.ToString();
             Match(TokenType.Colon);
-            ParseType();
-            parameters.Add(paramName);
+            parameters.Add(new Parameter(paramName, ParseType()));
         }
 
         return parameters;
@@ -366,6 +418,11 @@ public class Parser
     private Statement ParseReturnStatement()
     {
         Match(TokenType.Return);
+        if (tokens.Peek().Type == TokenType.Semicolon)
+        {
+            Match(TokenType.Semicolon);
+            return new ReturnStatement(null, returnTypes.Peek());
+        }
 
         Expression returnValue;
 
@@ -373,24 +430,25 @@ public class Parser
 
         Match(TokenType.Semicolon);
 
-        return new ReturnStatement(returnValue);
+        return new ReturnStatement(returnValue, returnTypes.Peek() );
     }
 
     /// <summary>
     /// Разбирает тип данных.
     /// Правило: type = "ЦЕС" | "ДРОБЬ".
     /// </summary>
-    private string ParseType()
+    private ValueType ParseType()
     {
-        string typeName = tokens.Peek().Type switch
+        ValueType type = tokens.Peek().Type switch
         {
-            TokenType.IntegerType => "ЦЕС",
-            TokenType.FloatType => "ДРОБЬ",
+            TokenType.FloatType => ValueType.Float,
+            TokenType.StringType => ValueType.String,
+            TokenType.BooleanType => ValueType.Bool,
             _ => throw new UnexpectedLexemeException(tokens.Peek())
         };
 
         tokens.Advance();
-        return typeName;
+        return type;
     }
 
     /// <summary>
@@ -585,13 +643,16 @@ public class Parser
             case TokenType.Integer:
             case TokenType.Float:
                 tokens.Advance();
-                return new LiteralExpression(token.Value!.ToDecimal());
+                return new LiteralExpression(new Value(token.Value!.ToDecimal()));
             case TokenType.True:
                 tokens.Advance();
-                return new LiteralExpression(1);
+                return new LiteralExpression(new Value(true));
             case TokenType.False:
                 tokens.Advance();
-                return new LiteralExpression(0);
+                return new LiteralExpression(new Value(false));
+            case TokenType.StringLiteral:
+                tokens.Advance();
+                return new LiteralExpression(new Value(token.Value!.ToString()));
             case TokenType.Identifier:
                 string name = Match(TokenType.Identifier).Value.ToString();
                 if (tokens.Peek().Type == TokenType.LParen)

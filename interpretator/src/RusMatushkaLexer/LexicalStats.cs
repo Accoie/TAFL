@@ -47,7 +47,7 @@ public static class LexicalStats
             case TokenType.Number:
             case TokenType.IntegerType:
             case TokenType.FloatType:
-            case TokenType.Word:
+            case TokenType.StringType:
             case TokenType.BooleanType:
             case TokenType.If:
             case TokenType.Then:

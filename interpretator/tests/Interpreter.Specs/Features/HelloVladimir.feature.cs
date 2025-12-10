@@ -17,21 +17,21 @@ namespace Interpreter.Specs.Features
     
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class ПоследовательноеВыполнениеFeature : object, global::Xunit.IClassFixture<ПоследовательноеВыполнениеFeature.FixtureData>, global::Xunit.IAsyncLifetime
+    public partial class ПерекрытиеПеременныхАргументамиФункцийFeature : object, global::Xunit.IClassFixture<ПерекрытиеПеременныхАргументамиФункцийFeature.FixtureData>, global::Xunit.IAsyncLifetime
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("ru-RU"), "Features", "Последовательное выполнение", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("ru-RU"), "Features", "Перекрытие переменных аргументами функций", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
         private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
-#line 1 "CircleSquare.feature"
+#line 1 "HelloVladimir.feature"
 #line hidden
         
-        public ПоследовательноеВыполнениеFeature(ПоследовательноеВыполнениеFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public ПерекрытиеПеременныхАргументамиФункцийFeature(ПерекрытиеПеременныхАргументамиФункцийFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
         }
@@ -105,7 +105,7 @@ namespace Interpreter.Specs.Features
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/CircleSquare.feature.ndjson", 3);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/HelloVladimir.feature.ndjson", 3);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -133,19 +133,19 @@ namespace Interpreter.Specs.Features
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="вычисление площади круга")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Последовательное выполнение")]
-        [global::Xunit.TraitAttribute("Description", "вычисление площади круга")]
-        public async global::System.Threading.Tasks.Task ВычислениеПлощадиКруга()
+        [global::Xunit.SkippableFactAttribute(DisplayName="Приветствие для взрослого человека")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Перекрытие переменных аргументами функций")]
+        [global::Xunit.TraitAttribute("Description", "Приветствие для взрослого человека")]
+        public async global::System.Threading.Tasks.Task ПриветствиеДляВзрослогоЧеловека()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("вычисление площади круга", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Приветствие для взрослого человека", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 3
-    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+  this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
             {
@@ -154,22 +154,40 @@ namespace Interpreter.Specs.Features
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table6 = new global::Reqnroll.Table(new string[] {
                             "Value"});
-                table1.AddRow(new string[] {
-                            "3.14"});
-                table1.AddRow(new string[] {
-                            "5.0"});
+                table6.AddRow(new string[] {
+                            "Владимир"});
+                table6.AddRow(new string[] {
+                            "25"});
 #line 5
-       await testRunner.WhenAsync("я ввожу в консоли:", ((string)(null)), table1, "Когда ");
+    await testRunner.WhenAsync("я ввожу в консоли:", ((string)(null)), table6, "Когда ");
 #line hidden
 #line 10
-        await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n ЧИСЛО пи : ДРОБЬ;\r\n    ВНЕМЛИ(пи);\r\n ЧИСЛО радиус : ДРОБЬ;\r\n    ВНЕМЛИ(р" +
-                        "адиус);\r\n ЧИСЛО площадь : ДРОБЬ = пи * радиус^2; \r\n МОЛВИ(\"Площадь круга: \", пло" +
-                        "щадь);\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
+    await testRunner.WhenAsync("я выполняю программу:", @"НАЧАЛО
+    СТРОКА имя;
+    ВНЕМЛИ(имя);
+    ЧИСЛО лета : ДРОБЬ;
+    ВНЕМЛИ(лета);
+
+    ФУНКЦИЯ Приветствие(имя : СТРОКА, лета : ДРОБЬ)
+    НАЧАЛО
+        ЕСЛИ (лета >= 18) 
+        СТАЛОБЫТЬ
+            НАЧАЛО
+                МОЛВИ(""Здравствуй, "", имя);
+            ИСХОД
+        ИНО
+            НАЧАЛО
+                МОЛВИ(""Привет, "", имя);
+            ИСХОД
+    ИСХОД
+
+    Приветствие(имя, лета);
+ИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 22
-       await testRunner.ThenAsync("я получаю результаты:", "Площадь круга: 78,50", ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 35
+    await testRunner.ThenAsync("я получаю результаты:", "Здравствуй, Владимир", ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -182,12 +200,12 @@ namespace Interpreter.Specs.Features
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
             {
-                await ПоследовательноеВыполнениеFeature.FeatureSetupAsync();
+                await ПерекрытиеПеременныхАргументамиФункцийFeature.FeatureSetupAsync();
             }
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.DisposeAsync()
             {
-                await ПоследовательноеВыполнениеFeature.FeatureTearDownAsync();
+                await ПерекрытиеПеременныхАргументамиФункцийFeature.FeatureTearDownAsync();
             }
         }
     }

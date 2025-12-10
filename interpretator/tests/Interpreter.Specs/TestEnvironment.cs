@@ -9,14 +9,14 @@ namespace Interpreter.Specs;
 /// </summary>
 public class TestEnvironment : IEnvironment
 {
-    private readonly Queue<decimal> inputQueue = new Queue<decimal>();
+    private readonly Queue<string> inputQueue = new Queue<string>();
 
     public string Output { get; private set; } = string.Empty;
 
-    public void SetInputValues(params decimal[] values)
+    public void SetInputValues(params string[] values)
     {
         inputQueue.Clear();
-        foreach (decimal value in values)
+        foreach (string value in values)
         {
             inputQueue.Enqueue(value);
         }
@@ -27,21 +27,28 @@ public class TestEnvironment : IEnvironment
         inputQueue.Clear();
         foreach (DataTableRow? row in table.Rows)
         {
-            if (decimal.TryParse(row["Value"], out decimal value))
-            {
-                inputQueue.Enqueue(value);
-            }
+            inputQueue.Enqueue(row["Value"]);
+        }
+    }
+
+    public void SetInputNumbers(params decimal[] values)
+    {
+        inputQueue.Clear();
+        foreach (decimal value in values)
+        {
+            inputQueue.Enqueue(value.ToString());
         }
     }
 
     public decimal ReadNumber()
     {
-        if (inputQueue.Count > 0)
+        string input = ReadString();
+        if (decimal.TryParse(input, out decimal result))
         {
-            return inputQueue.Dequeue();
+            return result;
         }
 
-        throw new InvalidOperationException("Нет данных для ввода. Проверьте настройку тестовых данных.");
+        throw new InvalidOperationException($"Не удалось преобразовать '{input}' в число.");
     }
 
     public void WriteLine()
@@ -65,5 +72,15 @@ public class TestEnvironment : IEnvironment
     public void ClearOutput()
     {
         Output = string.Empty;
+    }
+
+    public string ReadString()
+    {
+        if (inputQueue.Count > 0)
+        {
+            return inputQueue.Dequeue();
+        }
+
+        throw new InvalidOperationException("Нет данных для ввода. Проверьте настройку тестовых данных.");
     }
 }

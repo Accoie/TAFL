@@ -25,7 +25,7 @@ public class BuiltInFunctionsTests
         parser.ParseProgram();
 
         // Assert
-        Assert.Equal([expected], environment.Results);
+        Assert.Equal([expected], environment.Numbers);
     }
 
     public static TheoryData<string, decimal> GetBuiltInFunctionsData()

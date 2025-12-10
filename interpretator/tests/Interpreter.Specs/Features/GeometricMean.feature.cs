@@ -154,14 +154,14 @@ namespace Interpreter.Specs.Features
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
                             "Value"});
-                table4.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "25"});
-                table4.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "30"});
 #line 4
-       await testRunner.WhenAsync("я ввожу в консоли:", ((string)(null)), table4, "Когда ");
+       await testRunner.WhenAsync("я ввожу в консоли:", ((string)(null)), table5, "Когда ");
 #line hidden
 #line 8
         await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n ЧИСЛО операнд1 : ДРОБЬ;\r\n    ВНЕМЛИ(операнд1);\r\n ЧИСЛО операнд2 : ДРОБЬ;" +

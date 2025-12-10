@@ -15,7 +15,7 @@ public class LogicalAndComparisonTests
 
     [Theory]
     [MemberData(nameof(GetLogicalOperationsTestData))]
-    public void Handle_Logical_Operations(string expression, decimal expected)
+    public void Handle_Logical_Operations(string expression, string expected)
     {
         // Arrange
         string code = $"НАЧАЛО МОЛВИ({expression}); ИСХОД";
@@ -25,12 +25,44 @@ public class LogicalAndComparisonTests
         parser.ParseProgram();
 
         // Assert
-        Assert.Equal([expected], environment.Results);
+        Assert.Equal(expected, environment.Strings.Last());
+    }
+
+    public static TheoryData<string, string> GetLogicalOperationsTestData()
+    {
+        return new TheoryData<string, string>
+        {
+            // Логическое И
+            { "ИСТИНА @ ИСТИНА", "ИСТИНА" },
+            { "ЛОЖЬ @ ИСТИНА", "ЛОЖЬ" },
+
+            // Логическое ИЛИ
+            { "ИСТИНА || ЛОЖЬ", "ИСТИНА" },
+            { "ЛОЖЬ || ЛОЖЬ", "ЛОЖЬ" },
+
+            // Логическое НЕ
+            { "!ИСТИНА", "ЛОЖЬ" },
+            { "!(!ИСТИНА)", "ИСТИНА" },
+
+            // Комбинация логических операторов
+            { "ИСТИНА @ ЛОЖЬ || ИСТИНА", "ИСТИНА" },
+
+            // Приоритет логических операторов
+            { "ИСТИНА || ЛОЖЬ @ ИСТИНА", "ИСТИНА" },
+
+            // Ассоциативность
+            { "ИСТИНА @ ЛОЖЬ @ ИСТИНА", "ЛОЖЬ" },
+
+            // Дополнительные примеры
+            { "!(ИСТИНА || ЛОЖЬ)", "ЛОЖЬ" },
+            { "!ИСТИНА @ !ЛОЖЬ", "ЛОЖЬ" },
+            { "ИСТИНА || ЛОЖЬ @ ИСТИНА", "ИСТИНА" },
+        };
     }
 
     [Theory]
     [MemberData(nameof(GetComparisonOperationsTestData))]
-    public void Handle_Comparison_Operations(string expression, decimal expected)
+    public void Handle_Comparison_Operations(string expression, string expected)
     {
         // Arrange
         string code = $"НАЧАЛО МОЛВИ({expression}); ИСХОД";
@@ -40,12 +72,35 @@ public class LogicalAndComparisonTests
         parser.ParseProgram();
 
         // Assert
-        Assert.Equal([expected], environment.Results);
+        Assert.Equal(expected, environment.Strings.Last());
+    }
+
+    public static TheoryData<string, string> GetComparisonOperationsTestData()
+    {
+        return new TheoryData<string, string>
+        {
+            // Равенство чисел
+            { "3.14 == 3.14", "ИСТИНА" },
+            { "3.14 == 3.24", "ЛОЖЬ" },
+
+            // Неравенство чисел
+            { "5 != 3", "ИСТИНА" },
+            { "3.5 != 3.5", "ЛОЖЬ" },
+
+            // Сравнения чисел
+            { "3.2 > 2.8", "ИСТИНА" },
+            { "4 <= 4", "ИСТИНА" },
+            { "5 >= 3", "ИСТИНА" },
+            { "2.5 < 2.7", "ИСТИНА" },
+
+            // Сравнения с выражениями
+            { "10 / 2 > 3", "ИСТИНА" },
+        };
     }
 
     [Theory]
     [MemberData(nameof(GetComparisonWithVariablesTestData))]
-    public void Handle_Comparison_With_Variables(string code, decimal expected)
+    public void Handle_Comparison_With_Variables(string code, string expected)
     {
         // Arrange
         Parser parser = new Parser(context, environment, code);
@@ -54,84 +109,14 @@ public class LogicalAndComparisonTests
         parser.ParseProgram();
 
         // Assert
-        Assert.Equal([expected], environment.Results);
+        Assert.Equal(expected, environment.Strings.Last());
     }
 
-    [Theory]
-    [MemberData(nameof(GetInvalidLogicalOperationsTestData))]
-    public void Handle_Invalid_Logical_Operations(string expression)
+    public static TheoryData<string, string> GetComparisonWithVariablesTestData()
     {
-        // Arrange
-        string code = $"НАЧАЛО МОЛВИ({expression}); ИСХОД";
-        Parser parser = new Parser(context, environment, code);
-
-        // Act & Assert
-        Assert.Throws<ArgumentException>(() => parser.ParseProgram());
-    }
-
-    public static TheoryData<string, decimal> GetLogicalOperationsTestData()
-    {
-        return new TheoryData<string, decimal>
+        return new TheoryData<string, string>
         {
-            // Логическое И
-            { "1 @ 1", 1m },
-            { "0 @ 1", 0m },
-
-            // Логическое ИЛИ
-            { "1 || 0", 1m },
-            { "0 || 0", 0m },
-
-            // Логическое НЕ
-            { "!1", 0m },
-            { "!(!1)", 1m },
-
-            // Комбинация логических операторов
-            { "1 @ 0 || 1", 1m },
-
-            // Приоритет логических операторов (И имеет приоритет над ИЛИ)
-            { "1 || 0 @ 1", 1m }, // 1 || (0 @ 1) = 1 || 0 = 1
-
-            // Ассоциативность логических операторов (левая ассоциативность)
-            { "1 @ 0 @ 1", 0m }, // (1 @ 0) @ 1 = 0 @ 1 = 0
-        };
-    }
-
-    public static TheoryData<string, decimal> GetComparisonOperationsTestData()
-    {
-        return new TheoryData<string, decimal>
-        {
-            // Равенство чисел
-            { "3.14 == 3.14", 1m },
-            { "3.14 == 3.24", 0m },
-
-            // Неравенство чисел
-            { "5 != 3", 1m },
-            { "3.5 != 3.5", 0m },
-
-            // Сравнения чисел
-            { "3.2 > 2.8", 1m },
-            { "4 <= 4", 1m },
-            { "5 >= 3", 1m },
-            { "2.5 < 2.7", 1m },
-
-            // Сравнения с выражениями
-            { "10 / 2 > 3", 1m }, // 5 > 3 = 1
-        };
-    }
-
-    public static TheoryData<string, decimal> GetComparisonWithVariablesTestData()
-    {
-        return new TheoryData<string, decimal>
-        {
-            { "НАЧАЛО ЧИСЛО x : ЦЕС = 0; ЧИСЛО y : ЦЕС = 2; МОЛВИ(x < y); ИСХОД", 1m },
-        };
-    }
-
-    public static TheoryData<string> GetInvalidLogicalOperationsTestData()
-    {
-        return new TheoryData<string>
-        {
-            { "2 @ 1" }, // Ошибка при числе больше 1
+            { "НАЧАЛО ЧИСЛО x : ДРОБЬ = 0; ЧИСЛО y : ДРОБЬ = 2; МОЛВИ(x < y); ИСХОД", "ИСТИНА" },
         };
     }
 }

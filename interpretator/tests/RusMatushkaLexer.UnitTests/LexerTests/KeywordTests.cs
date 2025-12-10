@@ -15,11 +15,11 @@ public class KeywordTests
         return new TheoryData<string, List<Token>>
         {
             {
-                "НАЧАЛО СЛОВО ВНЕМЛИ МОЛВИ ИСХОД",
+                "НАЧАЛО СТРОКА ВНЕМЛИ МОЛВИ ИСХОД",
                 new List<Token>
                 {
                     new(TokenType.Begin),
-                    new(TokenType.Word),
+                    new(TokenType.StringType),
                     new(TokenType.Input),
                     new(TokenType.Output),
                     new(TokenType.End),

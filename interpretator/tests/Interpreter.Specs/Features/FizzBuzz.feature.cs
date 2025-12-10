@@ -17,21 +17,21 @@ namespace Interpreter.Specs.Features
     
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class ПоследовательноеВыполнениеFeature : object, global::Xunit.IClassFixture<ПоследовательноеВыполнениеFeature.FixtureData>, global::Xunit.IAsyncLifetime
+    public partial class ПоддержкаРазличныхТиповFeature : object, global::Xunit.IClassFixture<ПоддержкаРазличныхТиповFeature.FixtureData>, global::Xunit.IAsyncLifetime
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("ru-RU"), "Features", "Последовательное выполнение", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("ru-RU"), "Features", "Поддержка различных типов", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
         private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
-#line 1 "CircleSquare.feature"
+#line 1 "FizzBuzz.feature"
 #line hidden
         
-        public ПоследовательноеВыполнениеFeature(ПоследовательноеВыполнениеFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public ПоддержкаРазличныхТиповFeature(ПоддержкаРазличныхТиповFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
         }
@@ -105,7 +105,7 @@ namespace Interpreter.Specs.Features
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/CircleSquare.feature.ndjson", 3);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/FizzBuzz.feature.ndjson", 3);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -133,19 +133,19 @@ namespace Interpreter.Specs.Features
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="вычисление площади круга")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Последовательное выполнение")]
-        [global::Xunit.TraitAttribute("Description", "вычисление площади круга")]
-        public async global::System.Threading.Tasks.Task ВычислениеПлощадиКруга()
+        [global::Xunit.SkippableFactAttribute(DisplayName="Вывод FizzBuzz для первых 15 чисел")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Поддержка различных типов")]
+        [global::Xunit.TraitAttribute("Description", "Вывод FizzBuzz для первых 15 чисел")]
+        public async global::System.Threading.Tasks.Task ВыводFizzBuzzДляПервых15Чисел()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("вычисление площади круга", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Вывод FizzBuzz для первых 15 чисел", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 3
-    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+  this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
             {
@@ -154,22 +154,62 @@ namespace Interpreter.Specs.Features
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
                             "Value"});
-                table1.AddRow(new string[] {
-                            "3.14"});
-                table1.AddRow(new string[] {
-                            "5.0"});
+                table4.AddRow(new string[] {
+                            "15"});
 #line 5
-       await testRunner.WhenAsync("я ввожу в консоли:", ((string)(null)), table1, "Когда ");
+    await testRunner.WhenAsync("я ввожу в консоли:", ((string)(null)), table4, "Когда ");
 #line hidden
-#line 10
-        await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n ЧИСЛО пи : ДРОБЬ;\r\n    ВНЕМЛИ(пи);\r\n ЧИСЛО радиус : ДРОБЬ;\r\n    ВНЕМЛИ(р" +
-                        "адиус);\r\n ЧИСЛО площадь : ДРОБЬ = пи * радиус^2; \r\n МОЛВИ(\"Площадь круга: \", пло" +
-                        "щадь);\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
+#line 9
+    await testRunner.WhenAsync("я выполняю программу:", @"НАЧАЛО
+    ЧИСЛО n : ДРОБЬ;
+    МОЛВИ(""Введите количество чисел для FizzBuzz: "");
+    ВНЕМЛИ(n);
+    
+    ФУНКЦИЯ fizzBuzzДляЧисла(число: ДРОБЬ) : СТРОКА
+    НАЧАЛО
+        БУЛЕВО делитсяНа3 = (число % 3 == 0);
+        БУЛЕВО делитсяНа5 = (число % 5 == 0);
+        
+        ЕСЛИ (делитсяНа3 @ делитсяНа5) СТАЛОБЫТЬ
+        НАЧАЛО
+            ДАРОВАТЬ ""FizzBuzz"";
+        ИСХОД
+        ИНО
+        НАЧАЛО
+            ЕСЛИ (делитсяНа3) СТАЛОБЫТЬ
+            НАЧАЛО
+                ДАРОВАТЬ ""Fizz"";
+            ИСХОД
+            ИНО
+            НАЧАЛО
+                ЕСЛИ (делитсяНа5) СТАЛОБЫТЬ
+                НАЧАЛО
+                    ДАРОВАТЬ ""Buzz"";
+                ИСХОД
+                ИНО
+                НАЧАЛО
+                    ДАРОВАТЬ числовстроку(число);
+                ИСХОД
+            ИСХОД
+        ИСХОД
+    ИСХОД
+    
+    МОЛВИ(""FizzBuzz от 1 до "", n, "":"");
+    ЧИСЛО i : ДРОБЬ = 1;
+    
+    ПОКУДА (i <= n) ТВОРИ
+    НАЧАЛО
+        СТРОКА результат = fizzBuzzДляЧисла(i);
+        МОЛВИ(результат);
+        i = i + 1;
+    ИСХОД
+ИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 22
-       await testRunner.ThenAsync("я получаю результаты:", "Площадь круга: 78,50", ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 57
+    await testRunner.ThenAsync("я получаю результаты:", "Введите количество чисел для FizzBuzz: \r\nFizzBuzz от 1 до 15:\r\n1\r\n2\r\nFizz\r\n4\r\nBuz" +
+                        "z\r\nFizz\r\n7\r\n8\r\nFizz\r\nBuzz\r\n11\r\nFizz\r\n13\r\n14\r\nFizzBuzz", ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -182,12 +222,12 @@ namespace Interpreter.Specs.Features
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
             {
-                await ПоследовательноеВыполнениеFeature.FeatureSetupAsync();
+                await ПоддержкаРазличныхТиповFeature.FeatureSetupAsync();
             }
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.DisposeAsync()
             {
-                await ПоследовательноеВыполнениеFeature.FeatureTearDownAsync();
+                await ПоддержкаРазличныхТиповFeature.FeatureTearDownAsync();
             }
         }
     }

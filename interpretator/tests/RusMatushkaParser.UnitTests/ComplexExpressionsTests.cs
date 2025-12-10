@@ -25,7 +25,7 @@ public class ComplexExpressionsTests
         parser.ParseProgram();
 
         // Assert
-        Assert.Equal([expected], environment.Results);
+        Assert.Equal([expected], environment.Numbers);
     }
 
     public static TheoryData<string, decimal> GetComplexExpressionsData()

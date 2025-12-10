@@ -26,7 +26,7 @@ public class LexicalStatsTests
     public void CollectFromFile_WithComplexProgram_ReturnsCorrectStats()
     {
         string testFile = "complex_program.txt";
-        string programCode = "НАЧАЛО\n    ЧИСЛО число1 = 42\n    ЧИСЛО число2 = 3.14\n    СЛОВО имя = \"Иван\"\n    БУЛЕВО флаг = ИСТИНА\n    \n    ЕСЛИ число1 > 0 ТВОРИ\n        МОЛВИ( \"Положительное число: \"), число1;\n    ИНО\n        МОЛВИ(\"Отрицательное число\");\n    ИСХОД\n    \n    ДЛЯ i ОТ 1 ДО 10 ТВОРИ\n        ЕСЛИ i % 2 == 0 ТВОРИ\n            ПРОДОЛЖИТЬ;\n        ИСХОД\n        МОЛВИ(i);\n    ИСХОД\nИСХОД";
+        string programCode = "НАЧАЛО\n    ЧИСЛО число1 = 42\n    ЧИСЛО число2 = 3.14\n    СТРОКА имя = \"Иван\"\n    БУЛЕВО флаг = ИСТИНА\n    \n    ЕСЛИ число1 > 0 ТВОРИ\n        МОЛВИ( \"Положительное число: \"), число1;\n    ИНО\n        МОЛВИ(\"Отрицательное число\");\n    ИСХОД\n    \n    ДЛЯ i ОТ 1 ДО 10 ТВОРИ\n        ЕСЛИ i % 2 == 0 ТВОРИ\n            ПРОДОЛЖИТЬ;\n        ИСХОД\n        МОЛВИ(i);\n    ИСХОД\nИСХОД";
 
         FileStream fileStream = CreateTempFile(testFile, programCode);
         string result = LexicalStats.CollectFromFile(testFile);
@@ -113,7 +113,7 @@ public class LexicalStatsTests
     public void CollectFromFile_WithEscapeSequences_InStringLiterals()
     {
         string testFile = "escape.txt";
-        string programCode = "НАЧАЛО\n    СЛОВО текст = \"Привет\\нМир\\отаб\\квозврат\"\n    МОЛВИ текст\nИСХОД";
+        string programCode = "НАЧАЛО\n    СТРОКА текст = \"Привет\\нМир\\отаб\\квозврат\"\n    МОЛВИ текст\nИСХОД";
 
         FileStream fileStream = CreateTempFile(testFile, programCode);
         string result = LexicalStats.CollectFromFile(testFile);

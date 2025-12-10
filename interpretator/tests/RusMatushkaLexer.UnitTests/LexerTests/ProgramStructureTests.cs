@@ -15,11 +15,11 @@ public class ProgramStructureTests
         return new TheoryData<string, List<Token>>
         {
             {
-                "НАЧАЛО СЛОВО словечко; ВНЕМЛИ(словечко); МОЛВИ(словечко) ИСХОД",
+                "НАЧАЛО СТРОКА словечко; ВНЕМЛИ(словечко); МОЛВИ(словечко) ИСХОД",
                 new List<Token>
                 {
                     new(TokenType.Begin),
-                    new(TokenType.Word),
+                    new(TokenType.StringType),
                     new(TokenType.Identifier, new TokenValue("словечко")),
                     new(TokenType.Semicolon),
                     new(TokenType.Input),
@@ -63,10 +63,10 @@ public class ProgramStructureTests
         return new TheoryData<string, List<Token>>
         {
             {
-                "СЛОВО а; ЧИСЛО б : ЦЕС = 1,2,3;",
+                "СТРОКА а; ЧИСЛО б : ЦЕС = 1,2,3;",
                 new List<Token>
                 {
-                    new(TokenType.Word),
+                    new(TokenType.StringType),
                     new(TokenType.Identifier, new TokenValue("а")),
                     new(TokenType.Semicolon),
                     new(TokenType.Number),
@@ -83,7 +83,7 @@ public class ProgramStructureTests
                 }
             },
             {
-                "ЧИСЛО лета : ЦЕС = 25; ЧИСЛО пи : ДРОБЬ = 3.14; СЛОВО имя = \"Владимир\"",
+                "ЧИСЛО лета : ЦЕС = 25; ЧИСЛО пи : ДРОБЬ = 3.14; СТРОКА имя = \"Владимир\"",
                 new List<Token>
                 {
                     new(TokenType.Number),
@@ -100,7 +100,7 @@ public class ProgramStructureTests
                     new(TokenType.Assign),
                     new(TokenType.Float, new TokenValue(3.14m)),
                     new(TokenType.Semicolon),
-                    new(TokenType.Word),
+                    new(TokenType.StringType),
                     new(TokenType.Identifier, new TokenValue("имя")),
                     new(TokenType.Assign),
                     new(TokenType.StringLiteral, new TokenValue("Владимир")),
@@ -285,7 +285,7 @@ public class ProgramStructureTests
                 НАЧАЛО
                     ЧИСЛО а : ЦЕС = 10;
                     ЧИСЛО б : ДРОБЬ = 2.5;
-                    СЛОВО текст = "результат: ";
+                    СТРОКА текст = "результат: ";
                     БУЛЕВО флаг = ИСТИНА;
                     
                     ЕСЛИ (флаг @ а > 5) СТАЛОБЫТЬ
@@ -309,7 +309,7 @@ public class ProgramStructureTests
                     new(TokenType.Assign),
                     new(TokenType.Float, new TokenValue(2.5m)),
                     new(TokenType.Semicolon),
-                    new(TokenType.Word),
+                    new(TokenType.StringType),
                     new(TokenType.Identifier, new TokenValue("текст")),
                     new(TokenType.Assign),
                     new(TokenType.StringLiteral, new TokenValue("результат: ")),

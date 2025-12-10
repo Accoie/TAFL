@@ -12,7 +12,7 @@ public class Lexer
         { "ЧИСЛО", TokenType.Number },
         { "ЦЕС", TokenType.IntegerType },
         { "ДРОБЬ", TokenType.FloatType },
-        { "СЛОВО", TokenType.Word },
+        { "СТРОКА", TokenType.StringType },
         { "БУЛЕВО", TokenType.BooleanType },
         { "ЕСЛИ", TokenType.If },
         { "СТАЛОБЫТЬ", TokenType.Then },
