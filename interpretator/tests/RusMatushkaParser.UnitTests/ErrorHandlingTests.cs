@@ -1,16 +1,18 @@
-﻿using Execution;
+﻿using RusMatushkaInterpreter;
+
+using Semantics.Exceptions;
 
 namespace RusMatushkaParser.UnitTests;
 
 public class ErrorHandlingTests
 {
     private readonly FakeEnvironment environment;
-    private readonly Context context;
+    private readonly Interpreter interpreter;
 
     public ErrorHandlingTests()
     {
         environment = new FakeEnvironment();
-        context = new Context();
+        interpreter = new Interpreter(environment);
     }
 
     [Theory]
@@ -19,10 +21,9 @@ public class ErrorHandlingTests
     {
         // Arrange
         string code = $"НАЧАЛО МОЛВИ({expression}); ИСХОД";
-        Parser parser = new Parser(context, environment, code);
 
         // Act & Assert
-        Assert.Throws<UnexpectedLexemeException>(() => parser.ParseProgram());
+        Assert.Throws<UnexpectedLexemeException>(() => interpreter.Execute(code));
     }
 
     public static TheoryData<string> GetFalseExpressions()
@@ -45,10 +46,9 @@ public class ErrorHandlingTests
     {
         // Arrange
         string code = $"НАЧАЛО МОЛВИ({expression}); ИСХОД";
-        Parser parser = new Parser(context, environment, code);
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => parser.ParseProgram());
+        Assert.Throws<InvalidFunctionCallException>(() => interpreter.Execute(code));
     }
 
     public static TheoryData<string> GetFalseFunctionsExpressions()

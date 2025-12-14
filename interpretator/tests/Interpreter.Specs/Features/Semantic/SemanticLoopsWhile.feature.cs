@@ -105,7 +105,7 @@ namespace Interpreter.Specs.Features.Semantic
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Semantic/SemanticLoopsWhile.feature.ndjson", 7);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Semantic/SemanticLoopsWhile.feature.ndjson", 5);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -133,15 +133,15 @@ namespace Interpreter.Specs.Features.Semantic
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Выполнение при истинном условии")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Небулево условие")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Циклы ПОКУДА")]
-        [global::Xunit.TraitAttribute("Description", "Выполнение при истинном условии")]
-        public async global::System.Threading.Tasks.Task ВыполнениеПриИстинномУсловии()
+        [global::Xunit.TraitAttribute("Description", "Небулево условие")]
+        public async global::System.Threading.Tasks.Task НебулевоУсловие()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Выполнение при истинном условии", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Небулево условие", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 4
@@ -155,92 +155,28 @@ namespace Interpreter.Specs.Features.Semantic
             {
                 await this.ScenarioStartAsync();
 #line 5
-    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ЧИСЛО счетчик : ДРОБЬ = 0;\r\n  ПОКУДА (счетчик < 3) ТВОРИ\r\n    НАЧАЛО\r\n " +
-                        "     счетчик = счетчик + 1;\r\n    ИСХОД\r\n  МОЛВИ(\"Счетчик: \", счетчик);\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
-#line hidden
-#line 16
-    await testRunner.ThenAsync("я получаю результаты:", "Счетчик: 3", ((global::Reqnroll.Table)(null)), "Тогда ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="Булево условие")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Циклы ПОКУДА")]
-        [global::Xunit.TraitAttribute("Description", "Булево условие")]
-        public async global::System.Threading.Tasks.Task БулевоУсловие()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "1";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Булево условие", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 21
-  this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 22
-    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  БУЛЕВО условие : БУЛЕВО = ИСТИНА;\r\n  ПОКУДА (условие) ТВОРИ\r\n    НАЧАЛО" +
-                        "\r\n      условие = ЛОЖЬ;\r\n    ИСХОД\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
-#line hidden
-#line 32
-    await testRunner.ThenAsync("программа выполняется успешно", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="Небулево условие")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Циклы ПОКУДА")]
-        [global::Xunit.TraitAttribute("Description", "Небулево условие")]
-        public async global::System.Threading.Tasks.Task НебулевоУсловие()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "2";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Небулево условие", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 34
-  this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 35
     await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ЧИСЛО число : ДРОБЬ = 5;\r\n  ПОКУДА (число) ТВОРИ\r\n    НАЧАЛО\r\n      чис" +
                         "ло = число - 1;\r\n    ИСХОД\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 45
+#line 15
     await testRunner.ThenAsync("я получаю ошибку типа \"TypeMismatchException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Вычисление условия перед каждой итерацией")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Проверка условия перед каждой итерацией")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Циклы ПОКУДА")]
-        [global::Xunit.TraitAttribute("Description", "Вычисление условия перед каждой итерацией")]
-        public async global::System.Threading.Tasks.Task ВычислениеУсловияПередКаждойИтерацией()
+        [global::Xunit.TraitAttribute("Description", "Проверка условия перед каждой итерацией")]
+        public async global::System.Threading.Tasks.Task ПроверкаУсловияПередКаждойИтерацией()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "3";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Вычисление условия перед каждой итерацией", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string pickleIndex = "1";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Проверка условия перед каждой итерацией", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 47
+#line 17
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -250,13 +186,13 @@ namespace Interpreter.Specs.Features.Semantic
             else
             {
                 await this.ScenarioStartAsync();
-#line 48
+#line 18
     await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ЧИСЛО i : ДРОБЬ = 0;\r\n  ЧИСЛО limit : ДРОБЬ = 3;\r\n  ПОКУДА (i < limit) " +
                         "ТВОРИ\r\n    НАЧАЛО\r\n      i = i + 2;\r\n      limit = limit + 1;\r\n    ИСХОД\r\n  МОЛВ" +
                         "И(\"i: \", i, \", limit: \", limit);\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 61
-    await testRunner.ThenAsync("я получаю результаты:", "i: 4, limit: 6", ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 31
+    await testRunner.ThenAsync("я получаю результаты:", "i: 6, limit: 6", ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -269,11 +205,11 @@ namespace Interpreter.Specs.Features.Semantic
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "4";
+            string pickleIndex = "2";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Цикл не выполняется при ложном условии с начала", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 66
+#line 36
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -283,11 +219,11 @@ namespace Interpreter.Specs.Features.Semantic
             else
             {
                 await this.ScenarioStartAsync();
-#line 67
+#line 37
     await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ЧИСЛО счетчик : ДРОБЬ = 0;\r\n  ПОКУДА (ЛОЖЬ) ТВОРИ\r\n    НАЧАЛО\r\n      сч" +
                         "етчик = счетчик + 1;\r\n    ИСХОД\r\n  МОЛВИ(\"Счетчик: \", счетчик);\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 78
+#line 48
     await testRunner.ThenAsync("я получаю результаты:", "Счетчик: 0", ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }

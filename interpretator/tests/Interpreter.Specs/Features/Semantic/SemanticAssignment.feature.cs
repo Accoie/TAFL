@@ -105,7 +105,7 @@ namespace Interpreter.Specs.Features.Semantic
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Semantic/SemanticAssignment.feature.ndjson", 9);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Semantic/SemanticAssignment.feature.ndjson", 7);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -133,15 +133,15 @@ namespace Interpreter.Specs.Features.Semantic
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Идентификатор переменной в левой части")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Присваивание литералу")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Присваивания")]
-        [global::Xunit.TraitAttribute("Description", "Идентификатор переменной в левой части")]
-        public async global::System.Threading.Tasks.Task ИдентификаторПеременнойВЛевойЧасти()
+        [global::Xunit.TraitAttribute("Description", "Присваивание литералу")]
+        public async global::System.Threading.Tasks.Task ПрисваиваниеЛитералу()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Идентификатор переменной в левой части", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Присваивание литералу", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 4
@@ -155,41 +155,10 @@ namespace Interpreter.Specs.Features.Semantic
             {
                 await this.ScenarioStartAsync();
 #line 5
-    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ЧИСЛО x : ДРОБЬ = 5;\r\n  x = 10;\r\n  МОЛВИ(x);\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
-#line hidden
-#line 13
-    await testRunner.ThenAsync("я получаю результаты: \"10\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="Присваивание литералу")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Присваивания")]
-        [global::Xunit.TraitAttribute("Description", "Присваивание литералу")]
-        public async global::System.Threading.Tasks.Task ПрисваиваниеЛитералу()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "1";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Присваивание литералу", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 15
-  this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 16
     await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  5 = 10;\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 22
-    await testRunner.ThenAsync("я получаю ошибку типа \"InvalidAssignmentException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 11
+    await testRunner.ThenAsync("я получаю ошибку типа \"UnexpectedLexemeException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -202,11 +171,11 @@ namespace Interpreter.Specs.Features.Semantic
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "2";
+            string pickleIndex = "1";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Присваивание вызову функции", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 24
+#line 13
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -216,12 +185,12 @@ namespace Interpreter.Specs.Features.Semantic
             else
             {
                 await this.ScenarioStartAsync();
-#line 25
+#line 14
     await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ФУНКЦИЯ Получить() : ДРОБЬ\r\n  НАЧАЛО\r\n    ДАРОВАТЬ 5;\r\n  ИСХОД\r\n  Получ" +
                         "ить() = 10;\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 35
-    await testRunner.ThenAsync("я получаю ошибку типа \"InvalidAssignmentException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 24
+    await testRunner.ThenAsync("я получаю ошибку типа \"UnexpectedLexemeException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -234,8 +203,39 @@ namespace Interpreter.Specs.Features.Semantic
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "3";
+            string pickleIndex = "2";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Присваивание выражению", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 26
+  this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 27
+    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ЧИСЛО x : ДРОБЬ = 5;\r\n  ЧИСЛО y : ДРОБЬ = 10;\r\n  x + y = 15;\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
+#line hidden
+#line 35
+    await testRunner.ThenAsync("я получаю ошибку типа \"UnexpectedLexemeException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="Несовместимость типов при присваивании")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Присваивания")]
+        [global::Xunit.TraitAttribute("Description", "Несовместимость типов при присваивании")]
+        public async global::System.Threading.Tasks.Task НесовместимостьТиповПриПрисваивании()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "3";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Несовместимость типов при присваивании", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 37
@@ -249,71 +249,9 @@ namespace Interpreter.Specs.Features.Semantic
             {
                 await this.ScenarioStartAsync();
 #line 38
-    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ЧИСЛО x : ДРОБЬ = 5;\r\n  ЧИСЛО y : ДРОБЬ = 10;\r\n  x + y = 15;\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
-#line hidden
-#line 46
-    await testRunner.ThenAsync("я получаю ошибку типа \"InvalidAssignmentException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="Проверка совместимости типов при присваивании")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Присваивания")]
-        [global::Xunit.TraitAttribute("Description", "Проверка совместимости типов при присваивании")]
-        public async global::System.Threading.Tasks.Task ПроверкаСовместимостиТиповПриПрисваивании()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "4";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Проверка совместимости типов при присваивании", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 48
-  this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 49
-    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ЧИСЛО x : ДРОБЬ = 5;\r\n  x = 10;\r\n  МОЛВИ(x);\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
-#line hidden
-#line 57
-    await testRunner.ThenAsync("я получаю результаты: \"10\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="Несовместимость типов при присваивании")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Присваивания")]
-        [global::Xunit.TraitAttribute("Description", "Несовместимость типов при присваивании")]
-        public async global::System.Threading.Tasks.Task НесовместимостьТиповПриПрисваивании()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "5";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Несовместимость типов при присваивании", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 59
-  this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 60
     await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ЧИСЛО x : ДРОБЬ = 5;\r\n  x = \"текст\";\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 67
+#line 45
     await testRunner.ThenAsync("я получаю ошибку типа \"TypeMismatchException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
@@ -327,11 +265,11 @@ namespace Interpreter.Specs.Features.Semantic
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "6";
+            string pickleIndex = "4";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Изменение типа переменной после объявления", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 69
+#line 47
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -341,10 +279,10 @@ namespace Interpreter.Specs.Features.Semantic
             else
             {
                 await this.ScenarioStartAsync();
-#line 70
-    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ЧИСЛО x : ДРОБЬ = 5;\r\n  СТРОКА x : СТРОКА = \"текст\";\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
+#line 48
+    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ЧИСЛО x : ДРОБЬ = 5;\r\n  x = \"текст\";\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 77
+#line 55
     await testRunner.ThenAsync("я получаю ошибку типа \"TypeMismatchException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }

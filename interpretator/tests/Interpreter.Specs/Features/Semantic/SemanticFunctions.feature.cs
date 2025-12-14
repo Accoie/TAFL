@@ -17,21 +17,21 @@ namespace Interpreter.Specs.Features.Semantic
     
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class ФункцииИВозвратFeature : object, global::Xunit.IClassFixture<ФункцииИВозвратFeature.FixtureData>, global::Xunit.IAsyncLifetime
+    public partial class ФункцииПараметрыФункцийИВозвратFeature : object, global::Xunit.IClassFixture<ФункцииПараметрыФункцийИВозвратFeature.FixtureData>, global::Xunit.IAsyncLifetime
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("ru-RU"), "Features/Semantic", "Функции и возврат", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("ru-RU"), "Features/Semantic", "Функции, параметры функций и возврат", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
         private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
 #line 1 "SemanticFunctions.feature"
 #line hidden
         
-        public ФункцииИВозвратFeature(ФункцииИВозвратFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public ФункцииПараметрыФункцийИВозвратFeature(ФункцииПараметрыФункцийИВозвратFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
         }
@@ -105,7 +105,7 @@ namespace Interpreter.Specs.Features.Semantic
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Semantic/SemanticFunctions.feature.ndjson", 8);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Semantic/SemanticFunctions.feature.ndjson", 12);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -133,19 +133,19 @@ namespace Interpreter.Specs.Features.Semantic
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Функция с возвращаемым типом заканчивается ДАРОВАТЬ выражение")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Функции и возврат")]
-        [global::Xunit.TraitAttribute("Description", "Функция с возвращаемым типом заканчивается ДАРОВАТЬ выражение")]
-        public async global::System.Threading.Tasks.Task ФункцияСВозвращаемымТипомЗаканчиваетсяДАРОВАТЬВыражение()
+        [global::Xunit.SkippableFactAttribute(DisplayName="Передача параметров по значению")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Функции, параметры функций и возврат")]
+        [global::Xunit.TraitAttribute("Description", "Передача параметров по значению")]
+        public async global::System.Threading.Tasks.Task ПередачаПараметровПоЗначению()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Функция с возвращаемым типом заканчивается ДАРОВАТЬ выражение", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Передача параметров по значению", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 4
-  this.ScenarioInitialize(scenarioInfo, ruleInfo);
+ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
             {
@@ -155,28 +155,29 @@ namespace Interpreter.Specs.Features.Semantic
             {
                 await this.ScenarioStartAsync();
 #line 5
-    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ФУНКЦИЯ Пять() : ДРОБЬ\r\n  НАЧАЛО\r\n    ДАРОВАТЬ 5;\r\n  ИСХОД\r\n  МОЛВИ(Пят" +
-                        "ь());\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
+    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ФУНКЦИЯ Изменить(x : ДРОБЬ) : ДРОБЬ\r\n  НАЧАЛО\r\n    x = x + 10;\r\n    ДАР" +
+                        "ОВАТЬ x;\r\n  ИСХОД\r\n  ЧИСЛО число : ДРОБЬ = 5;\r\n  ЧИСЛО результат : ДРОБЬ = Измен" +
+                        "ить(число);\r\n  МОЛВИ(\"Исходное: \", число, \", Результат: \", результат);\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 15
-    await testRunner.ThenAsync("я получаю результаты:", "5", ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 18
+    await testRunner.ThenAsync("я получаю результаты:", "Исходное: 5, Результат: 15", ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Функция без типа заканчивается без ДАРОВАТЬ")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Функции и возврат")]
-        [global::Xunit.TraitAttribute("Description", "Функция без типа заканчивается без ДАРОВАТЬ")]
-        public async global::System.Threading.Tasks.Task ФункцияБезТипаЗаканчиваетсяБезДАРОВАТЬ()
+        [global::Xunit.SkippableFactAttribute(DisplayName="Несоответствие количества параметров")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Функции, параметры функций и возврат")]
+        [global::Xunit.TraitAttribute("Description", "Несоответствие количества параметров")]
+        public async global::System.Threading.Tasks.Task НесоответствиеКоличестваПараметров()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "1";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Функция без типа заканчивается без ДАРОВАТЬ", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Несоответствие количества параметров", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 20
+#line 23
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -186,26 +187,26 @@ namespace Interpreter.Specs.Features.Semantic
             else
             {
                 await this.ScenarioStartAsync();
-#line 21
-    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ФУНКЦИЯ Вывести()\r\n  НАЧАЛО\r\n    МОЛВИ(\"Привет\");\r\n  ИСХОД\r\n  Вывести()" +
-                        ";\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
+#line 24
+    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ФУНКЦИЯ Сумма(a : ДРОБЬ, b : ДРОБЬ) : ДРОБЬ\r\n  НАЧАЛО\r\n    ДАРОВАТЬ a +" +
+                        " b;\r\n  ИСХОД\r\n  ЧИСЛО результат : ДРОБЬ = Сумма(5);\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 31
-    await testRunner.ThenAsync("я получаю результаты:", "Привет", ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 34
+    await testRunner.ThenAsync("я получаю ошибку типа \"InvalidFunctionCallException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Функция без типа заканчивается ДАРОВАТЬ;")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Функции и возврат")]
-        [global::Xunit.TraitAttribute("Description", "Функция без типа заканчивается ДАРОВАТЬ;")]
-        public async global::System.Threading.Tasks.Task ФункцияБезТипаЗаканчиваетсяДАРОВАТЬ()
+        [global::Xunit.SkippableFactAttribute(DisplayName="Несоответствие типа параметра")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Функции, параметры функций и возврат")]
+        [global::Xunit.TraitAttribute("Description", "Несоответствие типа параметра")]
+        public async global::System.Threading.Tasks.Task НесоответствиеТипаПараметра()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "2";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Функция без типа заканчивается ДАРОВАТЬ;", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Несоответствие типа параметра", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 36
@@ -219,28 +220,94 @@ namespace Interpreter.Specs.Features.Semantic
             {
                 await this.ScenarioStartAsync();
 #line 37
-await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ФУНКЦИЯ Вывести()\r\n  НАЧАЛО\r\n    МОЛВИ(\"Привет\");\r\n    ДАРОВАТЬ;\r\n  ИСХ" +
-                        "ОД\r\n  Вывести();\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
+    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ФУНКЦИЯ Сумма(a : ДРОБЬ, b : ДРОБЬ) : ДРОБЬ\r\n  НАЧАЛО\r\n    ДАРОВАТЬ a +" +
+                        " b;\r\n  ИСХОД\r\n  СТРОКА текст = \"текст\";\r\n  ЧИСЛО результат : ДРОБЬ = Сумма(5, те" +
+                        "кст);\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 48
+    await testRunner.ThenAsync("я получаю ошибку типа \"TypeMismatchException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="Несоответствие порядка параметров")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Функции, параметры функций и возврат")]
+        [global::Xunit.TraitAttribute("Description", "Несоответствие порядка параметров")]
+        public async global::System.Threading.Tasks.Task НесоответствиеПорядкаПараметров()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "3";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Несоответствие порядка параметров", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 50
+  this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 51
+    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ФУНКЦИЯ Конкатенация(a : СТРОКА, b : ДРОБЬ) : СТРОКА\r\n  НАЧАЛО\r\n    ДАР" +
+                        "ОВАТЬ a + числовстроку(b);\r\n  ИСХОД\r\n  ЧИСЛО число : ДРОБЬ = 5;\r\n  СТРОКА текст " +
+                        "= \"текст\";\r\n  СТРОКА результат = Конкатенация(число, текст);\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
+#line hidden
+#line 63
+    await testRunner.ThenAsync("я получаю ошибку типа \"TypeMismatchException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="Функция без типа заканчивается без ДАРОВАТЬ")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Функции, параметры функций и возврат")]
+        [global::Xunit.TraitAttribute("Description", "Функция без типа заканчивается без ДАРОВАТЬ")]
+        public async global::System.Threading.Tasks.Task ФункцияБезТипаЗаканчиваетсяБезДАРОВАТЬ()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "4";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Функция без типа заканчивается без ДАРОВАТЬ", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 65
+  this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 66
+    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ФУНКЦИЯ Вывести()\r\n  НАЧАЛО\r\n    МОЛВИ(\"Привет\");\r\n  ИСХОД\r\n  Вывести()" +
+                        ";\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
+#line hidden
+#line 76
     await testRunner.ThenAsync("я получаю результаты:", "Привет", ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Функция с возвращаемым типом без ДАРОВАТЬ")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Функции и возврат")]
-        [global::Xunit.TraitAttribute("Description", "Функция с возвращаемым типом без ДАРОВАТЬ")]
-        public async global::System.Threading.Tasks.Task ФункцияСВозвращаемымТипомБезДАРОВАТЬ()
+        [global::Xunit.SkippableFactAttribute(DisplayName="Функция без типа заканчивается ДАРОВАТЬ;")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Функции, параметры функций и возврат")]
+        [global::Xunit.TraitAttribute("Description", "Функция без типа заканчивается ДАРОВАТЬ;")]
+        public async global::System.Threading.Tasks.Task ФункцияБезТипаЗаканчиваетсяДАРОВАТЬ()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "3";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Функция с возвращаемым типом без ДАРОВАТЬ", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string pickleIndex = "5";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Функция без типа заканчивается ДАРОВАТЬ;", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 53
+#line 81
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -250,29 +317,61 @@ await testRunner.WhenAsync("я выполняю программу:", "НАЧА�
             else
             {
                 await this.ScenarioStartAsync();
-#line 54
-    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ФУНКЦИЯ Пять() : ДРОБЬ\r\n  НАЧАЛО\r\n    МОЛВИ(\"Привет\");\r\n  ИСХОД\r\n  МОЛВ" +
-                        "И(Пять());\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
+#line 82
+await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ФУНКЦИЯ Вывести()\r\n  НАЧАЛО\r\n    МОЛВИ(\"Привет\");\r\n    ДАРОВАТЬ;\r\n  ИСХ" +
+                        "ОД\r\n  Вывести();\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 64
-    await testRunner.ThenAsync("я получаю ошибку типа \"MissingReturnException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 93
+    await testRunner.ThenAsync("я получаю результаты:", "Привет", ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Void - функция пытается вернуть значение")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Функции и возврат")]
-        [global::Xunit.TraitAttribute("Description", "Void - функция пытается вернуть значение")]
-        public async global::System.Threading.Tasks.Task Void_ФункцияПытаетсяВернутьЗначение()
+        [global::Xunit.SkippableFactAttribute(DisplayName="Функция без типа возвращает значение;")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Функции, параметры функций и возврат")]
+        [global::Xunit.TraitAttribute("Description", "Функция без типа возвращает значение;")]
+        public async global::System.Threading.Tasks.Task ФункцияБезТипаВозвращаетЗначение()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "4";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Void - функция пытается вернуть значение", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string pickleIndex = "6";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Функция без типа возвращает значение;", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 66
+#line 98
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 99
+await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ФУНКЦИЯ Вывести()\r\n  НАЧАЛО\r\n    МОЛВИ(\"Привет\");\r\n    ДАРОВАТЬ 5;\r\n  И" +
+                        "СХОД\r\n  Вывести();\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
+#line hidden
+#line 110
+    await testRunner.ThenAsync("я получаю ошибку типа \"TypeMismatchException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="Функция с возвращаемым типом без ДАРОВАТЬ")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Функции, параметры функций и возврат")]
+        [global::Xunit.TraitAttribute("Description", "Функция с возвращаемым типом без ДАРОВАТЬ")]
+        public async global::System.Threading.Tasks.Task ФункцияСВозвращаемымТипомБезДАРОВАТЬ()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "7";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Функция с возвращаемым типом без ДАРОВАТЬ", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 112
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -282,29 +381,29 @@ await testRunner.WhenAsync("я выполняю программу:", "НАЧА�
             else
             {
                 await this.ScenarioStartAsync();
-#line 67
-    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ФУНКЦИЯ Вывести()\r\n  НАЧАЛО\r\n    ДАРОВАТЬ 5;\r\n  ИСХОД\r\n  Вывести();\r\nИС" +
-                        "ХОД", ((global::Reqnroll.Table)(null)), "Когда ");
+#line 113
+    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ФУНКЦИЯ Пять() : ДРОБЬ\r\n  НАЧАЛО\r\n    МОЛВИ(\"Привет\");\r\n  ИСХОД\r\n  МОЛВ" +
+                        "И(Пять());\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 77
-    await testRunner.ThenAsync("я получаю ошибку типа \"VoidReturnException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 123
+    await testRunner.ThenAsync("я получаю ошибку типа \"TypeMismatchException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
         [global::Xunit.SkippableFactAttribute(DisplayName="Void - функция используется как выражение")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Функции и возврат")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Функции, параметры функций и возврат")]
         [global::Xunit.TraitAttribute("Description", "Void - функция используется как выражение")]
         public async global::System.Threading.Tasks.Task Void_ФункцияИспользуетсяКакВыражение()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "5";
+            string pickleIndex = "8";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Void - функция используется как выражение", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 79
+#line 125
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -314,12 +413,45 @@ await testRunner.WhenAsync("я выполняю программу:", "НАЧА�
             else
             {
                 await this.ScenarioStartAsync();
-#line 80
+#line 126
     await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ФУНКЦИЯ Вывести()\r\n  НАЧАЛО\r\n    МОЛВИ(\"Привет\");\r\n  ИСХОД\r\n  ЧИСЛО x :" +
                         " ДРОБЬ = Вывести();\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 90
-    await testRunner.ThenAsync("я получаю ошибку типа \"InvalidUsageException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 136
+    await testRunner.ThenAsync("я получаю ошибку типа \"TypeMismatchException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="Параметры функций вычисляются слева направо")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Функции, параметры функций и возврат")]
+        [global::Xunit.TraitAttribute("Description", "Параметры функций вычисляются слева направо")]
+        public async global::System.Threading.Tasks.Task ПараметрыФункцийВычисляютсяСлеваНаправо()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "9";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Параметры функций вычисляются слева направо", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 138
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 139
+    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ФУНКЦИЯ Деление(a : ДРОБЬ, b : ДРОБЬ) : ДРОБЬ\r\n  НАЧАЛО\r\n    ДАРОВАТЬ a" +
+                        " / b;\r\n  ИСХОД\r\n  ЧИСЛО результат : ДРОБЬ = Деление(0, 5);\r\n  МОЛВИ(результат);\r" +
+                        "\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
+#line hidden
+#line 150
+    await testRunner.ThenAsync("я получаю результаты:", "0", ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -332,12 +464,12 @@ await testRunner.WhenAsync("я выполняю программу:", "НАЧА�
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
             {
-                await ФункцииИВозвратFeature.FeatureSetupAsync();
+                await ФункцииПараметрыФункцийИВозвратFeature.FeatureSetupAsync();
             }
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.DisposeAsync()
             {
-                await ФункцииИВозвратFeature.FeatureTearDownAsync();
+                await ФункцииПараметрыФункцийИВозвратFeature.FeatureTearDownAsync();
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using Ast;
+﻿using System;
+
 using Ast.Statements;
 
 using Runtime;
@@ -54,7 +55,7 @@ public class Context
     /// </summary>
     public void AssignVariable(string name, Value value)
     {
-        foreach (Scope s in scopes.Reverse())
+        foreach (Scope s in scopes)
         {
             if (s.TryAssignVariable(name, value))
             {

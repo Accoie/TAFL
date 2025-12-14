@@ -105,7 +105,7 @@ namespace Interpreter.Specs.Features.Semantic
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Semantic/SemanticNames.feature.ndjson", 9);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Semantic/SemanticNames.feature.ndjson", 7);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -158,21 +158,21 @@ namespace Interpreter.Specs.Features.Semantic
     await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ЧИСЛО x : ДРОБЬ = 10;\r\n  ЧИСЛО x : ДРОБЬ = 20;\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 12
-    await testRunner.ThenAsync("я получаю ошибку типа \"DuplicateDeclarationException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+    await testRunner.ThenAsync("я получаю ошибку типа \"DuplicateSymbolException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Две переменные с одинаковым именем в разных областях")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Перекрытие переменных")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Уникальность имён")]
-        [global::Xunit.TraitAttribute("Description", "Две переменные с одинаковым именем в разных областях")]
-        public async global::System.Threading.Tasks.Task ДвеПеременныеСОдинаковымИменемВРазныхОбластях()
+        [global::Xunit.TraitAttribute("Description", "Перекрытие переменных")]
+        public async global::System.Threading.Tasks.Task ПерекрытиеПеременных()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "1";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Две переменные с одинаковым именем в разных областях", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Перекрытие переменных", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 14
@@ -191,24 +191,24 @@ namespace Interpreter.Specs.Features.Semantic
                         " x);\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 27
-    await testRunner.ThenAsync("программа выполняется успешно", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+    await testRunner.ThenAsync("я получаю результаты:", "Внутри: 20\r\nСнаружи: 10", ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Переменная и функция с одинаковым именем в разных областях")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Переменная и функция с одинаковым именем")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Уникальность имён")]
-        [global::Xunit.TraitAttribute("Description", "Переменная и функция с одинаковым именем в разных областях")]
-        public async global::System.Threading.Tasks.Task ПеременнаяИФункцияСОдинаковымИменемВРазныхОбластях()
+        [global::Xunit.TraitAttribute("Description", "Переменная и функция с одинаковым именем")]
+        public async global::System.Threading.Tasks.Task ПеременнаяИФункцияСОдинаковымИменем()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "2";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Переменная и функция с одинаковым именем в разных областях", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Переменная и функция с одинаковым именем", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 29
+#line 33
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -218,12 +218,12 @@ namespace Interpreter.Specs.Features.Semantic
             else
             {
                 await this.ScenarioStartAsync();
-#line 30
+#line 34
     await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ЧИСЛО x : ДРОБЬ = 10;\r\n  ФУНКЦИЯ x() : ДРОБЬ\r\n  НАЧАЛО\r\n    ДАРОВАТЬ 5;" +
                         "\r\n  ИСХОД\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 40
-    await testRunner.ThenAsync("программа выполняется успешно", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 44
+    await testRunner.ThenAsync("я получаю ошибку типа \"DuplicateSymbolException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -240,7 +240,7 @@ namespace Interpreter.Specs.Features.Semantic
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Переменная с именем встроенной функции", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 42
+#line 46
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -250,28 +250,28 @@ namespace Interpreter.Specs.Features.Semantic
             else
             {
                 await this.ScenarioStartAsync();
-#line 43
+#line 47
     await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ЧИСЛО модуль : ДРОБЬ = 10;\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 49
-    await testRunner.ThenAsync("я получаю ошибку типа \"ReservedNameException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 53
+    await testRunner.ThenAsync("я получаю ошибку типа \"DuplicateSymbolException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Переменная с именем типа данных")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Параметр и внешняя переменная с одинаковым названием")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Уникальность имён")]
-        [global::Xunit.TraitAttribute("Description", "Переменная с именем типа данных")]
-        public async global::System.Threading.Tasks.Task ПеременнаяСИменемТипаДанных()
+        [global::Xunit.TraitAttribute("Description", "Параметр и внешняя переменная с одинаковым названием")]
+        public async global::System.Threading.Tasks.Task ПараметрИВнешняяПеременнаяСОдинаковымНазванием()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "4";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Переменная с именем типа данных", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Параметр и внешняя переменная с одинаковым названием", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 51
+#line 55
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -281,75 +281,12 @@ namespace Interpreter.Specs.Features.Semantic
             else
             {
                 await this.ScenarioStartAsync();
-#line 52
-    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ЧИСЛО ДРОБЬ : ДРОБЬ = 10;\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
+#line 56
+    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ЧИСЛО x : ДРОБЬ = 5;\r\n  ФУНКЦИЯ Тест(x : ДРОБЬ) : ДРОБЬ\r\n  НАЧАЛО\r\n    " +
+                        "ДАРОВАТЬ x;\r\n  ИСХОД\r\n\r\n  МОЛВИ(x);\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 58
-    await testRunner.ThenAsync("я получаю ошибку типа \"ReservedNameException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="Внутренняя переменная скрывает внешнюю")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Уникальность имён")]
-        [global::Xunit.TraitAttribute("Description", "Внутренняя переменная скрывает внешнюю")]
-        public async global::System.Threading.Tasks.Task ВнутренняяПеременнаяСкрываетВнешнюю()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "5";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Внутренняя переменная скрывает внешнюю", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 60
-  this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 61
-    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ЧИСЛО x : ДРОБЬ = 10;\r\n  ЕСЛИ (ИСТИНА) СТАЛОБЫТЬ\r\n    НАЧАЛО\r\n      ЧИС" +
-                        "ЛО x : ДРОБЬ = 20;\r\n      МОЛВИ(x);\r\n    ИСХОД\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
-#line hidden
-#line 72
-    await testRunner.ThenAsync("я получаю результаты:", "20", ((global::Reqnroll.Table)(null)), "Тогда ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="Параметр и локальная переменная с одинаковым именем в функции")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Уникальность имён")]
-        [global::Xunit.TraitAttribute("Description", "Параметр и локальная переменная с одинаковым именем в функции")]
-        public async global::System.Threading.Tasks.Task ПараметрИЛокальнаяПеременнаяСОдинаковымИменемВФункции()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "6";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Параметр и локальная переменная с одинаковым именем в функции", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 77
-  this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 78
-    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ФУНКЦИЯ Тест(x : ДРОБЬ) : ДРОБЬ\r\n  НАЧАЛО\r\n    ЧИСЛО x : ДРОБЬ = 5;\r\n  " +
-                        "  ДАРОВАТЬ x;\r\n  ИСХОД\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
-#line hidden
-#line 88
-    await testRunner.ThenAsync("я получаю ошибку типа \"DuplicateDeclarationException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 68
+    await testRunner.ThenAsync("я получаю результаты:", "5", ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

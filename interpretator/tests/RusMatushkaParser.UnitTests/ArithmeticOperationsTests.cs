@@ -1,16 +1,16 @@
-﻿using Execution;
+﻿using RusMatushkaInterpreter;
 
 namespace RusMatushkaParser.UnitTests;
 
 public class ArithmeticOperationsTests
 {
     private readonly FakeEnvironment environment;
-    private readonly Context context;
+    private readonly Interpreter interpreter;
 
     public ArithmeticOperationsTests()
     {
         environment = new FakeEnvironment();
-        context = new Context();
+        interpreter = new Interpreter(environment);
     }
 
     [Theory]
@@ -19,10 +19,9 @@ public class ArithmeticOperationsTests
     {
         // Arrange
         string code = $"НАЧАЛО МОЛВИ({expression}); ИСХОД";
-        Parser parser = new Parser(context, environment, code);
 
         // Act & Assert
-        Assert.Throws<DivideByZeroException>(() => parser.ParseProgram());
+        Assert.Throws<DivideByZeroException>(() => interpreter.Execute(code));
     }
 
     public static TheoryData<string> GetDivisionByZeroTestData()
@@ -40,10 +39,9 @@ public class ArithmeticOperationsTests
     {
         // Arrange
         string code = $"НАЧАЛО МОЛВИ({expression}); ИСХОД";
-        Parser parser = new Parser(context, environment, code);
 
         // Act
-        parser.ParseProgram();
+        interpreter.Execute(code);
 
         // Assert
         Assert.Equal([expected], environment.Numbers);

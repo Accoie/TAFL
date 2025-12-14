@@ -17,44 +17,28 @@ public class AstEvaluator : IAstVisitor
     private readonly Context context;
     private readonly IEnvironment environment;
     private readonly Stack<Value> values = [];
+    private readonly BuiltInFunctions builtInFunctions;
+
+    private readonly Stack<FunctionFrame> functionStack = new();
+    private readonly Stack<LoopFrame> loopStack = new();
 
     public AstEvaluator(Context context, IEnvironment environment)
     {
         this.context = context;
         this.environment = environment;
+        builtInFunctions = new BuiltInFunctions();
     }
 
-    public Value Evaluate(AstNode node)
+    public Value Evaluate(BlockStatement program)
     {
-        if (values.Count > 0)
-        {
-            throw new InvalidOperationException(
-                $"Evaluation stack must be empty, but contains {values.Count} values: {string.Join(", ", values)}"
-            );
-        }
+        program.Accept(this);
 
-        node.Accept(this);
-
-        return values.Count switch
-        {
-            0 => throw new InvalidOperationException(
-                "Evaluator logical error: the stack has no evaluation result"
-            ),
-            > 1 => throw new InvalidOperationException(
-                $"Evaluator logical error: expected 1 value, got {values.Count} values: {string.Join(", ", values)}"
-            ),
-            _ => values.Pop(),
-        };
+        return new Value(0);
     }
 
     public void Visit(LiteralExpression e)
     {
         values.Push(e.Value);
-    }
-
-    public void Visit(VariableExpression e)
-    {
-        values.Push(context.TryGetValue(e.Name));
     }
 
     public void Visit(BinaryOperationExpression e)
@@ -168,7 +152,7 @@ public class AstEvaluator : IAstVisitor
         {
             d.Value.Accept(this);
             value = values.Peek();
-            if (d.Type != value.GetValueType())
+            if (d.ResultType != value.GetValueType())
             {
                 throw new TypeErrorException("Unknown types");
             }
@@ -176,7 +160,7 @@ public class AstEvaluator : IAstVisitor
 
         if (d.Value is null)
         {
-            value = GetDefaultValue(d.Type);
+            value = GetDefaultValue(d.ResultType);
         }
 
         context.DefineVariable(d.Name, value);
@@ -222,77 +206,103 @@ public class AstEvaluator : IAstVisitor
         }
     }
 
-    public void Visit(WhileLoopStatement whileLoopStatement)
+    public void Visit(WhileLoopStatement s)
     {
+        loopStack.Push(new LoopFrame());
+
         while (true)
         {
             context.PushScope(new Scope());
-            Scope lastScope = context.GetLastScope();
-            lastScope.InLoop = true;
-
-            whileLoopStatement.Condition.Accept(this);
-            Value conditionValue = values.Pop();
-
-            if (!conditionValue.AsBool())
+            s.Condition.Accept(this);
+            if (!values.Pop().AsBool())
             {
-                context.PopScope();
                 break;
             }
 
-            whileLoopStatement.Body.Accept(this);
+            s.Body.Accept(this);
 
-            if (lastScope.BreakState)
+            LoopFrame lf = loopStack.Peek();
+
+            if (lf.Break)
             {
-                context.PopScope();
                 break;
             }
 
-            if (lastScope.ContinueState)
+            if (lf.Continue)
             {
-                context.PopScope();
-                continue;
+                lf.Continue = false;
             }
 
             context.PopScope();
         }
+
+        loopStack.Pop();
     }
 
     public void Visit(ForLoopStatement e)
     {
-        context.PushScope(new Scope());
-        Scope lastScope = context.GetLastScope();
-        lastScope.InLoop = true;
+        e.Iterator.StartValue.Accept(this);
+        decimal start = values.Pop().AsDecimal();
+        CheckIsInteger(start);
+        e.EndValue.Accept(this);
+        decimal end = values.Pop().AsDecimal();
+        CheckIsInteger(end);
 
-        try
+        decimal step = start <= end ? 1 : -1;
+        decimal i = start;
+
+        loopStack.Push(new LoopFrame());
+
+        while (true)
         {
-            ExecuteForLoop(e);
-        }
-        finally
-        {
+            context.PushScope(new Scope());
+            context.DefineVariable(e.Iterator.Name, new Value(i));
+            e.Body.Accept(this);
+
+            LoopFrame lf = loopStack.Peek();
+            if (lf.Break)
+            {
+                context.PopScope();
+                break;
+            }
+
+            if (lf.Continue)
+            {
+                lf.Continue = false;
+            }
+
+            if (Numbers.AreEqual(i, end))
+            {
+                context.PopScope();
+                break;
+            }
+
+            i += step;
+            context.AssignVariable(e.Iterator.Name, new Value(i));
             context.PopScope();
         }
+
+        loopStack.Pop();
     }
 
-    public void Visit(BreakStatement breakStatement)
+    public void Visit(BreakStatement s)
     {
-        Scope lastScope = context.GetLastScope();
-        if (!lastScope.InLoop)
+        if (loopStack.Count == 0)
         {
             throw new ArgumentException("'Break' can't be out of loop");
         }
 
-        lastScope.BreakState = true;
+        loopStack.Peek().Break = true;
     }
 
-    public void Visit(ContinueStatement continueStatement)
+    public void Visit(ContinueStatement s)
     {
-        Scope lastScope = context.GetLastScope();
-        if (!lastScope.InLoop)
+        if (loopStack.Count == 0)
         {
             throw new ArgumentException("'Continue' can't be out of loop");
         }
 
-        lastScope.ContinueState = true;
+        loopStack.Peek().Continue = true;
     }
 
     public void Visit(FunctionDeclarationStatement d)
@@ -302,7 +312,7 @@ public class AstEvaluator : IAstVisitor
 
     public void Visit(FunctionCallExpression e)
     {
-        if (BuiltInFunctions.CheckBuiltInFunctions(e.Name))
+        if (builtInFunctions.Functions.ContainsKey(e.Name))
         {
             ExecuteBuiltInFunction(e);
         }
@@ -324,7 +334,7 @@ public class AstEvaluator : IAstVisitor
     {
         FunctionCallExpression e = new(s.Name, s.Arguments.ToList());
 
-        if (BuiltInFunctions.CheckBuiltInFunctions(s.Name))
+        if (builtInFunctions.Functions.ContainsKey(s.Name))
         {
             ExecuteBuiltInFunction(e);
         }
@@ -336,27 +346,19 @@ public class AstEvaluator : IAstVisitor
 
     public void Visit(ReturnStatement s)
     {
-        Scope lastScope = context.GetLastScope();
-
-        if (!lastScope.InFunction)
+        if (functionStack.Count == 0)
         {
             throw new ArgumentException("'Return' can't be out of function");
         }
 
-        if (s.Value is not null)
+        FunctionFrame frame = functionStack.Peek();
+
+        if (s.Value != null)
         {
             s.Value.Accept(this);
-            if (values.Peek().GetValueType() != s.Type || s.Type == ValueType.Void)
-            {
-                throw new TypeErrorException("Unknown types");
-            }
-        }
-        else if (s.Type != ValueType.Void)
-        {
-            throw new TypeErrorException("Unknown types");
         }
 
-        lastScope.ReturnState = true;
+        frame.ReturnState = true;
     }
 
     public void Visit(BlockStatement s)
@@ -366,31 +368,106 @@ public class AstEvaluator : IAstVisitor
             context.PushScope(new Scope());
         }
 
-        foreach (AstNode b in s.Statements)
+        foreach (AstNode stmt in s.Statements)
         {
-            Scope lastScope = context.GetLastScope();
-            if (lastScope.ReturnState && lastScope.InFunction)
+            if (functionStack.Count > 0 && functionStack.Peek().ReturnState)
             {
                 break;
             }
 
-            if (lastScope.ContinueState && lastScope.InLoop)
+            if (loopStack.Count > 0)
             {
-                continue;
+                LoopFrame lf = loopStack.Peek();
+                if (lf.Break || lf.Continue)
+                {
+                    break;
+                }
             }
 
-            if (lastScope.BreakState && lastScope.InLoop)
-            {
-                break;
-            }
-
-            b.Accept(this);
+            stmt.Accept(this);
         }
 
         if (s.IsNewScope)
         {
             context.PopScope();
         }
+    }
+
+    public void Visit(VariableExpression variableExpression)
+    {
+        values.Push(context.TryGetValue(variableExpression.Name));
+    }
+
+    public void Visit(ParameterDeclaration parameterDeclarationStatement)
+    {
+    }
+
+    public void Visit(IteratorDeclaration iteratorDeclaration)
+    {
+    }
+
+    private void ExecuteBuiltInFunction(FunctionCallExpression e)
+    {
+        foreach (Expression argument in e.Arguments)
+        {
+            argument.Accept(this);
+        }
+
+        List<Value> argumentsList = new List<Value>();
+        for (int i = 0; i < e.Arguments.Count; i++)
+        {
+            argumentsList.Insert(0, values.Pop());
+        }
+
+        BuiltInFunction builtInFunction = builtInFunctions.Functions[e.Name];
+        Value result = builtInFunction.Invoke(argumentsList);
+        values.Push(result);
+    }
+
+    private void ExecuteCustomFunction(FunctionCallExpression e)
+    {
+        FunctionDeclarationStatement function = context.TryGetFunction(e.Name);
+
+        if (e.Arguments.Count != function.Parameters.Count)
+        {
+            throw new ArgumentException(
+                $"Function '{e.Name}' expects {function.Parameters.Count} arguments, " +
+                $"but got {e.Arguments.Count}");
+        }
+
+        foreach (Expression argument in e.Arguments)
+        {
+            argument.Accept(this);
+        }
+
+        context.PushScope(new Scope());
+        Scope lastScope = context.GetLastScope();
+        functionStack.Push(new FunctionFrame());
+
+        foreach (ParameterDeclaration parameter in Enumerable.Reverse(function.Parameters))
+        {
+            Value value = values.Pop();
+            if (parameter.ResultType != value.GetValueType())
+            {
+                throw new TypeErrorException(
+                    $"Type mismatch for parameter '{parameter.Name}'. " +
+                    $"Expected: {parameter.ResultType}, Got: {value.GetValueType()}");
+            }
+
+            context.DefineFunctionParameter(parameter.Name, value);
+        }
+
+        function.Body.Accept(this);
+
+        FunctionFrame frame = functionStack.Pop();
+
+        if (function.ResultType != ValueType.Void && !frame.ReturnState)
+        {
+            throw new TypeErrorException(
+                $"Function '{e.Name}' must return a value of type {function.ResultType}");
+        }
+
+        context.PopScope();
     }
 
     private void HandleAdd(Value right, Value left)
@@ -590,132 +667,6 @@ public class AstEvaluator : IAstVisitor
         values.Push(new Value(!value.AsBool()));
     }
 
-    private void ExecuteBuiltInFunction(FunctionCallExpression e)
-    {
-        int count = 0;
-        foreach (Expression argument in e.Arguments)
-        {
-            count++;
-            argument.Accept(this);
-        }
-
-        List<decimal> arguments = new();
-        for (int i = 0; i < count; i++)
-        {
-            if (values.Peek().GetValueType() != ValueType.Float)
-            {
-                throw new TypeErrorException("Unknown type");
-            }
-
-            arguments.Add(values.Pop().AsDecimal());
-        }
-
-        arguments.Reverse();
-        object result = BuiltInFunctions.Invoke(e.Name, arguments);
-        if (result is decimal d )
-        {
-            values.Push(new Value(d));
-        }
-        else if (result is string s)
-        {
-            values.Push(new Value(s));
-        }
-    }
-
-    private void ExecuteCustomFunction(FunctionCallExpression e)
-    {
-        FunctionDeclarationStatement function = context.TryGetFunction(e.Name);
-
-        if (e.Arguments.Count != function.Parameters.Count)
-        {
-            throw new ArgumentException(
-                $"Function '{e.Name}' expects {function.Parameters.Count} arguments, " +
-                $"but got {e.Arguments.Count}");
-        }
-
-        foreach (Expression argument in e.Arguments)
-        {
-            argument.Accept(this);
-        }
-
-        context.PushScope(new Scope());
-        Scope lastScope = context.GetLastScope();
-        lastScope.InFunction = true;
-
-        foreach (Parameter parameter in Enumerable.Reverse(function.Parameters))
-        {
-            Value value = values.Pop();
-            if (parameter.Type != value.GetValueType())
-            {
-                throw new TypeErrorException(
-                    $"Type mismatch for parameter '{parameter.Name}'. " +
-                    $"Expected: {parameter.Type}, Got: {value.GetValueType()}");
-            }
-
-            context.DefineFunctionParameter(parameter.Name, value);
-        }
-
-        function.Body.Accept(this);
-
-        if (function.ResultType != ValueType.Void && !lastScope.ReturnState)
-        {
-            throw new TypeErrorException(
-                $"Function '{e.Name}' must return a value of type {function.ResultType}");
-        }
-
-        context.PopScope();
-    }
-
-    private void ExecuteForLoop(ForLoopStatement e)
-    {
-        e.StartValue.Accept(this);
-        decimal startValue = values.Pop().AsDecimal();
-        CheckIsInteger(startValue);
-
-        e.EndValue.Accept(this);
-        decimal endCondition = values.Pop().AsDecimal();
-        CheckIsInteger(endCondition);
-
-        ExecuteForLoopIterations(e, startValue, endCondition);
-    }
-
-    private void ExecuteForLoopIterations(ForLoopStatement e, decimal startValue, decimal endValue)
-    {
-        decimal stepValue = (startValue <= endValue) ? 1.0m : -1.0m;
-        decimal iteratorValue = startValue;
-
-        context.DefineVariable(e.IteratorName, new Value(iteratorValue));
-
-        context.PushScope(new Scope());
-        Scope lastScope = context.GetLastScope();
-        lastScope.InLoop = true;
-
-        while (true)
-        {
-            e.Body.Accept(this);
-
-            if (lastScope.BreakState)
-            {
-                break;
-            }
-
-            if (lastScope.ContinueState)
-            {
-                lastScope.ContinueState = false;
-            }
-
-            if (Numbers.AreEqual(iteratorValue, endValue))
-            {
-                break;
-            }
-
-            iteratorValue += stepValue;
-            context.AssignVariable(e.IteratorName, new Value(iteratorValue));
-        }
-
-        context.PopScope();
-    }
-
     private void CheckIsInteger(decimal d)
     {
         if (d % 1 != 0)
@@ -758,9 +709,21 @@ public class AstEvaluator : IAstVisitor
         return type switch
         {
             ValueType.Float => new Value(0),
-            ValueType.String => new Value(""),
+            ValueType.String => new Value("по умолчанию"),
             ValueType.Bool => new Value(false),
             _ => throw new TypeErrorException("Unknown type")
         };
+    }
+
+    private class FunctionFrame
+    {
+        public bool ReturnState { get; set; }
+    }
+
+    private class LoopFrame
+    {
+        public bool Break { get; set; }
+
+        public bool Continue { get; set; }
     }
 }

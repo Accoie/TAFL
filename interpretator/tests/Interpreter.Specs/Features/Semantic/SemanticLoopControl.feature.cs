@@ -189,11 +189,11 @@ namespace Interpreter.Specs.Features.Semantic
                 await this.ScenarioStartAsync();
 #line 26
     await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ДЛЯ i ОТ 1 ДО 5 ТВОРИ\r\n    НАЧАЛО\r\n      ЕСЛИ (i == 3) СТАЛОБЫТЬ\r\n     " +
-                        "   НАЧАЛО\r\n          ПРОДОЛЖИТЬ;\r\n        ИСХОД\r\n      МОЛВИ(i, \" \");\r\n    ИСХОД" +
-                        "\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
+                        "   НАЧАЛО\r\n          ПРОДОЛЖИТЬ;\r\n        ИСХОД\r\n      МОЛВИ(i);\r\n    ИСХОД\r\nИСХ" +
+                        "ОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 39
-    await testRunner.ThenAsync("я получаю результаты:", "1 2 4 5 ", ((global::Reqnroll.Table)(null)), "Тогда ");
+    await testRunner.ThenAsync("я получаю результаты:", "1\r\n2\r\n4\r\n5", ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -210,7 +210,7 @@ namespace Interpreter.Specs.Features.Semantic
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("ВЫЙТИ вне цикла", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 44
+#line 47
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -220,11 +220,11 @@ namespace Interpreter.Specs.Features.Semantic
             else
             {
                 await this.ScenarioStartAsync();
-#line 45
+#line 48
     await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ВЫЙТИ;\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 51
-    await testRunner.ThenAsync("я получаю ошибку типа \"InvalidStatementException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 54
+    await testRunner.ThenAsync("я получаю ошибку типа \"InvalidExpressionException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -241,7 +241,7 @@ namespace Interpreter.Specs.Features.Semantic
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("ПРОДОЛЖИТЬ вне цикла", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 53
+#line 56
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -251,11 +251,11 @@ namespace Interpreter.Specs.Features.Semantic
             else
             {
                 await this.ScenarioStartAsync();
-#line 54
+#line 57
     await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ПРОДОЛЖИТЬ;\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 60
-    await testRunner.ThenAsync("я получаю ошибку типа \"InvalidStatementException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 63
+    await testRunner.ThenAsync("я получаю ошибку типа \"InvalidExpressionException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

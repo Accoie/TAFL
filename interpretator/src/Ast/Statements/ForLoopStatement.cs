@@ -5,25 +5,21 @@ namespace Ast.Statements;
 public sealed class ForLoopStatement : Statement
 {
     public ForLoopStatement(
-        string iteratorName,
-        Expression startValue,
+        IteratorDeclaration iterator,
         Expression endCondition,
-        Statement body
+        BlockStatement body
     )
     {
-        IteratorName = iteratorName;
-        StartValue = startValue;
         EndValue = endCondition;
         Body = body;
+        Iterator = iterator;
     }
-
-    public string IteratorName { get; }
-
-    public Expression StartValue { get; }
 
     public Expression EndValue { get; }
 
-    public Statement Body { get; }
+    public BlockStatement Body { get; }
+
+    public IteratorDeclaration Iterator { get; }
 
     public override void Accept(IAstVisitor visitor)
     {

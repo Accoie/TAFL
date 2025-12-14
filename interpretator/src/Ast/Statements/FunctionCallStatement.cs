@@ -1,10 +1,12 @@
-﻿using Ast.Expressions;
+﻿using Ast.Attributes;
+using Ast.Expressions;
 
 namespace Ast.Statements;
 
 public class FunctionCallStatement : Statement
 {
     private readonly List<Expression> arguments;
+    private AstAttribute<AbstractFunctionDeclaration> function;
 
     public FunctionCallStatement(string name, List<Expression> arguments)
     {
@@ -13,6 +15,12 @@ public class FunctionCallStatement : Statement
     }
 
     public string Name { get; }
+
+    public AbstractFunctionDeclaration Function
+    {
+        get => function.Get();
+        set => function.Set(value);
+    }
 
     public IReadOnlyList<Expression> Arguments => arguments;
 

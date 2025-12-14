@@ -1,16 +1,16 @@
-﻿using Execution;
+﻿using RusMatushkaInterpreter;
 
 namespace RusMatushkaParser.UnitTests;
 
 public class LogicalAndComparisonTests
 {
     private readonly FakeEnvironment environment;
-    private readonly Context context;
+    private readonly Interpreter interpreter;
 
     public LogicalAndComparisonTests()
     {
         environment = new FakeEnvironment();
-        context = new Context();
+        interpreter = new Interpreter(environment);
     }
 
     [Theory]
@@ -19,10 +19,9 @@ public class LogicalAndComparisonTests
     {
         // Arrange
         string code = $"НАЧАЛО МОЛВИ({expression}); ИСХОД";
-        Parser parser = new Parser(context, environment, code);
 
         // Act
-        parser.ParseProgram();
+        interpreter.Execute(code);
 
         // Assert
         Assert.Equal(expected, environment.Strings.Last());
@@ -62,10 +61,9 @@ public class LogicalAndComparisonTests
     {
         // Arrange
         string code = $"НАЧАЛО МОЛВИ({expression}); ИСХОД";
-        Parser parser = new Parser(context, environment, code);
 
         // Act
-        parser.ParseProgram();
+        interpreter.Execute(code);
 
         // Assert
         Assert.Equal(expected, environment.Strings.Last());
@@ -98,11 +96,8 @@ public class LogicalAndComparisonTests
     [MemberData(nameof(GetComparisonWithVariablesTestData))]
     public void Handle_Comparison_With_Variables(string code, string expected)
     {
-        // Arrange
-        Parser parser = new Parser(context, environment, code);
-
         // Act
-        parser.ParseProgram();
+        interpreter.Execute(code);
 
         // Assert
         Assert.Equal(expected, environment.Strings.Last());

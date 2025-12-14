@@ -3,7 +3,7 @@
 namespace Ast.Statements;
 public sealed class WhileLoopStatement : Statement
 {
-    public WhileLoopStatement(Expression condition, Statement body)
+    public WhileLoopStatement(Expression condition, BlockStatement body)
     {
         Condition = condition;
         Body = body;
@@ -11,7 +11,7 @@ public sealed class WhileLoopStatement : Statement
 
     public Expression Condition { get; init; }
 
-    public Statement Body { get; init; }
+    public BlockStatement Body { get; init; }
 
     public override void Accept(IAstVisitor visitor)
     {

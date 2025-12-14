@@ -1,7 +1,4 @@
-﻿using Ast;
-using Ast.Statements;
-
-namespace RusMatushkaParser;
+﻿namespace Ast.Statements;
 
 public class BreakStatement : Statement
 {

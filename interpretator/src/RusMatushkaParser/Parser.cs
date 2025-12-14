@@ -1,8 +1,5 @@
-﻿using Ast;
-using Ast.Expressions;
+﻿using Ast.Expressions;
 using Ast.Statements;
-
-using Execution;
 
 using Runtime;
 
@@ -17,16 +14,12 @@ namespace RusMatushkaParser;
 /// </summary>
 public class Parser
 {
-    private readonly Context context;
     private readonly TokenStream tokens;
-    private readonly AstEvaluator evaluator;
 
     private readonly Stack<ValueType> returnTypes = new();
 
-    public Parser(Context context, IEnvironment environment, string code)
+    public Parser(string code)
     {
-        this.context = context;
-        evaluator = new AstEvaluator(context, environment);
         tokens = new TokenStream(code);
     }
 
@@ -34,13 +27,9 @@ public class Parser
     /// Выполняет разбор выражения RusMatushka
     /// Правило: program = "НАЧАЛО", { statement }, "ИСХОД".
     /// </summary>
-    public void ParseProgram()
+    public BlockStatement ParseProgram()
     {
-        evaluator.Visit(ParseBlock(true));
-        if (context.GetScopesCount() != 0)
-        {
-            throw new ArgumentException("Program's scope is not closed");
-        }
+        return ParseBlock(true);
     }
 
     /// <summary>
@@ -116,9 +105,9 @@ public class Parser
 
         Match(TokenType.Do);
 
-        Statement body = ParseBlock(false);
+        BlockStatement body = ParseBlock(false);
 
-        return new ForLoopStatement(iteratorName, startExpression, endExpression, body);
+        return new ForLoopStatement(new IteratorDeclaration(iteratorName, startExpression), endExpression, body);
     }
 
     /// <summary>
@@ -157,7 +146,7 @@ public class Parser
         Match(TokenType.RParen);
         Match(TokenType.Do);
 
-        Statement body = ParseBlock(false);
+        BlockStatement body = ParseBlock(false);
 
         return new WhileLoopStatement(condition, body);
     }
@@ -283,11 +272,7 @@ public class Parser
         string name = Match(TokenType.Identifier).Value!.ToString();
 
         Match(TokenType.LParen);
-        List<Parameter> parameters = ParseParameterList();
-        if (parameters.Count == 0)
-        {
-            throw new ArgumentException("Function needs at least 1 parameter");
-        }
+        List<ParameterDeclaration> parameters = ParseParameterList();
 
         Match(TokenType.RParen);
 
@@ -371,13 +356,13 @@ public class Parser
         Expression condition = ParseExpression();
         Match(TokenType.RParen);
         Match(TokenType.Then);
-        BlockStatement thenBranch = ParseBlock(false);
+        BlockStatement thenBranch = ParseBlock(true);
         BlockStatement? elseBranch = null;
 
         if (tokens.Peek().Type == TokenType.Else)
         {
             tokens.Advance();
-            elseBranch = ParseBlock(false);
+            elseBranch = ParseBlock(true);
         }
 
         return new IfElseStatement(condition, thenBranch, elseBranch);
@@ -387,9 +372,9 @@ public class Parser
     /// Разбирает список параметров функции.
     /// Правило: parameter_list = parameter, { ",", parameter }.
     /// </summary>
-    private List<Parameter> ParseParameterList()
+    private List<ParameterDeclaration> ParseParameterList()
     {
-        List<Parameter> parameters = new List<Parameter>();
+        List<ParameterDeclaration> parameters = new List<ParameterDeclaration>();
 
         if (tokens.Peek().Type == TokenType.RParen)
         {
@@ -398,14 +383,14 @@ public class Parser
 
         string paramName = Match(TokenType.Identifier).Value!.ToString();
         Match(TokenType.Colon);
-        parameters.Add(new Parameter(paramName, ParseType()));
+        parameters.Add(new ParameterDeclaration(paramName, ParseType()));
 
         while (tokens.Peek().Type == TokenType.Comma)
         {
             tokens.Advance();
             paramName = Match(TokenType.Identifier).Value!.ToString();
             Match(TokenType.Colon);
-            parameters.Add(new Parameter(paramName, ParseType()));
+            parameters.Add(new ParameterDeclaration(paramName, ParseType()));
         }
 
         return parameters;

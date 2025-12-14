@@ -1,6 +1,10 @@
-﻿using Execution;
+﻿using Ast.Statements;
+
+using Execution;
 
 using RusMatushkaParser;
+
+using Semantics;
 
 namespace RusMatushkaInterpreter;
 
@@ -9,8 +13,9 @@ namespace RusMatushkaInterpreter;
 /// </summary>
 public class Interpreter
 {
-    private readonly Context context;
     private readonly IEnvironment environment;
+    private readonly BuiltInFunctions builtInFunctions = new();
+    private readonly Context context;
 
     public Interpreter(IEnvironment environment)
     {
@@ -29,7 +34,14 @@ public class Interpreter
             throw new ArgumentException("Source code cannot be null or empty", nameof(sourceCode));
         }
 
-        Parser parser = new(context, environment, sourceCode);
-        parser.ParseProgram();
+        Parser parser = new(sourceCode);
+
+        BlockStatement program = parser.ParseProgram();
+        SemanticsChecker checker = new SemanticsChecker(builtInFunctions.Functions);
+        checker.Check(program);
+
+        AstEvaluator evaluator = new(context, environment);
+
+        evaluator.Evaluate(program);
     }
 }

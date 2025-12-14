@@ -210,7 +210,7 @@ namespace Interpreter.Specs.Features.Semantic
 ИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 48
-    await testRunner.ThenAsync("я получаю результаты:", "ИСТИНАЛОЖЬ", ((global::Reqnroll.Table)(null)), "Тогда ");
+    await testRunner.ThenAsync("я получаю результаты:", "ИСТИНА\r\nЛОЖЬ", ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -227,7 +227,7 @@ namespace Interpreter.Specs.Features.Semantic
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Взаимная рекурсия в одной области видимости", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 53
+#line 54
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -237,12 +237,31 @@ namespace Interpreter.Specs.Features.Semantic
             else
             {
                 await this.ScenarioStartAsync();
-#line 54
-    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ФУНКЦИЯ А() : ДРОБЬ\r\n  НАЧАЛО\r\n    ДАРОВАТЬ Б();\r\n  ИСХОД\r\n  ФУНКЦИЯ Б(" +
-                        ") : ДРОБЬ\r\n  НАЧАЛО\r\n    ДАРОВАТЬ А();\r\n  ИСХОД\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
+#line 55
+    await testRunner.WhenAsync("я выполняю программу:", @"НАЧАЛО
+ФУНКЦИЯ A(a: ДРОБЬ) : ДРОБЬ
+НАЧАЛО
+ЕСЛИ(a > 1) СТАЛОБЫТЬ
+НАЧАЛО
+  ДАРОВАТЬ B(a-1);  
+ИСХОД
+ДАРОВАТЬ a;
+ИСХОД
+
+ФУНКЦИЯ B(b: ДРОБЬ) : ДРОБЬ
+НАЧАЛО
+ЕСЛИ(b > 1) СТАЛОБЫТЬ
+НАЧАЛО
+  ДАРОВАТЬ A(b-1);  
+ИСХОД
+ДАРОВАТЬ b;
+ИСХОД
+
+МОЛВИ(A(4));
+ИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 67
-    await testRunner.ThenAsync("я получаю ошибку типа \"StackOverflowException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 79
+    await testRunner.ThenAsync("я получаю результаты:", "1", ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -259,7 +278,7 @@ namespace Interpreter.Specs.Features.Semantic
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Взаимная рекурсия в разных областях видимости", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 69
+#line 84
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -269,13 +288,13 @@ namespace Interpreter.Specs.Features.Semantic
             else
             {
                 await this.ScenarioStartAsync();
-#line 70
-    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ЕСЛИ (ИСТИНА) СТАЛОБЫТЬ\r\n    НАЧАЛО\r\n      ФУНКЦИЯ А() : ДРОБЬ\r\n      Н" +
-                        "АЧАЛО\r\n        ДАРОВАТЬ 5;\r\n      ИСХОД\r\n    ИСХОД\r\n  ФУНКЦИЯ Б() : ДРОБЬ\r\n  НАЧ" +
-                        "АЛО\r\n    ДАРОВАТЬ А();\r\n  ИСХОД\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
+#line 85
+    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n    НАЧАЛО\r\n      ФУНКЦИЯ А() : ДРОБЬ\r\n      НАЧАЛО\r\n        ДАРОВАТЬ 5;\r" +
+                        "\n      ИСХОД\r\n    ИСХОД\r\n  ФУНКЦИЯ Б() : ДРОБЬ\r\n  НАЧАЛО\r\n    ДАРОВАТЬ А();\r\n  И" +
+                        "СХОД\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 86
-    await testRunner.ThenAsync("я получаю ошибку типа \"NameResolutionException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 100
+    await testRunner.ThenAsync("я получаю ошибку типа \"UnknownSymbolException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

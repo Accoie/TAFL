@@ -1,111 +1,153 @@
-﻿namespace RusMatushkaParser;
+﻿using System.Globalization;
 
-public static class BuiltInFunctions
+using Ast.Statements;
+
+using Runtime;
+
+using ValueType = Runtime.ValueType;
+
+namespace RusMatushkaParser;
+
+/// <summary>
+/// Объект, предоставляющий доступ к встроенным символам языка.
+/// </summary>
+public class BuiltInFunctions
 {
-    private static readonly Dictionary<string, Func<List<decimal>, object>> Functions = new()
+    public BuiltInFunctions()
     {
-        {
-            "модуль", Abs
-        },
-        {
-            "малое", Least
-        },
-        {
-            "великое", Greatest
-        },
-        {
-            "округлить", Round
-        },
-        {
-            "потолок", Ceiling
-        },
-        {
-            "пол", Floor
-        },
-        {
-            "степень", Power
-        },
-        {
-            "числовстроку", NumberToString
-        },
-    };
+        List<BuiltInFunction> functions =
+        [
+            new BuiltInFunction(
+                "модуль",
+                [new BuiltInFunctionParameter("число", ValueType.Float)],
+                ValueType.Float,
+                arguments =>
+                {
+                    decimal number = arguments[0].AsDecimal();
+                    return new Value(Math.Abs(number));
+                }
+            ),
 
-    public static bool CheckBuiltInFunctions(string name)
-    {
-        return Functions.ContainsKey(name);
+            new BuiltInFunction(
+                "малое",
+                [new BuiltInFunctionParameter("числа", ValueType.Float)],
+                ValueType.Float,
+                arguments =>
+                {
+                    if (arguments.Count == 0)
+                    {
+                        throw new ArgumentException("Использование: малое(<число1>, <число2>, ...)");
+                    }
+
+                    decimal min = arguments[0].AsDecimal();
+                    for (int i = 1; i < arguments.Count; i++)
+                    {
+                        decimal current = arguments[i].AsDecimal();
+                        if (current < min)
+                        {
+                            min = current;
+                        }
+                    }
+
+                    return new Value(min);
+                }
+            ),
+
+            new BuiltInFunction(
+                "великое",
+                [new BuiltInFunctionParameter("числа", ValueType.Float)],
+                ValueType.Float,
+                arguments =>
+                {
+                    if (arguments.Count == 0)
+                    {
+                        throw new ArgumentException("Использование: великое(<число1>, <число2>, ...)");
+                    }
+
+                    decimal max = arguments[0].AsDecimal();
+                    for (int i = 1; i < arguments.Count; i++)
+                    {
+                        decimal current = arguments[i].AsDecimal();
+                        if (current > max)
+                        {
+                            max = current;
+                        }
+                    }
+
+                    return new Value(max);
+                }
+            ),
+
+            new BuiltInFunction(
+                "округлить",
+                [new BuiltInFunctionParameter("число", ValueType.Float)],
+                ValueType.Float,
+                arguments =>
+                {
+                    decimal number = arguments[0].AsDecimal();
+                    return new Value(Math.Round(number));
+                }
+            ),
+
+            new BuiltInFunction(
+                "потолок",
+                [new BuiltInFunctionParameter("число", ValueType.Float)],
+                ValueType.Float,
+                arguments =>
+                {
+                    decimal number = arguments[0].AsDecimal();
+                    return new Value(Math.Ceiling(number));
+                }
+            ),
+
+            new BuiltInFunction(
+                "пол",
+                [new BuiltInFunctionParameter("число", ValueType.Float)],
+                ValueType.Float,
+                arguments =>
+                {
+                    decimal number = arguments[0].AsDecimal();
+                    return new Value(Math.Floor(number));
+                }
+            ),
+
+            new BuiltInFunction(
+                "степень",
+                [new BuiltInFunctionParameter("число", ValueType.Float), new BuiltInFunctionParameter("степень", ValueType.Float)],
+                ValueType.Float,
+                arguments =>
+                {
+                    decimal number = arguments[0].AsDecimal();
+                    decimal power = arguments[1].AsDecimal();
+                    return new Value((decimal)Math.Pow((double)number, (double)power));
+                }
+            ),
+
+            new BuiltInFunction(
+                "числовстроку",
+                [new BuiltInFunctionParameter("число", ValueType.Float)],
+                ValueType.String,
+                arguments =>
+                {
+                    decimal number = arguments[0].AsDecimal();
+
+                    if (number % 1 == 0)
+                    {
+                        return new Value(((int)number).ToString());
+                    }
+                    else
+                    {
+                        return new Value(number.ToString("0.00", CultureInfo.InvariantCulture));
+                    }
+                }
+            ),
+        ];
+
+        Functions = functions.ToDictionary(function => function.Name);
     }
 
-    public static object Invoke(string name, List<decimal> arguments)
-    {
-        if (!Functions.TryGetValue(name, out Func<List<decimal>, object>? function))
-        {
-            throw new ArgumentException($"Неизвестная функция: {name}");
-        }
-
-        return function(arguments);
-    }
-
-    private static object Abs(List<decimal> arguments)
-    {
-        if (arguments.Count == 0)
-        {
-            throw new ArgumentException($"Использование: модуль(<число>)");
-        }
-
-        return Math.Abs(arguments[0]);
-    }
-
-    private static object Least(List<decimal> arguments)
-    {
-        return arguments.Min();
-    }
-
-    private static object Greatest(List<decimal> arguments)
-    {
-        return arguments.Max();
-    }
-
-    private static object Round(List<decimal> arguments)
-    {
-        return Math.Round(arguments[0]);
-    }
-
-    private static object Ceiling(List<decimal> arguments)
-    {
-        return Math.Ceiling(arguments[0]);
-    }
-
-    private static object Floor(List<decimal> arguments)
-    {
-        return Math.Floor(arguments[0]);
-    }
-
-    private static object Power(List<decimal> arguments)
-    {
-        if (arguments.Count < 2)
-        {
-            throw new ArgumentException($"Использование: степень(<число>,<кол-во степеней>)");
-        }
-
-        return (decimal)Math.Pow((double)arguments[0], (double)arguments[1]);
-    }
-
-    private static object NumberToString(List<decimal> arguments)
-    {
-        if (arguments.Count == 0)
-        {
-            throw new ArgumentException($"Использование: числовстроку(<число>)");
-        }
-
-        decimal number = arguments[0];
-
-        if (number % 1 == 0)
-        {
-            return number.ToString("0");
-        }
-        else
-        {
-            return number.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
-        }
-    }
+    /// <summary>
+    /// Список встроенных функций языка.
+    /// </summary>
+    public IReadOnlyDictionary<string, BuiltInFunction> Functions { get; }
 }

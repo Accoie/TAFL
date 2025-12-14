@@ -17,8 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\RusMatushkaLexer\RusMatushkaLexer.csproj" />
-    <ProjectReference Include="..\..\src\RusMatushkaParser\RusMatushkaParser.csproj" />
+    <ProjectReference Include="..\..\src\RusMatushkaInterpreter\RusMatushkaInterpreter.csproj" />
   </ItemGroup>
 
   <ItemGroup>

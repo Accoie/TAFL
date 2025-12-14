@@ -1,16 +1,18 @@
-﻿using Execution;
+﻿using RusMatushkaInterpreter;
+
+using Semantics.Exceptions;
 
 namespace RusMatushkaParser.UnitTests;
 
 public class TypeSemanticsTests
 {
     private readonly FakeEnvironment environment;
-    private readonly Context context;
+    private readonly Interpreter interpreter;
 
     public TypeSemanticsTests()
     {
         environment = new FakeEnvironment();
-        context = new Context();
+        interpreter = new Interpreter(environment);
     }
 
     [Theory]
@@ -19,10 +21,9 @@ public class TypeSemanticsTests
     {
         // Arrange
         string code = $"НАЧАЛО {expression} ИСХОД";
-        Parser parser = CreateParser(code);
 
         // Act
-        parser.ParseProgram();
+        interpreter.Execute(code);
 
         // Assert
         Assert.Equal(expectedOutput, environment.Strings.ToArray());
@@ -91,74 +92,68 @@ public class TypeSemanticsTests
     }
 
     [Theory]
-    [MemberData(nameof(GetNegativeCasesData))]
-    public void Parse_Type_Semantics_With_Negative_Cases(string expression, Type expectedException)
+    [MemberData(nameof(GetTypeErrorExceptionCases))]
+    public void Parse_Type_Semantics_With_TypeErrorException(string expression)
     {
         // Arrange
         string code = $"НАЧАЛО {expression} ИСХОД";
-        Parser parser = CreateParser(code);
 
         // Act & Assert
-        Assert.Throws(expectedException, parser.ParseProgram);
+        Assert.Throws<TypeMismatchException>(() => interpreter.Execute(code));
     }
 
-    public static TheoryData<string, Type> GetNegativeCasesData()
+    public static TheoryData<string> GetTypeErrorExceptionCases()
     {
-        return new TheoryData<string, Type>
-        {
-            // Разбор инструкции условия, где условие не 0 или 1
-            { "ЧИСЛО x : ДРОБЬ = 2; ЕСЛИ(x) СТАЛОБЫТЬ НАЧАЛО МОЛВИ(x); ИСХОД", typeof(TypeErrorException) },
-
-            // Разбор присвоения строковой переменной числа
-            { "СТРОКА x; x = 5;", typeof(TypeErrorException) },
-
-            // Разбор несоответствия типов
-            { "СТРОКА x = \"пример\"; x = 4;", typeof(TypeErrorException) },
-            { "СТРОКА x = \"пример\"; ЧИСЛО y : ДРОБЬ = 2; y = x;", typeof(TypeErrorException) },
-
-            // Разбор запрета бинарной операции(кроме +) со строкой
-            { "СТРОКА x = \"пример\"; МОЛВИ(x-x);", typeof(TypeErrorException) },
-            { "СТРОКА x = \"пример\"; МОЛВИ(x*x);", typeof(TypeErrorException) },
-            { "СТРОКА x = \"пример\"; МОЛВИ(x/x);", typeof(TypeErrorException) },
-            { "СТРОКА x = \"пример\"; МОЛВИ(x%x);", typeof(TypeErrorException) },
-
-            // Разбор запрета операций сравнения для БУЛЕВО
-            { "ЕСЛИ(ИСТИНА > ЛОЖЬ) СТАЛОБЫТЬ НАЧАЛО ИСХОД", typeof(TypeErrorException) },
-            { "ЕСЛИ(ИСТИНА < ЛОЖЬ) СТАЛОБЫТЬ НАЧАЛО ИСХОД", typeof(TypeErrorException) },
-            { "ЕСЛИ(ИСТИНА >= ЛОЖЬ) СТАЛОБЫТЬ НАЧАЛО ИСХОД", typeof(TypeErrorException) },
-            { "ЕСЛИ(ИСТИНА <= ЛОЖЬ) СТАЛОБЫТЬ НАЧАЛО ИСХОД", typeof(TypeErrorException) },
-
-            // Разбор запрета использований логических операций для типов кроме БУЛЕВО
-            { "БУЛЕВО y = 1 @ 0;", typeof(TypeErrorException) },
-            { "БУЛЕВО x = 3 > 0; БУЛЕВО y = x || 0;", typeof(TypeErrorException) },
-            { "БУЛЕВО y = !1;", typeof(TypeErrorException) },
-            { "МОЛВИ(\"1\" @ \"2\");", typeof(TypeErrorException) },
-            { "МОЛВИ(\"1\" || \"2\");", typeof(TypeErrorException) },
-            { "МОЛВИ(!\"1\");", typeof(TypeErrorException) },
-
-            // Разбор запрета функции без ДАРОВАТЬ, когда у нее есть какой-то тип
-            { "ФУНКЦИЯ приветствие(имя: СТРОКА):СТРОКА НАЧАЛО МОЛВИ(\"Привет, \", имя); ИСХОД МОЛВИ(приветствие(\"андрей\"));", typeof(TypeErrorException) },
-
-            // Разбор запрета использования функции, которая не возвращает результат, в качестве выражения
-            { "ФУНКЦИЯ приветствие(имя: СТРОКА) НАЧАЛО МОЛВИ(\"Привет, \", имя); ИСХОД МОЛВИ(приветствие(\"андрей\"));", typeof(InvalidOperationException) },
-
-            // Разбор возврата несовместимого типа
-            { "ФУНКЦИЯ приветствие(имя: СТРОКА):СТРОКА НАЧАЛО МОЛВИ(\"Привет, \", имя); ДАРОВАТЬ 3; ИСХОД приветствие(\"привы\");", typeof(TypeErrorException) },
-
-            // Разбор несовместимых аргументов в встроенных функциях
-            { "МОЛВИ(малое(1.00, 2.00, \"бяк\"));", typeof(TypeErrorException) },
-
-            // Разбор запрета использования типа кроме БУЛЕВО в цикле while
-            { "ПОКУДА(\"ИСТИНА\") ТВОРИ НАЧАЛО ИСХОД", typeof(InvalidOperationException) },
-            { "ПОКУДА(1) ТВОРИ НАЧАЛО ИСХОД", typeof(InvalidOperationException) },
-
-            // Разбор запрета использования типа кроме ДРОБЬ в цикле for
-            { "СТРОКА x = \"555\"; ДЛЯ i ОТ 1 ДО x ТВОРИ НАЧАЛО ИСХОД", typeof(InvalidOperationException) },
-        };
-    }
-
-    private Parser CreateParser(string code)
+        return new TheoryData<string>
     {
-        return new Parser(context, environment, code);
+        // Разбор инструкции условия, где условие не 0 или 1
+        "ЧИСЛО x : ДРОБЬ = 2; ЕСЛИ(x) СТАЛОБЫТЬ НАЧАЛО МОЛВИ(x); ИСХОД",
+
+        // Разбор присвоения строковой переменной числа
+        "СТРОКА x; x = 5;",
+
+        // Разбор несоответствия типов
+        "СТРОКА x = \"пример\"; x = 4;",
+        "СТРОКА x = \"пример\"; ЧИСЛО y : ДРОБЬ = 2; y = x;",
+
+        // Разбор запрета бинарной операции(кроме +) со строкой
+        "СТРОКА x = \"пример\"; МОЛВИ(x-x);",
+        "СТРОКА x = \"пример\"; МОЛВИ(x*x);",
+        "СТРОКА x = \"пример\"; МОЛВИ(x/x);",
+        "СТРОКА x = \"пример\"; МОЛВИ(x%x);",
+
+        // Разбор запрета операций сравнения для БУЛЕВО
+        "ЕСЛИ(ИСТИНА > ЛОЖЬ) СТАЛОБЫТЬ НАЧАЛО ИСХОД",
+        "ЕСЛИ(ИСТИНА < ЛОЖЬ) СТАЛОБЫТЬ НАЧАЛО ИСХОД",
+        "ЕСЛИ(ИСТИНА >= ЛОЖЬ) СТАЛОБЫТЬ НАЧАЛО ИСХОД",
+        "ЕСЛИ(ИСТИНА <= ЛОЖЬ) СТАЛОБЫТЬ НАЧАЛО ИСХОД",
+
+        // Разбор запрета использований логических операций для типов кроме БУЛЕВО
+        "БУЛЕВО y = 1 @ 0;",
+        "БУЛЕВО x = 3 > 0; БУЛЕВО y = x || 0;",
+        "БУЛЕВО y = !1;",
+        "МОЛВИ(\"1\" @ \"2\");",
+        "МОЛВИ(\"1\" || \"2\");",
+        "МОЛВИ(!\"1\");",
+
+        // Разбор запрета функции без ДАРОВАТЬ, когда у нее есть какой-то тип
+        "ФУНКЦИЯ приветствие(имя: СТРОКА):СТРОКА НАЧАЛО МОЛВИ(\"Привет, \", имя); ИСХОД МОЛВИ(приветствие(\"андрей\"));",
+
+        // Разбор возврата несовместимого типа
+        "ФУНКЦИЯ приветствие(имя: СТРОКА):СТРОКА НАЧАЛО МОЛВИ(\"Привет, \", имя); ДАРОВАТЬ 3; ИСХОД приветствие(\"привы\");",
+
+        // Разбор несовместимых аргументов в встроенных функциях
+        "МОЛВИ(малое(1.00, 2.00, \"бяк\"));",
+
+        // Разбор запрета использования типа кроме БУЛЕВО в цикле while
+        "ПОКУДА(\"ИСТИНА\") ТВОРИ НАЧАЛО ИСХОД",
+        "ПОКУДА(1) ТВОРИ НАЧАЛО ИСХОД",
+
+        // Разбор запрета использования функции, которая не возвращает результат, в качестве выражения
+        "ФУНКЦИЯ приветствие(имя: СТРОКА) НАЧАЛО МОЛВИ(\"Привет, \", имя); ИСХОД МОЛВИ(приветствие(\"андрей\"));",
+
+        // Разбор запрета использования типа кроме ДРОБЬ в цикле for
+        "СТРОКА x = \"555\"; ДЛЯ i ОТ 1 ДО x ТВОРИ НАЧАЛО ИСХОД",
+    };
     }
 }

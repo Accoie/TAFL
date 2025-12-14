@@ -1,8 +1,6 @@
 ﻿using Ast.Expressions;
 using Ast.Statements;
 
-using RusMatushkaParser;
-
 namespace Ast;
 
 public interface IAstVisitor
@@ -12,8 +10,6 @@ public interface IAstVisitor
     void Visit(UnaryOperationExpression e);
 
     void Visit(LiteralExpression e);
-
-    void Visit(VariableExpression e);
 
     void Visit(FunctionCallExpression s);
 
@@ -42,4 +38,10 @@ public interface IAstVisitor
     void Visit(ContinueStatement s);
 
     void Visit(FunctionCallStatement s);
+
+    void Visit(ParameterDeclaration parameterDeclarationStatement);
+
+    void Visit(VariableExpression variableExpression);
+
+    void Visit(IteratorDeclaration iteratorDeclaration);
 }

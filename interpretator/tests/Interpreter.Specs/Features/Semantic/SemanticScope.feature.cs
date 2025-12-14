@@ -159,7 +159,7 @@ namespace Interpreter.Specs.Features.Semantic
                         "СХОД\r\n  МОЛВИ(x);\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 15
-    await testRunner.ThenAsync("я получаю ошибку типа \"NameResolutionException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+    await testRunner.ThenAsync("я получаю ошибку типа \"UnknownSymbolException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -192,21 +192,21 @@ namespace Interpreter.Specs.Features.Semantic
                         "льная);\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 30
-    await testRunner.ThenAsync("я получаю ошибку типа \"NameResolutionException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+    await testRunner.ThenAsync("я получаю ошибку типа \"UnknownSymbolException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Функция видит переменные внешней области")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Функция видит переменные внешней области и может изменять их")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Область видимости")]
-        [global::Xunit.TraitAttribute("Description", "Функция видит переменные внешней области")]
-        public async global::System.Threading.Tasks.Task ФункцияВидитПеременныеВнешнейОбласти()
+        [global::Xunit.TraitAttribute("Description", "Функция видит переменные внешней области и может изменять их")]
+        public async global::System.Threading.Tasks.Task ФункцияВидитПеременныеВнешнейОбластиИМожетИзменятьИх()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "2";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Функция видит переменные внешней области", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Функция видит переменные внешней области и может изменять их", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 32
@@ -220,11 +220,12 @@ namespace Interpreter.Specs.Features.Semantic
             {
                 await this.ScenarioStartAsync();
 #line 33
-    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ЧИСЛО внешняя : ДРОБЬ = 10;\r\n  ФУНКЦИЯ Тест() : ДРОБЬ\r\n  НАЧАЛО\r\n    ДА" +
-                        "РОВАТЬ внешняя + 5;\r\n  ИСХОД\r\n  МОЛВИ(Тест());\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
+    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ЧИСЛО внешняя : ДРОБЬ = 10;\r\n  ФУНКЦИЯ Тест()\r\n  НАЧАЛО\r\n    внешняя = " +
+                        "1;\r\n  ИСХОД\r\n  НАЧАЛО\r\n    НАЧАЛО\r\n      Тест();\r\n    ИСХОД\r\n  ИСХОД\r\n\r\n  МОЛВИ(" +
+                        "внешняя);\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 44
-    await testRunner.ThenAsync("программа выполняется успешно", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 50
+    await testRunner.ThenAsync("я получаю результаты:", "1", ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

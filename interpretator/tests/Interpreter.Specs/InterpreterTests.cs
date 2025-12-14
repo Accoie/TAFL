@@ -57,9 +57,10 @@ public class InterpreterTests
     [Then(@"программа выполняется успешно")]
     public void ThenProgramExecutesSuccessfully()
     {
-        Assert.False(
-            scenarioContext.ContainsKey("ExecutionException"),
-            $"Ошибка: {scenarioContext.Get<Exception>("ExecutionException")?.Message}");
+        if (scenarioContext.TryGetValue("ExecutionException", out Exception exception))
+        {
+            Assert.Fail($"Программа завершилась с исключением: {exception.Message}");
+        }
     }
 
     [Then(@"я получаю ошибку типа ""(.*)""")]

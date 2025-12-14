@@ -133,15 +133,15 @@ namespace Interpreter.Specs.Features.Semantic
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Обращение к неинициализированной переменной")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Обращение к неинициализированной переменной дробного типа")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Инициализация переменных")]
-        [global::Xunit.TraitAttribute("Description", "Обращение к неинициализированной переменной")]
-        public async global::System.Threading.Tasks.Task ОбращениеКНеинициализированнойПеременной()
+        [global::Xunit.TraitAttribute("Description", "Обращение к неинициализированной переменной дробного типа")]
+        public async global::System.Threading.Tasks.Task ОбращениеКНеинициализированнойПеременнойДробногоТипа()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Обращение к неинициализированной переменной", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Обращение к неинициализированной переменной дробного типа", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 4
@@ -158,25 +158,25 @@ namespace Interpreter.Specs.Features.Semantic
     await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ЧИСЛО x : ДРОБЬ;\r\n  МОЛВИ(x);\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 12
-    await testRunner.ThenAsync("я получаю ошибку типа \"UninitializedVariableException\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+    await testRunner.ThenAsync("я получаю результаты:", "0", ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Явная инициализация переменной перед использованием")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Обращение к неинициализированной переменной строчного типа")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Инициализация переменных")]
-        [global::Xunit.TraitAttribute("Description", "Явная инициализация переменной перед использованием")]
-        public async global::System.Threading.Tasks.Task ЯвнаяИнициализацияПеременнойПередИспользованием()
+        [global::Xunit.TraitAttribute("Description", "Обращение к неинициализированной переменной строчного типа")]
+        public async global::System.Threading.Tasks.Task ОбращениеКНеинициализированнойПеременнойСтрочногоТипа()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "1";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Явная инициализация переменной перед использованием", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Обращение к неинициализированной переменной строчного типа", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 14
-  this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line 16
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
             {
@@ -185,11 +185,11 @@ namespace Interpreter.Specs.Features.Semantic
             else
             {
                 await this.ScenarioStartAsync();
-#line 15
-    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ЧИСЛО x : ДРОБЬ = 5;\r\n  МОЛВИ(x);\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
+#line 17
+    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n    СТРОКА x;\r\n    МОЛВИ(x);\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 22
-    await testRunner.ThenAsync("я получаю результаты: \"5\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 24
+    await testRunner.ThenAsync("я получаю результаты:", "по умолчанию", ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -206,7 +206,7 @@ namespace Interpreter.Specs.Features.Semantic
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Параметры функций считаются инициализированными", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 24
+#line 29
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -216,11 +216,11 @@ namespace Interpreter.Specs.Features.Semantic
             else
             {
                 await this.ScenarioStartAsync();
-#line 25
+#line 30
     await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ФУНКЦИЯ Сумма(a : ДРОБЬ, b : ДРОБЬ) : ДРОБЬ\r\n  НАЧАЛО\r\n    ДАРОВАТЬ a +" +
                         " b;\r\n  ИСХОД\r\n  МОЛВИ(Сумма(2, 3));\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 35
+#line 40
     await testRunner.ThenAsync("я получаю результаты:", "5", ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
@@ -238,7 +238,7 @@ namespace Interpreter.Specs.Features.Semantic
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Переменная цикла ДЛЯ инициализируется значением ОТ", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 40
+#line 45
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -248,12 +248,11 @@ namespace Interpreter.Specs.Features.Semantic
             else
             {
                 await this.ScenarioStartAsync();
-#line 41
-    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ДЛЯ i ОТ 1 ДО 3 ТВОРИ\r\n    НАЧАЛО\r\n      МОЛВИ(i, \" \");\r\n    ИСХОД\r\nИСХ" +
-                        "ОД", ((global::Reqnroll.Table)(null)), "Когда ");
+#line 46
+    await testRunner.WhenAsync("я выполняю программу:", "НАЧАЛО\r\n  ДЛЯ i ОТ 1 ДО 3 ТВОРИ\r\n    НАЧАЛО\r\n      МОЛВИ(i);\r\n    ИСХОД\r\nИСХОД", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 50
-    await testRunner.ThenAsync("я получаю результаты:", "1 2 3 ", ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 55
+    await testRunner.ThenAsync("я получаю результаты:", "1\r\n2\r\n3", ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
