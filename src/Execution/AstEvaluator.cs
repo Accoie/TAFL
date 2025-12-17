@@ -5,6 +5,7 @@ using Ast.Expressions;
 using Ast.Statements;
 
 using Execution;
+using Execution.Exceptions;
 
 using Runtime;
 

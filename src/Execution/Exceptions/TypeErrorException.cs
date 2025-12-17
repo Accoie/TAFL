@@ -1,4 +1,4 @@
-﻿namespace Execution;
+﻿namespace Execution.Exceptions;
 
 #pragma warning disable RCS1194
 

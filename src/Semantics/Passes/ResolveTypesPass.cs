@@ -15,10 +15,6 @@ namespace Semantics.Passes;
 /// <exception cref="TypeMismatchException">Бросается при несоответствии типов данных.</exception>
 public sealed class ResolveTypesPass : AbstractPass
 {
-    public ResolveTypesPass()
-    {
-    }
-
     /// <summary>
     /// Литерал всегда имеет определённый тип.
     /// </summary>
@@ -190,7 +186,6 @@ public sealed class ResolveTypesPass : AbstractPass
     {
         base.Visit(s);
 
-        // Проверяем, что условие имеет булевский тип
         if (s.Condition.ResultType != ValueType.Bool)
         {
             throw new TypeMismatchException(
@@ -221,7 +216,6 @@ public sealed class ResolveTypesPass : AbstractPass
     {
         base.Visit(s);
 
-        // Проверяем, что начальное и конечное значения имеют числовой тип
         if (s.Iterator.StartValue.ResultType != ValueType.Float)
         {
             throw new TypeMismatchException(
@@ -281,8 +275,6 @@ public sealed class ResolveTypesPass : AbstractPass
     {
         base.Visit(s);
 
-        // Если функция объявлена с типом возвращаемого значения (не Void),
-        // она должна содержать хотя бы один ReturnStatement
         if (s.ResultType != ValueType.Void)
         {
             if (!ContainsReturnStatement(s.Body))

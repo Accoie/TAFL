@@ -1,4 +1,4 @@
-﻿namespace RusMatushkaParser;
+﻿namespace Execution.Exceptions;
 
 [Serializable]
 #pragma warning disable RCS1194 // Конструкторы исключения не нужны, т.к. это не класс общего назначения.

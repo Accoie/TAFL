@@ -1,16 +1,12 @@
 ﻿using Ast.Expressions;
 using Ast.Statements;
 
-using Runtime;
 using Semantics.Exceptions;
-
-using ValueType = Runtime.ValueType;
 
 namespace Semantics.Passes;
 
 public sealed class CheckContextSensitiveRulesPass : AbstractPass
 {
-    // Стек контекстов выражений используется для проверки контекстно-зависимых правил.
     private readonly Stack<ExpressionContext> expressionContextStack;
 
     public CheckContextSensitiveRulesPass()

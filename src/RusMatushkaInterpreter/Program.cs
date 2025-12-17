@@ -1,6 +1,6 @@
 ﻿using Execution;
 
-using RusMatushkaParser;
+using RusMatushkaParser.Exceptions;
 
 namespace RusMatushkaInterpreter;
 public static class Program

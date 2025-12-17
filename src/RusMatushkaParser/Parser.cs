@@ -3,6 +3,8 @@ using Ast.Statements;
 
 using Runtime;
 
+using RusMatushkaParser.Exceptions;
+
 using ValueType = Runtime.ValueType;
 
 namespace RusMatushkaParser;

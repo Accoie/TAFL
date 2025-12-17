@@ -1,6 +1,8 @@
 ﻿using Execution;
 using RusMatushkaInterpreter;
 
+using RusMatushkaParser.Exceptions;
+
 using Semantics.Exceptions;
 
 namespace RusMatushkaParser.UnitTests;

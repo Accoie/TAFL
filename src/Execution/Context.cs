@@ -2,6 +2,8 @@
 
 using Ast.Statements;
 
+using Execution.Exceptions;
+
 using Runtime;
 
 using RusMatushkaParser;
