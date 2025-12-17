@@ -710,7 +710,7 @@ public class AstEvaluator : IAstVisitor
         return type switch
         {
             ValueType.Float => new Value(0),
-            ValueType.String => new Value("по умолчанию"),
+            ValueType.String => new Value(""),
             ValueType.Bool => new Value(false),
             _ => throw new TypeErrorException("Unknown type")
         };
